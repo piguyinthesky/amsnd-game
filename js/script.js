@@ -3,8 +3,8 @@
  * Asset Credits:
  *  - Tuxemon, https://github.com/Tuxemon/Tuxemon
  */
-
-import MainScene from './scenes/mainScene.js';
+import LoadScene from "./scenes/loadScene.js";
+import MainScene from "./scenes/mainScene.js";
 
 const config = {
   type: Phaser.AUTO,
@@ -18,7 +18,7 @@ const config = {
       gravity: { y: 0 }
     }
   },
-  scene: MainScene
+  scene: [LoadScene, MainScene]
 };
 
 const game = new Phaser.Game(config);
