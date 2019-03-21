@@ -68,9 +68,9 @@ export default class MainScene extends Phaser.Scene {
       });
     });
 
-    const camera = this.cameras.main;
-    camera.startFollow(this.player);
-    camera.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
+    this.cameras.main
+      .startFollow(this.player)
+      .setBounds(0, 0, map.widthInPixels, map.heightInPixels);
 
     this.cursors = this.input.keyboard.createCursorKeys();
 

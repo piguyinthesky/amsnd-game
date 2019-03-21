@@ -3,8 +3,8 @@
  * Asset Credits:
  *  - Tuxemon, https://github.com/Tuxemon/Tuxemon
  */
-
-import MainScene from './scenes/mainScene.js';
+import LoadScene from "./scenes/loadScene";
+import MainScene from "./scenes/mainScene";
 
 const config = {
   type: Phaser.AUTO,
@@ -18,7 +18,8 @@ const config = {
       gravity: { y: 0 }
     }
   },
-  scene: [LoadScene, MainScene]
+  scene: [LoadScene, MainScene],
+  title: "Rob the Bank!"
 };
 
 const game = new Phaser.Game(config);
