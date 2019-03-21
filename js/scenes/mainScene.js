@@ -83,6 +83,10 @@ export default class MainScene extends Phaser.Scene {
         faceColor: new Phaser.Display.Color(40, 39, 37, 255) // Color of colliding face edges
       });
     });
+
+    this.input.keyboard.once("keydown_B", () => {
+      this.scene.start("BankScene");
+    })
   }
 
   update(/* time, delta */) {

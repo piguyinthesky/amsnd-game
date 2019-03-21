@@ -6,22 +6,27 @@
  */
 import LoadScene from "./scenes/loadScene.js";
 import MainScene from "./scenes/mainScene.js";
+import BankScene from "./scenes/bankScene.js";
 import PauseScene from "./scenes/pauseScene.js";
 
+const DEFAULT_WIDTH = 800;
+const DEFAULT_HEIGHT = 600;
+
 const config = {
+  title: "Rob the Bank!",
   type: Phaser.AUTO,
-  width: 800,
-  height: 600,
+  width: DEFAULT_WIDTH,
+  height: DEFAULT_HEIGHT,
+  backgroundColor: 0x555555,
   parent: "game-container",
   pixelArt: true,
+  scene: [LoadScene, MainScene, BankScene, PauseScene],
   physics: {
     default: "arcade",
     arcade: {
       gravity: { y: 0 }
     }
-  },
-  scene: [LoadScene, MainScene],
-  title: "Rob the Bank!"
+  }
 };
 
 window.addEventListener('load', () => {
