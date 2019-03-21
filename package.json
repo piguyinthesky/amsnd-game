@@ -1,0 +1,21 @@
+{
+  "name": "game-jam-submission",
+  "version": "1.0.0",
+  "description": "A submission by a couple of high school students for the March 2019 Repl.it Game Jam.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "browser-sync start --server --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/piguyinthesky/game-jam-submission.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/piguyinthesky/game-jam-submission/issues"
+  },
+  "homepage": "https://github.com/piguyinthesky/game-jam-submission#readme"
+}
