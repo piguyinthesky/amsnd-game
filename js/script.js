@@ -17,7 +17,7 @@ const config = {
   type: Phaser.AUTO,
   width: DEFAULT_WIDTH,
   height: DEFAULT_HEIGHT,
-  backgroundColor: 0x555555,
+  backgroundColor: "#555555",
   parent: "game-container",
   pixelArt: true,
   scene: [LoadScene, MainScene, BankScene, PauseScene],
@@ -29,15 +29,15 @@ const config = {
   }
 };
 
-window.addEventListener('load', () => {
+window.addEventListener("load", () => {
   const game = new Phaser.Game(config);
 
   const resize = () => {
     const scale = Math.min(window.innerWidth / DEFAULT_WIDTH, window.innerHeight / DEFAULT_HEIGHT);
-    game.canvas.style.width = DEFAULT_WIDTH * scale + 'px';
-    game.canvas.style.height = DEFAULT_HEIGHT * scale + 'px';
-  }
+    game.canvas.style.width = DEFAULT_WIDTH * scale + "px";
+    game.canvas.style.height = DEFAULT_HEIGHT * scale + "px";
+  };
 
   resize();
-  window.addEventListener('resize', resize);
-})
+  window.addEventListener("resize", resize);
+});

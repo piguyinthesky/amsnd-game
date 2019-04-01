@@ -6,23 +6,18 @@ export default class MainScene extends Phaser.Scene {
   create() {
     const map = this.make.tilemap({ key: "map" });
 
-    // Parameters are the name you gave the tileset in Tiled and then the key of the tileset image in
-    // Phaser's cache (i.e. the name you used in preload)
+    // (Tiled tileset name, Phaser tileset image name)
     const tileset = map.addTilesetImage("tuxmon-sample-32px-extruded", "tiles");
 
-    // By default, everything gets depth sorted on the screen in the order we created things. Here, we
-    // want the "Above Player" layer to sit on top of the player, so we explicitly give it a depth.
-    // Higher depths will sit on top of lower depth objects.
-    // Parameters: layer name (or index) from Tiled, tileset, x, y
     const belowLayer = map.createStaticLayer("Below Player", tileset, 0, 0);
     const worldLayer = map.createStaticLayer("World", tileset, 0, 0)
       .setCollisionByProperty({ collides: true });
     const aboveLayer = map.createStaticLayer("Above Player", tileset, 0, 0)
       .setDepth(10);
 
-    // Object layers in Tiled let you embed extra info into a map - like a spawn point or custom
-    // collision shapes. In the tmx file, there's an object layer with a point named "Spawn Point"
     const spawnPoint = map.findObject("Objects", obj => obj.name === "Spawn Point");
+    const bankDoor = map.findObject("Objects", obj => obj.name === "Bank Door");
+    const enterBank = this.physics.add.image(bankDoor.x, bankDoor.y);
 
     // Create a sprite with physics enabled via the physics system. The image used for the sprite has
     // a bit of whitespace, so I'm using setSize & setOffset to control the size of the player's body.
@@ -33,6 +28,7 @@ export default class MainScene extends Phaser.Scene {
 
     // Watch the player and worldLayer for collisions, for the duration of the scene:
     this.physics.add.collider(this.player, worldLayer);
+    this.physics.add.collider(this.player, enterBank, () => this.scene.start("BankScene"), null, this);
 
     // Create the player's walking animations from the texture atlas. These are stored in the global
     // animation manager so any sprite can access them.
@@ -83,10 +79,6 @@ export default class MainScene extends Phaser.Scene {
         faceColor: new Phaser.Display.Color(40, 39, 37, 255) // Color of colliding face edges
       });
     });
-
-    this.input.keyboard.once("keydown_B", () => {
-      this.scene.start("BankScene");
-    })
   }
 
   update(/* time, delta */) {

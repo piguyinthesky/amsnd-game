@@ -20,6 +20,6 @@ export default class PauseScene extends Phaser.Scene {
         padding: { x: 20, y: 10 },
         backgroundColor: "#ffffff"
       })
-      .setScrollFactor(0)
+      .setScrollFactor(0);
   }
 }

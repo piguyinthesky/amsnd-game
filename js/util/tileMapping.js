@@ -18,14 +18,12 @@ const TILE_MAPPING = {
   POT: [{ index: 13, weight: 1 }, { index: 32, weight: 1 }, { index: 51, weight: 1 }],
   DOOR: {
     TOP: [40, 6, 38],
-    // prettier-ignore
     LEFT: [
       [40], 
       [6], 
       [2]
     ],
     BOTTOM: [2, 6, 0],
-    // prettier-ignore
     RIGHT: [
       [38], 
       [6], 
@@ -34,7 +32,6 @@ const TILE_MAPPING = {
   },
   CHEST: 166,
   STAIRS: 81,
-  // prettier-ignore
   TOWER: [
     [186],
     [205]
