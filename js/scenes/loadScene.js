@@ -1,3 +1,5 @@
+import SpeechBubble from "../objects/speechBubble.js";
+
 const fontConfig = {
   image: "retroFont",
   width: 46,
@@ -55,18 +57,21 @@ export default class LoadScene extends Phaser.Scene {
     
     try {
       this.load
-      .spritesheet("characters", "assets/atlas/buch-characters-64px-extruded.png", {
-        frameWidth: 64,
-        frameHeight: 64,
-        margin: 1,
-        spacing: 2
-      })
-      .image("tiles", "assets/tilesets/tuxmon-sample-32px-extruded.png")
-      .image("dungeonTiles", "assets/tilesets/buch-tileset-48px-extruded.png")
-      .image("bill", "assets/sprites/bill.png")
-      .image("retroFont", "assets/fonts/retro-metal-font.png")
-      .tilemapTiledJSON("map", "assets/tilemaps/tuxemon-town.json")
-      .atlas("atlas", "assets/atlas/atlas.png", "assets/atlas/atlas.json");
+        .setBaseURL("assets/")
+        .spritesheet("characters", "atlas/buch-characters-64px-extruded.png", {
+          frameWidth: 64,
+          frameHeight: 64,
+          margin: 1,
+          spacing: 2
+        })
+        .image("tiles", "tilesets/tuxmon-sample-32px-extruded.png")
+        .image("dungeonTiles", "tilesets/buch-tileset-48px-extruded.png")
+        .image("bill", "sprites/bill.png")
+        .image("rightArrow", "sprites/rightArrow.png")
+        .image("textBox", "sprites/textBox.png")
+        .image("retroFont", "fonts/retro-metal-font.png")
+        .tilemapTiledJSON("map", "tilemaps/tuxemon-town.json")
+        .atlas("atlas", "atlas/atlas.png", "atlas/atlas.json");
     } catch (error) {
       assetText.setText("Error: " + error);
     }
@@ -93,6 +98,8 @@ export default class LoadScene extends Phaser.Scene {
       padding: { x: 20, y: 10 },
       backgroundColor: "#ffffff"
     }).setOrigin(0.5, 0.5);
+
+    this.welcome = new SpeechBubble(this, "Hello World")
     
     // Load the main scene underneath for a background, and switch over to it when the user presses any key
     this.scene.launch("MainScene");
@@ -102,5 +109,9 @@ export default class LoadScene extends Phaser.Scene {
       this.scene.setActive(false);
       this.scene.setVisible(false);
     });
+  }
+
+  update(time, delta) {
+    this.welcome.update(time, delta);
   }
 }

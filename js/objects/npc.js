@@ -1,5 +1,7 @@
-export default class Player {
-  constructor(scene, x, y) {
+const STILL = 0, UP = 1, RIGHT = 2, DOWN = 3, LEFT = 4;
+
+export default class NPC {
+  constructor(scene, x, y, name) {
     this.scene = scene;
 
     // Create the animations
@@ -17,14 +19,15 @@ export default class Player {
       repeat: -1
     });
 
-    this.sprite = scene.physics.add
+    this.sprite = this.scene.physics.add
       .sprite(x, y, "characters", 0)
       .setSize(22, 33)
       .setOffset(23, 27);
 
     this.sprite.anims.play("player-walk-back");
 
-    this.keys = scene.input.keyboard.createCursorKeys();
+    this.dx = 0;
+    this.dy = 0;
   }
 
   freeze() {
@@ -32,7 +35,6 @@ export default class Player {
   }
 
   update() {
-    const keys = this.keys;
     const sprite = this.sprite;
     const speed = 300;
     const prevVelocity = sprite.body.velocity.clone();
@@ -41,18 +43,18 @@ export default class Player {
     sprite.body.setVelocity(0);
 
     // Horizontal movement
-    if (keys.left.isDown) {
+    if (this.dx === LEFT) {
       sprite.body.setVelocityX(-speed);
       sprite.setFlipX(true);
-    } else if (keys.right.isDown) {
+    } else if (this.dx === RIGHT) {
       sprite.body.setVelocityX(speed);
       sprite.setFlipX(false);
     }
 
     // Vertical movement
-    if (keys.up.isDown)
+    if (this.dy === UP)
       sprite.body.setVelocityY(-speed);
-    else if (keys.down.isDown)
+    else if (this.dy === DOWN)
       sprite.body.setVelocityY(speed);
 
     // Normalize and scale the velocity so that sprite can't move faster along a diagonal

@@ -1,4 +1,5 @@
 import Player from "../objects/player.js";
+import Item from "../objects/item.js";
 import TILES from "../util/tileMapping.js";
 import TilemapVisibility from "../util/tilemapVisibility.js";
 
@@ -26,8 +27,6 @@ export default class BankScene extends Phaser.Scene {
         height: { min: 7, max: 15, onlyOdd: true }
       }
     });
-
-    // this.dungeon.drawToConsole();
 
     // Creating a blank tilemap with dimensions matching the dungeon
     const map = this.make.tilemap({
@@ -68,15 +67,14 @@ export default class BankScene extends Phaser.Scene {
       // room's location. Each direction has a different door to tile mapping.
       var doors = room.getDoorLocations(); // → Returns an array of {x, y} objects
       for (var i = 0; i < doors.length; i++) {
-        if (doors[i].y === 0) {
+        if (doors[i].y === 0)
           this.groundLayer.putTilesAt(TILES.DOOR.TOP, x + doors[i].x - 1, y + doors[i].y);
-        } else if (doors[i].y === room.height - 1) {
+        else if (doors[i].y === room.height - 1)
           this.groundLayer.putTilesAt(TILES.DOOR.BOTTOM, x + doors[i].x - 1, y + doors[i].y);
-        } else if (doors[i].x === 0) {
+        else if (doors[i].x === 0)
           this.groundLayer.putTilesAt(TILES.DOOR.LEFT, x + doors[i].x, y + doors[i].y - 1);
-        } else if (doors[i].x === room.width - 1) {
+        else if (doors[i].x === room.width - 1)
           this.groundLayer.putTilesAt(TILES.DOOR.RIGHT, x + doors[i].x, y + doors[i].y - 1);
-        }
       }
     });
 
@@ -89,6 +87,8 @@ export default class BankScene extends Phaser.Scene {
     const endRoom = Phaser.Utils.Array.RemoveRandomElement(rooms);
     const otherRooms = Phaser.Utils.Array.Shuffle(rooms).slice(0, rooms.length * 0.9);
 
+    this.items = this.physics.add.group();
+
     // Place the stairs
     this.stuffLayer.putTileAt(TILES.STAIRS, endRoom.centerX, endRoom.centerY);
 
@@ -98,6 +98,8 @@ export default class BankScene extends Phaser.Scene {
       if (rand <= 0.25) {
         // 25% chance of chest
         this.stuffLayer.putTileAt(TILES.CHEST, room.centerX, room.centerY);
+        const bill = new Item(this, this.stuffLayer.tileToWorldX(room.centerX), this.stuffLayer.tileToWorldY(room.centerY), "bill");
+        this.items.add(bill, true);
       } else if (rand <= 0.5) {
         // 50% chance of a pot anywhere in the room... except don't block a door!
         const x = Phaser.Math.Between(room.left + 2, room.right - 2);
@@ -144,6 +146,7 @@ export default class BankScene extends Phaser.Scene {
     // Watch the player and tilemap layers for collisions, for the duration of the scene:
     this.physics.add.collider(this.player.sprite, this.groundLayer);
     this.physics.add.collider(this.player.sprite, this.stuffLayer);
+    this.physics.add.collider(this.player.sprite, this.items, this.pickUpItem)
 
     // Phaser supports multiple cameras, but you can access the default camera like this:
     const camera = this.cameras.main;
@@ -175,5 +178,12 @@ export default class BankScene extends Phaser.Scene {
     const playerRoom = this.dungeon.getRoomAt(playerTileX, playerTileY);
 
     this.tilemapVisibility.setActiveRoom(playerRoom);
+  }
+
+  pickUpItem(player, item) {
+    item.destroy()
+
+    if (item.type === "cash")
+      player.cash += 10;
   }
 }

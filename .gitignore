@@ -62,3 +62,7 @@ typings/
 
 # Mac .DS_Store files
 .DS_Store
+
+# Typescript definitions
+jsconfig.json
+defs
