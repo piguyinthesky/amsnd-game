@@ -1,7 +1,6 @@
 /**
  * Author: Alexander Cai
- * Asset Credits:
- *  - Tuxemon, https://github.com/Tuxemon/Tuxemon
+ * Asset Credits go to Alvin Wong
  * global Phaser
  */
 import LoadScene from "./scenes/loadScene.js";

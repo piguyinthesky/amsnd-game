@@ -37,15 +37,12 @@ export default class SpeechBubble {
 
     this.timer %= this.speed;
 
-    //  Add next character from the string
     const current = this.displayText.text.concat(this.text[this.i]);
-    
     this.i++;
     
     if (this.i === this.text.length)
       this.finished = true;
     
-    //  Set it
     this.displayText.setText(current);
   }
 }
