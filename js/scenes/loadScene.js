@@ -34,8 +34,8 @@ export default class LoadScene extends Phaser.Scene {
     this.load.on("progress", value => {
       percentText.setText(parseInt(value * 100) + "%");
       progressBar.clear()
-      .fillStyle("#ffffff", 1)
-      .fillRect(250, 280, 300 * value, 30);
+        .fillStyle("#ffffff", 1)
+        .fillRect(250, 280, 300 * value, 30);
     });
     
     this.load.on("fileprogress", file => assetText.setText("Loading asset: " + file.key));
@@ -45,33 +45,67 @@ export default class LoadScene extends Phaser.Scene {
     });
     
     try {
-      this.load
-        .setBaseURL("assets/")
-        .spritesheet("character", "atlas/character.png", {
+      this.load.setBaseURL("assets/")
+        .setPath("audio/") // Generated using bfxr
+        .audio("coin1", "Pickup_Coin.wav")
+        .audio("coin2", "Pickup_Coin2.wav")
+        .audio("coin3", "Pickup_Coin3.wav")
+        .audio("coin4", "Pickup_Coin4.wav")
+        .audio("powerup", "Powerup.wav")
+        .audio("music", "jlbrock44_-_Staying_Positive.mp3") // Staying Positive by spinningmerkaba (c) copyright 2019 Licensed under a Creative Commons Attribution Noncommercial  (3.0) license. http://dig.ccmixter.org/files/jlbrock44/59438 Ft: greg_baumont
+
+        .setPath("sprites/")
+        .image("bill", "bill.png")
+        .image("camera", "camera1.png")
+        .image("rightArrow", "rightArrow.png")
+        .image("textBox", "textBox.png")
+
+        .setPath("spritesheets/")
+        .spritesheet("character", "character.png", {
           frameWidth: 16,
           frameHeight: 16,
           spacing: 1
         })
+        .spritesheet("police", "police.png", {
+          frameWidth: 16,
+          frameHeight: 32,
+          spacing: 1
+        })
 
-        .image("roguelikeCity", "tilesets/roguelike-city.png")
-        .image("roguelikeRPG", "tilesets/roguelike-rpg.png")
-        .image("dungeonTiles", "tilesets/dungeon.png")
-        .image("pond", "tilesets/pond.png")
-        .image("moneySign", "tilesets/money-sign.png")
-        .image("roguelikeCharacters", "tilesets/roguelike-characters.png")
+        .setPath("tilemaps/")
+        .tilemapTiledJSON("outsideMap", "outside-bank.json")
 
-        .image("bill", "sprites/bill.png")
-        .image("rightArrow", "sprites/rightArrow.png")
-        .image("textBox", "sprites/textBox.png")
-        
-        .tilemapTiledJSON("map", "tilemaps/tuxemon-town.json")
-        .tilemapTiledJSON("outsideMap", "tilemaps/outside-bank.json")
+        .setPath("tilesets/")
+        .image("roguelikeCity", "roguelike-city.png")
+        .image("roguelikeRPG", "roguelike-rpg.png")
+        .image("dungeonTiles", "dungeon.png")
+        .image("pond", "pond.png")
+        .image("moneySign", "money-sign.png")
+        .image("roguelikeCharacters", "roguelike-characters.png");
     } catch (error) {
       assetText.setText("Error: " + error);
     }
   }
   
   create() {
+    this.scene.anims.create({
+      key: "police-moving",
+      frames: this.scene.anims.generateFrameNumbers("police", { frames: [0, 1, 0, 2] }),
+      frameRate: 10,
+      repeat: -1
+    });
+
+    let i = 0;
+    ["front", "back", "left", "right"].forEach(dir => {
+      this.scene.anims.create({
+        key: `character-${dir}`,
+        frames: this.scene.anims.generateFrameNumbers("character", { frames: [i, i + 1, i, i + 2] }),
+        frameRate: 10,
+        repeat: -1
+      });
+      i += 3;
+    });
+
     const { width, height } = this.cameras.main;
     
     this.add.text(width / 2, height / 4, "Rob the Bank!", {
@@ -92,8 +126,8 @@ export default class LoadScene extends Phaser.Scene {
       backgroundColor: "#ffffff"
     }).setOrigin(0.5, 0.5);
     
-    this.input.keyboard.once("keyup", () => {
-      this.scene.start("MainScene")
+    this.input.keyboard.once("keyup_ENTER", () => {
+      this.scene.start("MainScene");
     });
   }
 }

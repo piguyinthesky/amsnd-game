@@ -1,7 +1,12 @@
-export default class SpeechBubble {
+export default class SpeechBubble extends Phaser.GameObjects.Text {
   constructor(scene, text) {
     this.scene = scene;
     this.text = text;
+
+    this.finished = false;
+    this.speed = 50;
+    this.timer = 0;
+    this.i = 0;
 
     const { width, height } = scene.cameras.main;
     const padding = { x: width / 64, y: height / 32 };
@@ -10,23 +15,25 @@ export default class SpeechBubble {
       .setDisplaySize(width - padding.x * 2, height / 3)
       .setOrigin(0, 1)
       .setScrollFactor(0)
-      .setDepth(30)
+      .setDepth(30);
 
     const border = { x: img.displayWidth * 4 / 190, y: img.displayHeight * 4 / 49 };
     const tl = img.getTopLeft();
         
     this.displayText = scene.add.text(tl.x, tl.y, "", {
-      font: "12px monospace",
+      font: "16px monospace",
       fill: "black",
       wordWrap: { width: img.displayWidth - border.x * 4 },
       padding: { x: border.x * 2, y: border.y * 2 }
     }).setScrollFactor(0)
       .setDepth(31);
+  }
 
-    this.speed = 50;
-    this.timer = 0;
+  setText(text) {
+    this.text = text;
     this.i = 0;
     this.finished = false;
+    this.displayText.setText("");
   }
 
   update(time, delta) {

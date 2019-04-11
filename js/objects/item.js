@@ -2,7 +2,7 @@ const TEXTURES = {
   bill: "bill"
 };
 
-Phaser
+Phaser;
 
 export default class Item extends Phaser.Physics.Arcade.Sprite {
   constructor(scene, x, y, type) {

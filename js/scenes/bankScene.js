@@ -1,7 +1,11 @@
+/**
+ * global Dungeon
+ */
 import Player from "../objects/player.js";
 import Item from "../objects/item.js";
 import TILES from "../util/tileMapping.js";
 import TilemapVisibility from "../util/tilemapVisibility.js";
+import Camera from "../objects/camera.js";
 
 /**
  * Scene that generates a new dungeon
@@ -16,19 +20,15 @@ export default class BankScene extends Phaser.Scene {
     this.level++;
     this.hasPlayerReachedStairs = false;
 
-    // Generates a random dungeon
     this.dungeon = new Dungeon({
       width: 50,
       height: 50,
-      doorPadding: 2, // Doors should be at least 2 tiles away from corners, so that we can place a corner tile on either side of the door location
+      doorPadding: 2, 
       rooms: {
-        // Only odd to ensure center tile
         width: { min: 7, max: 15, onlyOdd: true },
         height: { min: 7, max: 15, onlyOdd: true }
       }
     });
-
-    // this.dungeon.printToConsole();
 
     // Creating a blank tilemap with dimensions matching the dungeon
     const map = this.make.tilemap({
@@ -48,29 +48,25 @@ export default class BankScene extends Phaser.Scene {
     // Note: using an arrow function here so that "this" still refers to our scene
     this.dungeon.rooms.forEach(room => this.createRoom(room));
 
-    // Separate out the rooms into:
-    //  - The starting room (index = 0)
-    //  - A random room to be designated as the end room (with stairs and nothing else)
-    //  - An array of 90% of the remaining rooms, for placing random stuff (leaving 10% empty)
     const rooms = this.dungeon.rooms.slice();
     const startRoom = rooms.shift();
     const endRoom = Phaser.Utils.Array.RemoveRandomElement(rooms);
     const vaultRoom = Phaser.Utils.Array.RemoveRandomElement(rooms);
     const otherRooms = Phaser.Utils.Array.Shuffle(rooms).slice(0, rooms.length * 0.9);
 
-    this.stuffLayer.putTileAt(); // TODO
-
     this.items = this.physics.add.group();
 
     this.stuffLayer.putTileAt(TILES.STAIRS, endRoom.centerX, endRoom.centerY);
-
-    const left = vaultRoom.left + 1;
-    const right = vaultRoom.right - 1;
-    const top = vaultRoom.top + 1;
-    const bottom = vaultRoom.bottom;
-    const width = this.stuffLayer.tileToWorldX(right) - this.stuffLayer.tileToWorldX(left);
-    const height = this.stuffLayer.tileToWorldY()
-
+    
+    const left = this.stuffLayer.tileToWorldX(vaultRoom.left + 1);
+    const right = this.stuffLayer.tileToWorldX(vaultRoom.right);
+    const top = this.stuffLayer.tileToWorldY(vaultRoom.top + 1);
+    const bottom = this.stuffLayer.tileToWorldY(vaultRoom.bottom);
+    
+    for (let x = left; x < right; x += 32)
+      for (let y = top; y < bottom; y += 32)
+        this.items.add(new Item(this, x, y, "bill"), true);
+        
     // Place stuff in the 90% "otherRooms"
     otherRooms.forEach(room => this.initOtherRoom(room));
 
@@ -93,34 +89,18 @@ export default class BankScene extends Phaser.Scene {
     });
 
     // Place the player in the first room
-    const playerRoom = startRoom;
-    const x = map.tileToWorldX(playerRoom.centerX);
-    const y = map.tileToWorldY(playerRoom.centerY);
+    const x = map.tileToWorldX(startRoom.centerX);
+    const y = map.tileToWorldY(startRoom.centerY);
     this.player = new Player(this, x, y);
 
     // Watch the player and tilemap layers for collisions, for the duration of the scene:
     this.physics.add.collider(this.player.sprite, this.groundLayer);
     this.physics.add.collider(this.player.sprite, this.stuffLayer);
-    this.physics.add.collider(this.player.sprite, this.items, this.pickUpItem)
+    this.physics.add.collider(this.player.sprite, this.items, this.pickUpItem);
 
-    // Phaser supports multiple cameras, but you can access the default camera like this:
-    const camera = this.cameras.main;
-
-    // Constrain the camera so that it isn't allowed to move outside the width/height of tilemap
-    camera.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
-    camera.startFollow(this.player.sprite);
-
-    // Help text that has a "fixed" position on the screen
-    this.add
-      .text(16, 16, `Find the stairs. Go deeper.\nCurrent level: ${this.level}`, {
-        font: "18px monospace",
-        fill: "#000000",
-        padding: { x: 20, y: 10 },
-        backgroundColor: "#ffffff"
-      })
-      .setScrollFactor(0);
-
-    this.registry.events.on("changeData", this.updateData, this);
+    this.cameras.main
+      .setBounds(0, 0, map.widthInPixels, map.heightInPixels)
+      .startFollow(this.player.sprite);
   }
 
   update(time, delta) {
@@ -135,13 +115,6 @@ export default class BankScene extends Phaser.Scene {
     const playerRoom = this.dungeon.getRoomAt(playerTileX, playerTileY);
 
     this.tilemapVisibility.setActiveRoom(playerRoom);
-  }
-
-  updateData(parent, key, data) {
-    if (key === "money")
-      this.infoBar.setText("Score: " + data);
-    if (key === "items")
-      console.log("data"); // TODO
   }
 
   createRoom(room) {
@@ -180,23 +153,21 @@ export default class BankScene extends Phaser.Scene {
 
   initOtherRoom(room) {
     const rand = Math.random();
-    if (rand <= 0.25) {
-      // 25% chance of chest
+    if (rand <= 0.25) { // 25% chance of chest
       this.stuffLayer.putTileAt(TILES.CHEST, room.centerX, room.centerY);
       const bill = new Item(this, this.stuffLayer.tileToWorldX(room.centerX), this.stuffLayer.tileToWorldY(room.centerY), "bill");
       this.items.add(bill, true);
-    } else if (rand <= 0.5) {
-      // 50% chance of a pot anywhere in the room... except don't block a door!
+    } else if (rand <= 0.5) { // 50% chance of a pot anywhere in the room... except don't block a door!
       const x = Phaser.Math.Between(room.left + 2, room.right - 2);
       const y = Phaser.Math.Between(room.top + 2, room.bottom - 2);
       this.stuffLayer.weightedRandomize(x, y, 1, 1, TILES.POT);
-    } else {
-      // 25% of either 2 or 4 towers, depending on the room size
+    } else { // 25% of either 2 or 4 towers, depending on the room size
       if (room.height >= 9) {
         this.stuffLayer.putTilesAt(TILES.TOWER, room.centerX - 1, room.centerY + 1);
         this.stuffLayer.putTilesAt(TILES.TOWER, room.centerX + 1, room.centerY + 1);
         this.stuffLayer.putTilesAt(TILES.TOWER, room.centerX - 1, room.centerY - 2);
         this.stuffLayer.putTilesAt(TILES.TOWER, room.centerX + 1, room.centerY - 2);
+        // new Camera(this, this.stuffLayer.tileToWorldX(room.centerX), this.stuffLayer.tileToWorldY(room.centerY));
       } else {
         this.stuffLayer.putTilesAt(TILES.TOWER, room.centerX - 1, room.centerY - 1);
         this.stuffLayer.putTilesAt(TILES.TOWER, room.centerX + 1, room.centerY - 1);
@@ -205,9 +176,11 @@ export default class BankScene extends Phaser.Scene {
   }
 
   pickUpItem(player, item) {
-    item.destroy()
+    item.destroy();
 
-    if (item.type === "cash")
+    if (item.type === "cash") {
       player.cash += 10;
+      this.sound.play(Phaser.Utils.Array.GetRandom(["coin1", "coin2", "coin3", "coin4"]));
+    }
   }
 }

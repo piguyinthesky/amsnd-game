@@ -1,12 +1,18 @@
 import NPC from "../objects/npc.js";
-import Player from "../objects/player.js"
+import Player from "../objects/player.js";
 
 export default class MainScene extends Phaser.Scene {
   constructor() {
     super({ key: "MainScene" });
+
+    this.money = 0;
+    this.lives = 3;
   }
   
   create() {
+    this.registry.set("money", this.money);
+    this.registry.set("lives", this.lives);
+
     this.hasPlayerReachedBank = false;
     const map = this.make.tilemap({ key: "outsideMap" });
     
@@ -20,68 +26,80 @@ export default class MainScene extends Phaser.Scene {
     ];
     
     const groundLayer = map.createStaticLayer("The Ground", tilesets, 0, 0)
-    .setCollisionByProperty({ collides: true });
+      .setCollisionByProperty({ collides: true });
     const aboveGround = map.createStaticLayer("Buildings/Above Ground", tilesets, 0, 0)
-    .setCollisionByProperty({ collides: true })
+      .setCollisionByProperty({ collides: true });
     const aboveBuildings = map.createStaticLayer("Above Buildings", tilesets, 0, 0)
-    .setCollisionByProperty({ collides: true })
+      .setCollisionByProperty({ collides: true });
     const abovePlayer = map.createStaticLayer("Above Player", tilesets, 0, 0)
-    .setCollisionByProperty({ collides: true })
-    .setDepth(10);
+      .setCollisionByProperty({ collides: true })
+      .setDepth(10);
 
-    aboveBuildings.setTileIndexCallback(838, () => {
+    aboveGround.getTileAt(49, 47).setCollision(false);
+    aboveGround.getTileAt(51, 47).setCollision(false);
+
+    groundLayer.setTileLocationCallback(47, 26, 16, 16, () => {
+      groundLayer.setTileLocationCallback(47, 26, 16, 16, null, this);
       this.hasPlayerReachedBank = true;
       this.player.freeze();
       this.cameras.main
-      .fade(250, 0, 0, 0)
-      .on("camerafadeoutcomplete", () => {
-        this.scene.start("BankScene");
-      });
-    }, null, this);
-
-    const spawnPoint = map.findObject("Object Layer 1", obj => obj.name === "Spawn Point");
-    this.player = new Player(this, spawnPoint.x, spawnPoint.y);
-    this.physics.add.collider(this.player.sprite, [groundLayer, aboveGround, aboveBuildings, abovePlayer]);
-    this.cursors = this.input.keyboard.createCursorKeys();
-
-    this.cameras.main
-    .startFollow(this.player.sprite)
-    .setBounds(0, 0, map.widthInPixels, map.heightInPixels);
-
-    console.log(aboveBuildings.getTileAtWorldXY(832.5, 285))
-
-    // Debug graphics
-    this.input.keyboard.once("keydown_D", () => {
-      this.physics.world.createDebugGraphic(); 
-      
-      const graphics = this.add
-      .graphics()
-      .setAlpha(0.75)
-      .setDepth(20);
-      
-      aboveGround.renderDebug(graphics, {
-        tileColor: null, // Color of non-colliding tiles
-        collidingTileColor: new Phaser.Display.Color(243, 134, 48, 255), // Color of colliding tiles
-        faceColor: new Phaser.Display.Color(40, 39, 37, 255) // Color of colliding face edges
-      });
+        .fade(250, 0, 0, 0)
+        .on("camerafadeoutcomplete", () => this.scene.start("BankScene"));
+    });
+    aboveBuildings.setTileLocationCallback(49, 46, 1, 2, () => {
+      aboveBuildings.setTileLocationCallback(49, 46, 1, 2, null, this);
+      this.fadeToScene("BankScene")
+    });
+    aboveBuildings.setTileLocationCallback(51, 46, 1, 2, () => {
+      aboveBuildings.setTileLocationCallback(51, 46, 1, 2, null, this);
+      this.fadeToScene("BankScene");
     });
 
-    this.add
-    .text(16, 16, "Arrow keys to move\nPress \"D\" to show hitboxes", {
-      font: "18px monospace",
-      fill: "#000000",
-      padding: { x: 20, y: 10 },
-      backgroundColor: "#ffffff"
-    })
-    .setScrollFactor(0)
-    .setDepth(30);
+    this.physics.world.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
+
+    const spawnPoint = map.findObject("Object Layer 1", obj => obj.name === "Spawn Point");
+
+    this.player = new Player(this, spawnPoint.x, spawnPoint.y);
+    this.policemen = this.physics.add.group();
+    
+    for (let i = 0; i < 10; i++) {
+      const npc = new NPC(this, spawnPoint.x - 64 + i * 16, spawnPoint.y + 64, "Police");
+      this.policemen.push(npc);
+    }
+
+    this.physics.add.collider(this.player.sprite, [groundLayer, aboveGround, aboveBuildings, abovePlayer]);
+    this.physics.add.collider(this.policemen, [groundLayer, aboveGround, aboveBuildings, abovePlayer]);
+    this.physics.add.collider(this.policemen);
+    this.physics.add.collider(this.player.sprite, this.policemen, () => this.player.changeLives(-1));
+
+    this.cameras.main
+      .setZoom(2)
+      .startFollow(this.player.sprite)
+      .setBounds(0, 0, map.widthInPixels, map.heightInPixels);
+
+    this.music = this.sound.add("music", { loop: true });
+    this.music.play();
+
+    this.input.keyboard.on("keyup_ESC", event => {
+      this.scene.launch("PauseScene", { prevScene: "MainScene" });
+      this.scene.sleep();
+    });
+
+    this.scene.launch("InfoScene");
   }
   
   update() {
-    if (!this.hasPlayerReachedBank) this.player.update();
-    
-    if (this.cursors.space.isDown)
-      console.log(      this.input.x, this.input.y        );
-    
+    if (!this.hasPlayerReachedBank) {
+      this.player.update();
+      this.policemen.forEach(child => child.update());
+    }
+  }
+
+  fadeToScene(scene) {
+    this.hasPlayerReachedBank = true;
+    this.player.freeze();
+    this.cameras.main
+      .fade(250, 0, 0, 0)
+      .on("camerafadeoutcomplete", () => this.scene.start(scene));
   }
 }
