@@ -66,3 +66,5 @@ typings/
 # Typescript definitions
 jsconfig.json
 defs
+
+Icon*

@@ -59,6 +59,8 @@ export default class LoadScene extends Phaser.Scene {
         .image("camera", "camera1.png")
         .image("rightArrow", "rightArrow.png")
         .image("textBox", "textBox.png")
+        .image("musicOn", "musicOn.png")
+        .image("musicOff", "musicOff.png")
 
         .setPath("spritesheets/")
         .spritesheet("character", "character.png", {
@@ -71,6 +73,11 @@ export default class LoadScene extends Phaser.Scene {
           frameHeight: 32,
           spacing: 1
         })
+        .spritesheet("rpg-characters", "roguelike-chars.png", {
+          frameWidth: 16,
+          frameHeight: 16,
+          spacing: 1
+        })
 
         .setPath("tilemaps/")
         .tilemapTiledJSON("outsideMap", "outside-bank.json")
@@ -80,26 +87,25 @@ export default class LoadScene extends Phaser.Scene {
         .image("roguelikeRPG", "roguelike-rpg.png")
         .image("dungeonTiles", "dungeon.png")
         .image("pond", "pond.png")
-        .image("moneySign", "money-sign.png")
-        .image("roguelikeCharacters", "roguelike-characters.png");
+        .image("moneySign", "money-sign.png");
     } catch (error) {
       assetText.setText("Error: " + error);
     }
   }
   
   create() {
-    this.scene.anims.create({
+    this.anims.create({
       key: "police-moving",
-      frames: this.scene.anims.generateFrameNumbers("police", { frames: [0, 1, 0, 2] }),
+      frames: this.anims.generateFrameNumbers("police", { frames: [0, 1, 0, 2] }),
       frameRate: 10,
       repeat: -1
     });
 
     let i = 0;
     ["front", "back", "left", "right"].forEach(dir => {
-      this.scene.anims.create({
+      this.anims.create({
         key: `character-${dir}`,
-        frames: this.scene.anims.generateFrameNumbers("character", { frames: [i, i + 1, i, i + 2] }),
+        frames: this.anims.generateFrameNumbers("character", { frames: [i, i + 1, i, i + 2] }),
         frameRate: 10,
         repeat: -1
       });

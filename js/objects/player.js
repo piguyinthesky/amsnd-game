@@ -11,14 +11,15 @@ export default class Player {
       .setSize(10, 16)
       .setOffset(3, 0)
       .setCollideWorldBounds(true);
-    this.sprite.anims.play("character-front");
-    // this.sprite.setCollideWorldBounds(true);
+
+    this.sprite
+      .anims.play("character-front")
+      .setCollideWorldBounds(true);
     
     this.keys = scene.input.keyboard.createCursorKeys();
-  }
-  
-  freeze() {
-    this.sprite.body.moves = false;
+
+    this.scene.registry.events
+    .on("freezeplayer", freeze => this.sprite.body.moves = freeze)
   }
   
   update() {

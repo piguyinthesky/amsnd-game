@@ -5,7 +5,6 @@ import Player from "../objects/player.js";
 import Item from "../objects/item.js";
 import TILES from "../util/tileMapping.js";
 import TilemapVisibility from "../util/tilemapVisibility.js";
-import Camera from "../objects/camera.js";
 
 /**
  * Scene that generates a new dungeon
@@ -44,8 +43,8 @@ export default class BankScene extends Phaser.Scene {
 
     this.tilemapVisibility = new TilemapVisibility(shadowLayer);
 
-    // Use the array of rooms generated to place tiles in the map
-    // Note: using an arrow function here so that "this" still refers to our scene
+    this.physics.world.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
+
     this.dungeon.rooms.forEach(room => this.createRoom(room));
 
     const rooms = this.dungeon.rooms.slice();
@@ -54,15 +53,15 @@ export default class BankScene extends Phaser.Scene {
     const vaultRoom = Phaser.Utils.Array.RemoveRandomElement(rooms);
     const otherRooms = Phaser.Utils.Array.Shuffle(rooms).slice(0, rooms.length * 0.9);
 
-    this.items = this.physics.add.group();
-
     this.stuffLayer.putTileAt(TILES.STAIRS, endRoom.centerX, endRoom.centerY);
     
     const left = this.stuffLayer.tileToWorldX(vaultRoom.left + 1);
     const right = this.stuffLayer.tileToWorldX(vaultRoom.right);
     const top = this.stuffLayer.tileToWorldY(vaultRoom.top + 1);
     const bottom = this.stuffLayer.tileToWorldY(vaultRoom.bottom);
-    
+
+    this.items = this.physics.add.group();
+
     for (let x = left; x < right; x += 32)
       for (let y = top; y < bottom; y += 32)
         this.items.add(new Item(this, x, y, "bill"), true);
@@ -79,7 +78,7 @@ export default class BankScene extends Phaser.Scene {
     this.stuffLayer.setTileIndexCallback(TILES.STAIRS, () => {
       this.stuffLayer.setTileIndexCallback(TILES.STAIRS, null);
       this.hasPlayerReachedStairs = true;
-      this.player.freeze();
+      this.registry.events.emit("freezeplayer", true);
       const cam = this.cameras.main;
       cam.fade(250, 0, 0, 0);
       cam.once("camerafadeoutcomplete", () => {

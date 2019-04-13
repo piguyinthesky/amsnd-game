@@ -7,7 +7,7 @@ import LoadScene from "./scenes/loadScene.js";
 import MainScene from "./scenes/mainScene.js";
 import BankScene from "./scenes/bankScene.js";
 import PauseScene from "./scenes/pauseScene.js";
-import InfoScene from "./scenes/infoScene.js"
+import InfoScene from "./scenes/infoScene.js";
 
 const DEFAULT_WIDTH = 800;
 const DEFAULT_HEIGHT = 600;
@@ -29,7 +29,7 @@ const config = {
     }
   },
   scale: {
-    parent: 'game-container',
+    parent: "game-container",
     mode: Phaser.Scale.FIT,
     width: 800,
     height: 600
