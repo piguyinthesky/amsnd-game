@@ -71,27 +71,32 @@ export default class InfoScene extends Phaser.Scene {
       })
       .on("talk", lines => {
         if (this.playing) return;
-        this.text = lines.join("\n");
+
+        this.text = Array.isArray(lines) ? lines.join("\n") : lines;
         this.speed = 50;
         this.timer = 0;
         this.i = 0;
+
         this.finished = false;
         this.playing = true;
+
         this.displayText.setText("");
         this.textImg.setVisible(true);
         this.displayText.setVisible(true);
-        this.registry.events.emit("freezeplayer");
+        this.registry.events.emit("freezeplayer", true);
       })
       .on("stoptalking", () => {
         this.playing = false;
         this.textImg.setVisible(false);
         this.displayText.setVisible(false);
-        this.registry.events.emit("unfreezeplayer");
-        this.finishedTime = 
+        this.registry.events.emit("freezeplayer", false);
       });
 
-    this.input.keyboard.on("keydown_ENTER", () => {
-      this.registry.events.emit("stoptalking");
+    this.input.keyboard.on("keyup_ENTER", (event) => {
+      if (this.finished) {
+        event.stopPropagation();
+        this.registry.events.emit("stoptalking");
+      }
     });
   }
 

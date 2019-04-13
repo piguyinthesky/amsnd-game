@@ -77,7 +77,7 @@ export default class LoadScene extends Phaser.Scene {
           frameWidth: 16,
           frameHeight: 16,
           spacing: 1
-        })
+        }) // Builtin NPCs: 270, 271, 324, 325, 378 ... 594, 595
 
         .setPath("tilemaps/")
         .tilemapTiledJSON("outsideMap", "outside-bank.json")

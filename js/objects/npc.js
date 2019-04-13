@@ -1,25 +1,24 @@
 export class NPC extends Phaser.Physics.Arcade.Sprite {
-  constructor(scene, x, y, texture, frame) {
+  constructor(scene, x, y, texture, frame, lines="Debugging") {
     super(scene, x, y, texture, frame);
 
-    this.npcType = texture;
+    this.lines = lines;
 
     this.scene.add.existing(this);
     this.scene.physics.add.existing(this);
 
-    if (texture === "rpg-characters") {
+    if (texture === "rpg-characters")
       this.setSize(16, 16)
         .setDisplaySize(16, 16);
-    }
-  
-    this.setCollideWorldBounds(true);
   }
 
-  collide(player) {
-    this.talk(this.lines);
+  collide(player) {}
+
+  interact(player) {
+    this.talk();
   }
 
-  talk(lines) {
+  talk(lines=this.lines) {
     this.scene.registry.events.emit("talk", lines);
   }
 }

@@ -8,6 +8,7 @@ export default class MainScene extends Phaser.Scene {
   
   create() {
     this.hasPlayerReachedBank = false;
+    this.playerTouchingNPC = false;
     const map = this.make.tilemap({ key: "outsideMap" });
     
     // (Tiled tileset name, Phaser tileset image name)
@@ -51,35 +52,39 @@ export default class MainScene extends Phaser.Scene {
     const spawnPoint = map.findObject("Object Layer 1", obj => obj.name === "Spawn Point");
 
     this.player = new Player(this, spawnPoint.x, spawnPoint.y);
-    this.policemen = this.physics.add.group();
-    
-    for (let i = 0; i < 10; i++) {
-      // const npc = new NPC(this, spawnPoint.x + i * 16, spawnPoint.y + 64, "policeman", 0, [""]);
-      // this.policemen.add(npc);
-    }
+    this.npcs = this.physics.add.group({
+      collideWorldBounds: true,
+      immovable: true
+    });
 
     this.physics.add.collider(this.player.sprite, [groundLayer, stuffLayer, abovePlayer, abovePlayer]);
-    this.physics.add.collider(this.policemen, [groundLayer, stuffLayer, abovePlayer, abovePlayer]);
-    this.physics.add.collider(this.policemen); // They collide with each other
-    this.physics.add.collider(this.player.sprite, this.policemen, (player, npc) => {npc.collide(player)});
+    this.physics.add.collider(this.npcs, [groundLayer, stuffLayer, abovePlayer, abovePlayer]);
+    this.physics.add.collider(this.npcs); // They collide with each other
+    this.physics.add.collider(this.player.sprite, this.npcs, (player, npc) => {
+      npc.collide(player);
+      this.playerTouchingNPC = npc;
+      this.time.delayedCall(1500, () => this.playerTouchingNPC = false); // Since I couldn't figure out how to check when they stop colliding, we just assume the user will interact with the npc within 2 seconds; if they press enter later it'll still work
+    }, null, this);
 
     this.cameras.main
       .setZoom(2)
       .startFollow(this.player.sprite)
       .setBounds(0, 0, map.widthInPixels, map.heightInPixels);
 
-    this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC).onUp(() => {
+    this.input.keyboard
+    .on("keyup_ESC", () => {
       this.scene.launch("PauseScene", { prevScene: "MainScene" });
       this.scene.sleep();
+    })
+    .on("keyup_ENTER", () => {
+      if (this.playerTouchingNPC)
+        this.playerTouchingNPC.interact(this.player);
     });
-
-    // this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER).onUp(() => {
-    //   this.scene
-    // });
 
     this.scene.launch("InfoScene");
 
-    this.policemen.add(new NPC(this, this.player.sprite.x + 64, this.player.sprite.y + 64, "rpg-characters", 324));
+    this.npcs.add(new NPC(this, this.player.sprite.x + 64, this.player.sprite.y + 64, "rpg-characters", 324, "My name's jeff"));
+    this.npcs.add(new NPC(this, this.player.sprite.x - 64, this.player.sprite.y + 64, "rpg-characters", 270, "Bob the Builder"));
   }
   
   update() {

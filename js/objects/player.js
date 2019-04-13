@@ -16,10 +16,13 @@ export default class Player {
       .anims.play("character-front")
       .setCollideWorldBounds(true);
     
-    this.keys = scene.input.keyboard.createCursorKeys();
+    this.keys = scene.input.keyboard.addKeys("UP,DOWN,LEFT,RIGHT,ENTER");
 
     this.scene.registry.events
-    .on("freezeplayer", freeze => this.sprite.body.moves = freeze)
+    .on("freezeplayer", freeze => {
+      console.log("Frozen: " + freeze);
+      this.sprite.body.moves = !freeze;
+    });
   }
   
   update() {
@@ -27,19 +30,22 @@ export default class Player {
     
     this.sprite.body.setVelocity(0);
     
-    if (this.keys.left.isDown) this.sprite.body.setVelocityX(-speed);
-    else if (this.keys.right.isDown) this.sprite.body.setVelocityX(speed);
+    if (this.keys.LEFT.isDown) this.sprite.body.setVelocityX(-speed);
+    else if (this.keys.RIGHT.isDown) this.sprite.body.setVelocityX(speed);
     
-    if (this.keys.up.isDown) this.sprite.body.setVelocityY(-speed);
-    else if (this.keys.down.isDown) this.sprite.body.setVelocityY(speed);
+    if (this.keys.UP.isDown) this.sprite.body.setVelocityY(-speed);
+    else if (this.keys.DOWN.isDown) this.sprite.body.setVelocityY(speed);
     
     this.sprite.body.velocity.normalize().scale(speed);
     
-    if (this.keys.left.isDown) this.sprite.anims.play("character-left", true);
-    else if (this.keys.right.isDown) this.sprite.anims.play("character-right", true);
-    else if (this.keys.up.isDown) this.sprite.anims.play("character-back", true);
-    else if (this.keys.down.isDown) this.sprite.anims.play("character-front", true);
+    if (this.keys.LEFT.isDown) this.sprite.anims.play("character-left", true);
+    else if (this.keys.RIGHT.isDown) this.sprite.anims.play("character-right", true);
+    else if (this.keys.UP.isDown) this.sprite.anims.play("character-back", true);
+    else if (this.keys.DOWN.isDown) this.sprite.anims.play("character-front", true);
     else this.sprite.anims.stop();
+
+    // console.log(this.sprite.body.touching)
+    // console.log(this.sprite.body.wasTouching)
   }
   
   destroy() {
