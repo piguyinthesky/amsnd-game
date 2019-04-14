@@ -1,7 +1,7 @@
 /**
  * Author: Alexander Cai
  * Asset Credits go to Alvin Wong
- * global Phaser
+ * global Phaser, Dungeon
  */
 import LoadScene from "./scenes/loadScene.js";
 import MainScene from "./scenes/mainScene.js";
@@ -24,7 +24,6 @@ const config = {
   physics: {
     default: "arcade",
     arcade: {
-      debug: true,
       gravity: { y: 0 }
     }
   },

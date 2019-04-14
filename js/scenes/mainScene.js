@@ -72,23 +72,20 @@ export default class MainScene extends Phaser.Scene {
       .setBounds(0, 0, map.widthInPixels, map.heightInPixels);
 
     this.input.keyboard
-    .on("keyup_ESC", () => {
-      this.scene.launch("PauseScene", { prevScene: "MainScene" });
-      this.scene.sleep();
-    })
-    .on("keyup_ENTER", () => {
-      if (this.playerTouchingNPC)
-        this.playerTouchingNPC.interact(this.player);
-    });
+      .on("keyup_ESC", () => this.registry.events.emit("pause", "MainScene"))
+      .on("keyup_ENTER", () => {
+        if (this.playerTouchingNPC)
+          this.playerTouchingNPC.interact(this.player);
+      });
 
     this.scene.launch("InfoScene");
 
-    this.npcs.add(new NPC(this, this.player.sprite.x + 64, this.player.sprite.y + 64, "rpg-characters", 324, "My name's jeff"));
-    this.npcs.add(new NPC(this, this.player.sprite.x - 64, this.player.sprite.y + 64, "rpg-characters", 270, "Bob the Builder"));
+    this.npcs.add(new NPC(this, this.player.sprite.x + 64, this.player.sprite.y + 64, "rpgChars", 324, "My name's jeff"));
+    this.npcs.add(new NPC(this, this.player.sprite.x - 64, this.player.sprite.y + 64, "rpgChars", 270, "Bob the Builder"));
   }
   
   update() {
-    if (this.hasPlayerReachedBank) return;
+    if (this.hasPlayerReachedBank || this.registry.get("paused")) return;
     this.player.update();
   }
 

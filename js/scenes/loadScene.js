@@ -8,6 +8,13 @@ const h2style = {
   fill: "#ffffff"
 };
 
+const boxStyle = {
+  font: "18px monospace",
+  fill: "#000000",
+  padding: { x: 20, y: 10 },
+  backgroundColor: "#ffffff"
+};
+
 export default class LoadScene extends Phaser.Scene {
   constructor() {
     super({ key: "LoadScene" });
@@ -61,6 +68,7 @@ export default class LoadScene extends Phaser.Scene {
         .image("textBox", "textBox.png")
         .image("musicOn", "musicOn.png")
         .image("musicOff", "musicOff.png")
+        .image("title", "title-page.png")
 
         .setPath("spritesheets/")
         .spritesheet("character", "character.png", {
@@ -73,7 +81,7 @@ export default class LoadScene extends Phaser.Scene {
           frameHeight: 32,
           spacing: 1
         })
-        .spritesheet("rpg-characters", "roguelike-chars.png", {
+        .spritesheet("rpgChars", "roguelike-chars.png", {
           frameWidth: 16,
           frameHeight: 16,
           spacing: 1
@@ -94,6 +102,10 @@ export default class LoadScene extends Phaser.Scene {
   }
   
   create() {
+    const { width, height } = this.cameras.main;
+
+    this.add.image(0, 0, "title").setDisplaySize(width, height).setOrigin(0);
+
     this.anims.create({
       key: "police-moving",
       frames: this.anims.generateFrameNumbers("police", { frames: [0, 1, 0, 2] }),
@@ -111,26 +123,11 @@ export default class LoadScene extends Phaser.Scene {
       });
       i += 3;
     });
-
-    const { width, height } = this.cameras.main;
     
-    this.add.text(width / 2, height / 4, "Rob the Bank!", {
-      font: "20px monospace",
-      fill: "#000000",
-      padding: { x: 20, y: 10 },
-      backgroundColor: "#ffff00"
-    }).setOrigin(0.5, 0.5);
-    
-    this.add.text(width / 2, height * 3 / 8, "How to Play", {
-      font: "18px monospace"
-    }).setOrigin(0.5, 0.5);
-    
-    this.add.text(width / 2, height / 2, "Press enter to start", {
-      font: "18px monospace",
-      fill: "#000000",
-      padding: { x: 20, y: 10 },
-      backgroundColor: "#ffffff"
-    }).setOrigin(0.5, 0.5);
+    this.add.text(width / 2, height / 4, "Rob the Bank!", boxStyle).setOrigin(0.5, 0.5);
+    this.add.text(width / 2, height * 3 / 8, "Use the arrow keys or WASD to move", boxStyle).setOrigin(0.5, 0.5);
+    this.add.text(width / 2, height / 2, "By Alexander Cai and Alvin Wong", boxStyle).setOrigin(0.5, 0.5);
+    this.add.text(width / 2, height * 5 / 8, "Press enter to start", boxStyle).setOrigin(0.5, 0.5);
     
     this.input.keyboard.once("keyup_ENTER", () => {
       this.scene.start("MainScene");

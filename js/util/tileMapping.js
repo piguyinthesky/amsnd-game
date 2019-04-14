@@ -2,7 +2,7 @@
 // - Single index for putTileAt
 // - Array of weights for weightedRandomize
 // - Array or 2D array for putTilesAt
-const TILE_MAPPING = {
+export const TILE_MAPPING = {
   BLANK: 20,
   WALL: {
     TOP_LEFT: 3,
@@ -38,4 +38,12 @@ const TILE_MAPPING = {
   ]
 };
 
-export default TILE_MAPPING;
+export const ROGUELIKE_CHARACTERS = {
+  SWORD: {
+    WOOD: 366,
+    BRONZE: 367,
+    IRON: 368,
+    GOLD: 369,
+    DIAMOND: 370
+  }
+};

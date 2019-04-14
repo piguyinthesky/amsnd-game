@@ -7,7 +7,7 @@ export class NPC extends Phaser.Physics.Arcade.Sprite {
     this.scene.add.existing(this);
     this.scene.physics.add.existing(this);
 
-    if (texture === "rpg-characters")
+    if (texture === "rpgChars")
       this.setSize(16, 16)
         .setDisplaySize(16, 16);
   }
@@ -36,7 +36,7 @@ export class Policeman extends NPC {
   }
 
   collide(player) {
-    this.player.changeLives(-1);
+    player.changeLives(-1);
   }
 
   preUpdate(time, delta) {

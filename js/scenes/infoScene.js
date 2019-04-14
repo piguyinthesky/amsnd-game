@@ -1,3 +1,10 @@
+const style = {
+  font: "24px monospace",
+  fill: "#00ff00",
+  padding: { x: 20, y: 10 },
+  backgroundColor: "#ffffff"
+};
+
 /**
  * A scene that handles a lot of the global objects, such as the registry and the music
  */
@@ -14,27 +21,27 @@ export default class InfoScene extends Phaser.Scene {
   }
 
   create() {
-    this.registry
-      .set("money", 0)
-      .set("lives", 3)
-      .set("volume", 0.5)
-      .set("inventory", []);
+    this.registry.set({
+      money: 0,
+      lives: 3,
+      inventory: [],
+
+      mute: false,
+      volume: 0.5
+    });
 
     const { width, height } = this.cameras.main;
-    this.scoreText = this.add.text(5, 5, "Money $: 0", {
-      font: "24px monospace",
-      fill: "#00ff00",
-      padding: { x: 20, y: 10 },
-      backgroundColor: "#ffffff"
-    });
 
-    const bl = this.scoreText.getBottomLeft();
-    this.livesText = this.add.text(bl.x, bl.y, "Lives ❤️: 3", {
+    this.scoreText = this.add.text(5, 5, "Money $: 0", style);
+    let bl = this.scoreText.getBottomLeft();
+    this.livesText = this.add.text(bl.x, bl.y, "Lives ❤️: 3", style);
+    this.inventoryText = this.add.text(0, height, "Inventory: Nothing", {
+      fixedWidth: width,
       font: "24px monospace",
-      fill: "#ffff00",
-      padding: { x: 20, y: 10 },
+      fill: "#000000",
+      padding: {x: 20, y: 10},
       backgroundColor: "#ffffff"
-    });
+    }).setOrigin(0, 1);
 
     const margin = { x: width / 64, y: height / 32 };
     this.textImg = this.add.image(margin.x, height / 2 + margin.y, "textBox")
@@ -53,21 +60,37 @@ export default class InfoScene extends Phaser.Scene {
       .setOrigin(0, 0)
       .setVisible(false);
 
-    this.audioImage = this.add.image(width - 5, 5, "musicOn").setDisplaySize(width / 32, height / 32).setOrigin(1, 0);
+    this.audioImage = this.add.image(width - 5, 5, "musicOn")
+      .setDisplaySize(width / 32, height / 32)
+      .setOrigin(1, 0)
+      .setInteractive({ useHandCursor: true })
+      .on("pointerup", () => this.registry.set("mute", !this.registry.get("mute")));
 
     this.music = this.sound.add("music", { loop: true });
     this.music.play();
 
     this.registry.events
+      .on("pause", prevScene => {
+        this.scene.launch("PauseScene", { prevScene });
+      })
       .on("changedata", (parent, key, data) => {
         if (key === "money")
           this.scoreText.setText("Money: " + data);
-        if (key === "lives")
+        else if (key === "lives")
           this.livesText.setText("Lives: " + data);
-        if (key === "mute")
-          this.audioImage.setTexture(data ? "musicOff" : "musicOn");
-        if (key === "volume")
-          this.music.applyConfig({ volume: 0.5, loop: true });
+        else if (key === "inventory")
+          this.inventoryText.setText("Inventory: " + data.join(", "));
+
+        else if (key === "mute") {
+          if (data) {
+            this.music.pause();
+            this.audioImage.setTexture("musicOff");
+          } else {
+            this.music.resume();
+            this.audioImage.setTexture("musicOn");
+          }
+        } else if (key === "volume") 
+          this.music.setVolume(data);
       })
       .on("talk", lines => {
         if (this.playing) return;
@@ -86,7 +109,9 @@ export default class InfoScene extends Phaser.Scene {
         this.registry.events.emit("freezeplayer", true);
       })
       .on("stoptalking", () => {
+        this.finished = true;
         this.playing = false;
+      
         this.textImg.setVisible(false);
         this.displayText.setVisible(false);
         this.registry.events.emit("freezeplayer", false);
