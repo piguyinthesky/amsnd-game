@@ -172,6 +172,7 @@ export default class BankScene extends Phaser.Scene {
       } else {
         this.stuffLayer.putTilesAt(TILES.TOWER, room.centerX - 1, room.centerY - 1);
         this.stuffLayer.putTilesAt(TILES.TOWER, room.centerX + 1, room.centerY - 1);
+        
         const { x, y } = this.stuffLayer.tileToWorldXY(room.centerX, room.centerY);
         this.items.add(new RunningShoes(this, x, y), true);
       }

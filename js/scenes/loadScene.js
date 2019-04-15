@@ -59,7 +59,7 @@ export default class LoadScene extends Phaser.Scene {
         .audio("coin3", "Pickup_Coin3.wav")
         .audio("coin4", "Pickup_Coin4.wav")
         .audio("powerup", "Powerup.wav")
-        .audio("music", "jlbrock44_-_Staying_Positive.mp3") // Staying Positive by spinningmerkaba (c) copyright 2019 Licensed under a Creative Commons Attribution Noncommercial  (3.0) license. http://dig.ccmixter.org/files/jlbrock44/59438 Ft: greg_baumont
+        .audio("music", "jlbrock44_-_Staying_Positive.mp3")
 
         .setPath("sprites/")
         .image("bill", "bill.png")
