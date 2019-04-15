@@ -45,5 +45,8 @@ export const ROGUELIKE_CHARACTERS = {
     IRON: 368,
     GOLD: 369,
     DIAMOND: 370
+  },
+  BOOTS: {
+    BLUE: 328
   }
 };

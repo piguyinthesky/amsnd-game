@@ -39,3 +39,20 @@ export class DiamondSword extends Item {
     this.destroy();
   }
 }
+
+export class RunningShoes extends Item {
+  constructor(scene, x, y) {
+    super(scene, x, y, "rpgChars", ROGUELIKE_CHARACTERS.BOOTS.BLUE);
+  }
+
+  onPickup(player) {
+    player.addToInventory("runningBoots");
+
+    const z = this.scene.input.keyboard.addKey("Z");
+    z.onDown(() => player.setSpeed(300));
+    z.onUp(() => player.setSpeed(150));
+
+    this.scene.registry.events.emit("talk", "You have obtained the mythical running shoes! Hold Z to go faster.");
+    this.destroy();
+  }
+}

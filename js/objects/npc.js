@@ -1,15 +1,15 @@
-export class NPC extends Phaser.Physics.Arcade.Sprite {
-  constructor(scene, x, y, texture, frame, lines="Debugging") {
-    super(scene, x, y, texture, frame);
+import { NPC_DATA } from "../util/npcData.js";
 
-    this.lines = lines;
+export class NPC extends Phaser.Physics.Arcade.Sprite {
+  constructor(scene, x, y, name) {
+    super(scene, x, y, NPC_DATA[name].TEXTURE || undefined, NPC_DATA[name].FRAME || undefined);
+    this.name = name;
+    this.lines = NPC_DATA[name].LINES;
 
     this.scene.add.existing(this);
     this.scene.physics.add.existing(this);
 
-    if (texture === "rpgChars")
-      this.setSize(16, 16)
-        .setDisplaySize(16, 16);
+    this.setSize(16, 16).setDisplaySize(16, 16);
   }
 
   collide(player) {}
@@ -18,8 +18,8 @@ export class NPC extends Phaser.Physics.Arcade.Sprite {
     this.talk();
   }
 
-  talk(lines=this.lines) {
-    this.scene.registry.events.emit("talk", lines);
+  talk() {
+    this.scene.registry.events.emit("talk", this.lines);
   }
 }
 
@@ -37,6 +37,7 @@ export class Policeman extends NPC {
 
   collide(player) {
     player.changeLives(-1);
+    this.scene.registry.events.emit("switchscene", "BankScene", "MainScene");
   }
 
   preUpdate(time, delta) {
