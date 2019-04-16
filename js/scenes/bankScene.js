@@ -1,9 +1,8 @@
 import Player from "../objects/player.js";
-import { Bill, DiamondSword, RunningShoes } from "../objects/item.js";
+import { Bill, DiamondSword, RunningShoes, Chest } from "../objects/items.js";
 import { TILE_MAPPING as TILES } from "../util/tileMapping.js";
 import TilemapVisibility from "../util/tilemapVisibility.js";
 import { Policeman } from "../objects/npc.js";
-import { Chest } from "../objects/objects.js";
 
 /**
  * Scene that generates a new dungeon
@@ -30,12 +29,12 @@ export default class BankScene extends Phaser.Scene {
 
     // ==================== CREATING TILEMAP AND LAYERS ====================
     const map = this.make.tilemap({
-      tileWidth: 48,
-      tileHeight: 48,
+      tileWidth: 16,
+      tileHeight: 16,
       width: this.dungeon.width,
       height: this.dungeon.height
     });
-    const tileset = map.addTilesetImage("dungeonTiles", null, 48, 48, 1, 2);
+    const tileset = map.addTilesetImage("dungeonTiles", null, 16, 16, 0, 1);
     this.groundLayer = map.createBlankDynamicLayer("Ground", tileset).fill(TILES.BLANK);
     this.stuffLayer = map.createBlankDynamicLayer("Stuff", tileset);
     const shadowLayer = map.createBlankDynamicLayer("Shadow", tileset).fill(TILES.BLANK).setDepth(30);
@@ -63,12 +62,12 @@ export default class BankScene extends Phaser.Scene {
 
     const vaultRoom = Phaser.Utils.Array.RemoveRandomElement(rooms);
     const left = map.tileToWorldX(vaultRoom.left + 1);
-    const right = map.tileToWorldX(vaultRoom.right - 1);
+    const right = map.tileToWorldX(vaultRoom.right);
     const top = map.tileToWorldY(vaultRoom.top + 1);
-    const bottom = map.tileToWorldY(vaultRoom.bottom - 1);
+    const bottom = map.tileToWorldY(vaultRoom.bottom);
     for (x = left; x < right; x += 32)
       for (y = top; y < bottom; y += 32)
-        this.items.add(new Bill(this, x, y), true);
+        this.items.add(new Bill(this, x, y).setOrigin(0.5, 0.5), true);
 
     const exitRoom = Phaser.Utils.Array.RemoveRandomElement(rooms);
     this.stuffLayer.putTileAt(TILES.STAIRS, exitRoom.centerX, exitRoom.top);
@@ -80,8 +79,8 @@ export default class BankScene extends Phaser.Scene {
     otherRooms.forEach(room => this.initOtherRoom(room));
 
     // ==================== COLLISION AND PHYSICS ====================
-    this.groundLayer.setCollisionByExclusion([-1, 6, 7, 8, 26]);
-    this.stuffLayer.setCollisionByExclusion([-1, 6, 7, 8, 26]);
+    this.groundLayer.setCollisionByExclusion(TILES.FLOORTILES);
+    this.stuffLayer.setCollisionByExclusion(TILES.FLOORTILES);
 
     this.stuffLayer.setTileIndexCallback(TILES.STAIRS, () => {
       this.stuffLayer.setTileIndexCallback(TILES.STAIRS, null);
@@ -96,10 +95,12 @@ export default class BankScene extends Phaser.Scene {
     });
 
     // Watch the player and tilemap layers for collisions, for the duration of the scene:
-    this.physics.add.collider(this.player.sprite, [this.groundLayer, this.stuffLayer]);
+    this.physics.add.collider([this.player.sprite, this.npcs], [this.groundLayer, this.stuffLayer]);
     this.physics.add.collider(this.npcs);
     this.physics.add.collider(this.player.sprite, this.npcs, (player, npc) => {
       npc.collide(this.player);
+      this.playerTouchingNPC = npc;
+      this.time.delayedCall(1500, () => this.playerTouchingNPC = false); // Since I couldn't figure out how to check when they stop colliding, we just assume the user will interact with the npc within 1.5 seconds; if they press enter later it'll still work
     });
     this.physics.add.collider(this.player.sprite, this.items, (player, item) => item.onPickup(this.player));
 
@@ -109,7 +110,10 @@ export default class BankScene extends Phaser.Scene {
       .setBounds(0, 0, map.widthInPixels, map.heightInPixels);
     
     this.input.keyboard
-      .on("keyup_ESC", () => this.registry.events.emit("pausegame", "BankScene"));
+      .on("keyup_ESC", () => this.registry.events.emit("pausegame", "BankScene"))
+      .on("keyup_ENTER", () => {
+        if (this.playerTouchingNPC) this.playerTouchingNPC.interact(this.player);
+      });
   }
 
   update(time, delta) {
@@ -155,7 +159,9 @@ export default class BankScene extends Phaser.Scene {
     const rand = Math.random();
     if (rand <= 0.25) { // 25% chance of chest
       const { x, y } = this.stuffLayer.tileToWorldXY(room.centerX, room.centerY);
-      this.npcs.add(new Chest(this, x, y), true)
+      const chest = new Chest(this, x, y);
+      this.npcs.add(chest, true);
+      chest.body.setImmovable();
     } else if (rand <= 0.5) { // 50% chance of a pot anywhere in the room... except don't block a door!
       const x = Phaser.Math.Between(room.left + 2, room.right - 2);
       const y = Phaser.Math.Between(room.top + 2, room.bottom - 2);
@@ -167,14 +173,20 @@ export default class BankScene extends Phaser.Scene {
         this.stuffLayer.putTilesAt(TILES.TOWER, room.centerX - 1, room.centerY - 2);
         this.stuffLayer.putTilesAt(TILES.TOWER, room.centerX + 1, room.centerY - 2);
         
-        const { x, y } = this.stuffLayer.tileToWorldXY(room.centerX, room.centerY);
-        this.items.add(new DiamondSword(this, x, y), true);
+        if (!this.registry.get("diamondSword_pickedup", true)) {
+          const { x, y } = this.stuffLayer.tileToWorldXY(room.centerX, room.centerY);
+          this.items.add(new DiamondSword(this, x, y), true);
+          this.registry.set("diamondSword_pickup", true);
+        }
       } else {
         this.stuffLayer.putTilesAt(TILES.TOWER, room.centerX - 1, room.centerY - 1);
         this.stuffLayer.putTilesAt(TILES.TOWER, room.centerX + 1, room.centerY - 1);
         
-        const { x, y } = this.stuffLayer.tileToWorldXY(room.centerX, room.centerY);
-        this.items.add(new RunningShoes(this, x, y), true);
+        if (!this.registry.get("runningShoes_pickedup", true)) {
+          const { x, y } = this.stuffLayer.tileToWorldXY(room.centerX, room.centerY);
+          this.items.add(new RunningShoes(this, x, y), true);
+          this.registry.set("runningShoes_pickedup", true);
+        }
       }
     }
   }

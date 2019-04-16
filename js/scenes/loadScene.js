@@ -86,6 +86,11 @@ export default class LoadScene extends Phaser.Scene {
           frameHeight: 16,
           spacing: 1
         }) // Builtin NPCs: 270, 271, 324, 325, 378 ... 594, 595
+        .spritesheet("dungeonTileset", "../tilesets/custom-dungeon.png", {
+          frameWidth: 16,
+          frameHeight: 16,
+          spacing: 1
+        })
 
         .setPath("tilemaps/")
         .tilemapTiledJSON("outsideMap", "outside-bank.json")
@@ -93,7 +98,7 @@ export default class LoadScene extends Phaser.Scene {
         .setPath("tilesets/")
         .image("roguelikeCity", "roguelike-city.png")
         .image("roguelikeRPG", "roguelike-rpg.png")
-        .image("dungeonTiles", "dungeon.png")
+        .image("dungeonTiles", "custom-dungeon.png")
         .image("pond", "pond.png")
         .image("moneySign", "money-sign.png");
     } catch (error) {

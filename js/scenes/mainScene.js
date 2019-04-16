@@ -1,6 +1,6 @@
 import { NPC, Policeman } from "../objects/npc.js";
 import Player from "../objects/player.js";
-import { Door } from "../objects/objects.js";
+import { Door } from "../objects/items.js";
 
 export default class MainScene extends Phaser.Scene {
   constructor() {
@@ -64,7 +64,7 @@ export default class MainScene extends Phaser.Scene {
     this.physics.add.collider([this.player.sprite, this.npcs], this.layers);
     this.physics.add.collider(this.npcs); // They collide with each other
     this.physics.add.collider(this.player.sprite, this.npcs, (player, npc) => {
-      npc.collide(player);
+      npc.collide(this.player);
       this.playerTouchingNPC = npc;
       this.time.delayedCall(1500, () => this.playerTouchingNPC = false); // Since I couldn't figure out how to check when they stop colliding, we just assume the user will interact with the npc within 1.5 seconds; if they press enter later it'll still work
     });

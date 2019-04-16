@@ -28,15 +28,15 @@ export class Policeman extends NPC {
     super(scene, x, y, "police");
 
     this.play("police-moving");
-    this.setSize(16, 24)
+    this.setSize(16, 16)
       .setDisplaySize(16, 32)
-      .setOffset(0, 12);
+      .setOffset(0, 8);
 
     this.speed = 100;
   }
 
   collide(player) {
-    player.changeLives(-1);
+    this.scene.registry.values.lives--;
     this.scene.registry.events.emit("switchscene", "BankScene", "MainScene");
   }
 
