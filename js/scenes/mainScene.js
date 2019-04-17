@@ -80,8 +80,18 @@ export default class MainScene extends Phaser.Scene {
         if (this.playerTouchingNPC) this.playerTouchingNPC.interact(this.player);
       });
     
+    this.registry.events.on("freeze", freeze => {
+      this.player.sprite.body.moves = !freeze;
+      this.npcs.children.iterate(child => child.body.moves = !freeze);
+    })
+    
     if (!this.initialized) {
       this.scene.launch("InfoScene"); // This will only run the first time
+      this.registry.events.emit("freeze", true);
+      this.cameras.main
+        .setZoom(4).zoomTo(2, 1000, "Linear", false, (cam, progress) => {
+          if (progress === 1) this.registry.events.emit("freeze", false);
+        });
       this.initialized = true;
     }
   }

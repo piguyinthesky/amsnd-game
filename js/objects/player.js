@@ -10,15 +10,9 @@ export default class Player {
       .setCollideWorldBounds(true);
 
     this.sprite
-      .anims.play("character-front")
-      .setCollideWorldBounds(true);
-    
-    this.keys = scene.input.keyboard.addKeys("UP,DOWN,LEFT,RIGHT,SHIFT,W,A,S,D");
+      .anims.play("character-front");
 
-    this.scene.registry.events
-      .on("freezeplayer", freeze => {
-        if (this.sprite.body) this.sprite.body.moves = !freeze;
-      });
+    this.keys = scene.input.keyboard.addKeys("UP,DOWN,LEFT,RIGHT,SHIFT,W,A,S,D");
   }
   
   update() {
@@ -39,9 +33,5 @@ export default class Player {
     else if (this.keys.UP.isDown || this.keys.W.isDown) this.sprite.anims.play("character-back", true);
     else if (this.keys.DOWN.isDown || this.keys.S.isDown) this.sprite.anims.play("character-front", true);
     else this.sprite.anims.stop();
-  }
-  
-  destroy() {
-    this.sprite.destroy();
   }
 }

@@ -64,7 +64,7 @@ export class Door extends Phaser.GameObjects.Rectangle {
     this.scene.physics.add.existing(this);
 
     this.setName(name);
-    this.lines = NPC_DATA[name].LINES;
+    this.lines = NPC_DATA[name].lines;
   }
 
   collide(player) {}

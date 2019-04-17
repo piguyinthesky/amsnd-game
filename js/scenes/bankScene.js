@@ -173,10 +173,11 @@ export default class BankScene extends Phaser.Scene {
         this.stuffLayer.putTilesAt(TILES.TOWER, room.centerX - 1, room.centerY - 2);
         this.stuffLayer.putTilesAt(TILES.TOWER, room.centerX + 1, room.centerY - 2);
         
+        console.log(this.registry.get("diamondSword_pickedup"))
         if (!this.registry.get("diamondSword_pickedup", true)) {
           const { x, y } = this.stuffLayer.tileToWorldXY(room.centerX, room.centerY);
           this.items.add(new DiamondSword(this, x, y), true);
-          this.registry.set("diamondSword_pickup", true);
+          this.registry.set("diamondSword_pickedup", true);
         }
       } else {
         this.stuffLayer.putTilesAt(TILES.TOWER, room.centerX - 1, room.centerY - 1);

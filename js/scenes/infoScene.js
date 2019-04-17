@@ -143,55 +143,47 @@ export default class InfoScene extends Phaser.Scene {
       if (this.timer.getOverallProgress() === 1) { // Current text is finished
         if (this.menu) this.response = this.options[this.selected].text;
         this.startText();
-      } else if (this.timer.getOverallProgress() > 0) { // Player presses enter while text is scrolling
+      } else if (this.timer.getOverallProgress() > 0) // Player presses enter while text is scrolling
         this.timer.remove(true); // Jump to end of timer
-        this.endText();
-      }
     });
   }
 
   startText() {
-    this.destroyMenu();
     this.loadNextLine();
     if (!this.text) return this.showText(false);
+
+    if (this.menu) { // Reset menu
+      for (let i = 0; i < this.options.length; i++)
+        this.options[i].destroy();
+
+      this.menu.destroy()
+      this.options.length = 0;
+      this.selected = 0;
+      this.menu = false;
+    }
 
     this.timer = this.time.addEvent({
       delay: this.registry.get("talkSpeed"),
       callback: () => {
         this.displayText.setText(this.text.slice(0, this.text.length - this.timer.getRepeatCount()));
+        if (this.timer.getOverallProgress() === 1 && this.textData.options) {
+          const { x, y } = this.displayText.getBottomLeft();
+          this.menu = this.add.container(x, y);
+          for (let option of this.textData.options) this.addOption(option);
+          this.moveSelection(0);
+        }
       },
       repeat: this.text.length
     });
 
     this.showText(true);
   }
-
-  endText() {
-    if (this.textData.options) {
-      const { x, y } = this.displayText.getBottomLeft();
-      this.menu = this.add.container(x, y);
-      for (let option of this.textData.options) this.addOption(option);
-      this.moveSelection(0);
-    }
-  }
-
-  destroyMenu() {
-    if (!this.menu) return;
-    for (let i = 0; i < this.options.length; i++)
-        this.options[i].destroy();
-
-    this.options.length = 0;
-    this.selected = 0;
-    this.menu = false;
-  }
   
   showText(val) {
     this.textImg.setVisible(val);
     this.displayText.setText("");
     this.displayText.setVisible(val);
-    this.registry.events.emit("freezeplayer", val);
-
-    if (!val) this.destroyMenu();
+    this.registry.events.emit("freeze", val);
   }
 
   /**

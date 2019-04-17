@@ -2,7 +2,7 @@
 // - Single index for putTileAt
 // - Array of weights for weightedRandomize
 // - Array or 2D array for putTilesAt
-const TILESET_WIDTH = 8;
+const TILESET_WIDTH = 10;
 const TILESET_HEIGHT = 8;
 
 const c = (r, c) => r * TILESET_WIDTH + c;

@@ -1,8 +1,29 @@
 export const NPC_DATA = {
+  a: {
+    frame: 270,
+    lines: "Who's being mysterious? I'm not being mysterious!"
+  },// Builtin NPCs: 270, 271, 324, 325, 378 ... 594, 595
+  b: {
+    frame: 324,
+    lines: infoScene => {
+      return [
+        {
+          text: "Hey, what's your name?",
+          options: infoScene.registry.get("name")
+        },
+        "Oh, actually I don't really care. Nice to meet you, though!"
+      ];
+    }
+  },
+  c: {
+    lines: "Get out of the way, you little dingus!"
+  },
+  d: {
+    lines: "Hey, have you noticed that some of these bills have bloodstains on them?"
+  },
   librarian: {
-    TEXTURE: "rpgChars",
-    FRAME: 271,
-    LINES: [
+    frame: 271,
+    lines: [
       infoScene => {
         if (infoScene.registry.get("name")) {
           if (infoScene.registry.get("inventory").includes("diamondSword"))
@@ -23,27 +44,105 @@ export const NPC_DATA = {
               infoScene.registry.set("name", response);
               return [
                 `Hey there ${response}, how do you do? I'm the librarian, I'll be here to help out.`,
-                "But before I tell you anything, where's that book you borrowed 100 years ago? I'll still be waiting here!"
+                "But before I tell you anything, I have this strange feeling that mailbox has something important you should read inside it. Go walk up to it and press E, whatever that means!"
               ];
             }
           ];
       }
     ]
   },
-  police: {},
-  locked: {
-    LINES: "These doors are closed!"
+  bush1: {
+    lines: [
+        {
+        text: "These are some rather pretty flowers. Would you like to look through them?",
+        options: ["Yes", "No"]
+      },
+      (infoScene, response) => {
+        if (response === "Yes") {
+          infoScene.registry.values.money += 1;
+          return "You find a few loose coins and a lot of litter.";
+        }
+      }
+    ]
   },
-  bank: {
-    LINES: [
+  bush2: {
+    lines: [
       {
-        text: "Enter the bank?",
+        text: "These are some rather pretty flowers. Would you look through them?",
+        options: ["Yes", "No"]
+      },
+      (infoScene, response) => {
+        if (response === "Yes") {
+          infoScene.registry.events.emit("addtoinventory", "hairpin");
+          return "Among the litter, you notice a small hairpin.";
+        }
+      }
+    ]
+  },
+  police: {},
+  merchant: {
+    texture: "rpgChars",
+    frame: 325,
+    lines: [
+      {
+        text: "Hey, I'm the merchant. What're you looking for?",
         options: [
-          "Yes",
-          "No"
+          "Buy",
+          "Sell"
         ]
       },
-      (infoScene, response) => infoScene.registry.events.emit("switchscene", "MainScene", "BankScene")
+      (infoScene, response) => {
+        if (response === "Buy")
+          return [
+            {
+              text: "Sounds good. What're you looking for?",
+              options: [
+                "$5 - Candy",
+                "$10 - Rare Candy"
+              ]
+            }
+          ]
+      }
+    ]
+  },
+  mailbox: {
+    lines: [
+      "To whom it may concern,",
+      "Hello! I hope this letter reaches you well.\nI am writing to tell you that your mother has been taken hostage.\nAll we ask for in return is a ransom of 1 million dollars. That is, $1 000 000.",
+      "For a scrub like you who does not receive income, we understand that this money may be difficult to come by. But fear not! We, the world's most kind and generous kidnappers, have some tips, from our generous experience of theft and thievery.",
+      "First of all, GO ROB THE BANK.\nUh, that's it, really. There's not much fun in burgling old nannies on the street",
+      "But before you brave the mysterious secrets of this city of locked doors, there are a few things you must know.",
+      "This may not make sense to you, but the otherworldly powers tell me to say this.\nUse the WASD keys to move. Press E to interact. When the time comes, we hope you'll know what to do.",
+      "Thank you for your time!\nP.S. Don't try to come and find us.",
+      infoScene => infoScene.registry.events.emit("move_librarian", 0, 64)
+    ]
+  },
+  locked: {
+    lines: "These doors are closed!"
+  },
+  house: {
+    lines: "The doors to your own house have been forced back into the frame. They do not open."
+  },
+  bank: {
+    lines: [
+      infoScene => {
+        if (infoScene.registry.get("inventory").includes("hairpin"))
+          return [
+            {
+              text: "With a satisfying click, you get the hairpin into the door. Enter the bank?",
+              options: ["Yes", "No"]
+            },
+            (infoScene, response) => {
+              if (response === "Yes") infoScene.registry.events.emit("switchscene", "MainScene", "BankScene")
+              else return "You pull the hairpin back out of the door."
+            }
+          ];
+        else
+          return [
+            "The bank seems to be closed. The doors are locked. Maybe you need something to unlock it...",
+            infoScene => infoScene.registry.events.set("needshairpin", true)
+          ];
+      }
     ]
   }
 };
