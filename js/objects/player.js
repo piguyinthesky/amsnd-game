@@ -12,13 +12,16 @@ export default class Player {
     this.sprite
       .anims.play("character-front");
 
-    this.keys = scene.input.keyboard.addKeys("UP,DOWN,LEFT,RIGHT,SHIFT,W,A,S,D");
+    this.keys = scene.input.keyboard.addKeys("UP,DOWN,LEFT,RIGHT,SPACE,SHIFT,W,A,S,D");
   }
   
   update() {
     this.sprite.body.setVelocity(0);
 
     this.speed = (this.keys.SHIFT.isDown && this.scene.registry.get("inventory").indexOf("runningShoes") > -1) ? 300 : 150;
+
+    if (this.scene.registry.get("inventory").indexOf("gun") > -1 && this.keys.SPACE.isDown && this.scene.time.now - this.lastShot > this.shootDelay)
+      this.shoot();
     
     if (this.keys.LEFT.isDown || this.keys.A.isDown) this.sprite.body.setVelocityX(-this.speed);
     else if (this.keys.RIGHT.isDown || this.keys.D.isDown) this.sprite.body.setVelocityX(this.speed);
@@ -33,5 +36,13 @@ export default class Player {
     else if (this.keys.UP.isDown || this.keys.W.isDown) this.sprite.anims.play("character-back", true);
     else if (this.keys.DOWN.isDown || this.keys.S.isDown) this.sprite.anims.play("character-front", true);
     else this.sprite.anims.stop();
+  }
+  
+  destroy() {
+    this.sprite.destroy();
+  }
+
+  shoot() {
+    this.scene
   }
 }

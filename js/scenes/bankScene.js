@@ -183,10 +183,10 @@ export default class BankScene extends Phaser.Scene {
         this.stuffLayer.putTilesAt(TILES.TOWER, room.centerX - 1, room.centerY - 1);
         this.stuffLayer.putTilesAt(TILES.TOWER, room.centerX + 1, room.centerY - 1);
         
-        if (!this.registry.get("runningShoes_pickedup", true)) {
+        if (!this.registry.get("runningShoes_spawned")) {
           const { x, y } = this.stuffLayer.tileToWorldXY(room.centerX, room.centerY);
           this.items.add(new RunningShoes(this, x, y), true);
-          this.registry.set("runningShoes_pickedup", true);
+          this.registry.set("runningShoes_spawned", true);
         }
       }
     }

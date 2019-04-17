@@ -138,10 +138,7 @@ export const NPC_DATA = {
             }
           ];
         else
-          return [
-            "The bank seems to be closed. The doors are locked. Maybe you need something to unlock it...",
-            infoScene => infoScene.registry.events.set("needshairpin", true)
-          ];
+          return "The bank seems to be closed. The doors are locked. Maybe you need something to unlock it...";
       }
     ]
   }

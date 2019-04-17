@@ -38,7 +38,7 @@ export class DiamondSword extends Item {
 
   onPickup(player) {
     this.scene.registry.events.emit("addtoinventory", "diamondSword");
-    this.scene.registry.events.emit("talk", ["You have obtained the legendary diamond sword!"]);
+    this.scene.registry.events.emit("talk", "You have obtained the legendary diamond sword!");
     this.destroy();
   }
 }
