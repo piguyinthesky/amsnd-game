@@ -1,12 +1,13 @@
 import { NPC_DATA } from "../util/npcData.js";
 
-export class Entity extends Phaser.Physics.Arcade.Sprite {
+export class Entity extends Phaser.GameObjects.Sprite {
   constructor(scene, x, y, texture, frame, name) {
     super(scene, x, y, texture, frame);
     this.setName(name);
 
     this.scene.add.existing(this);
     this.scene.physics.add.existing(this);
+    this.scene.physics.world.enableBody(this);
 
     this.lines = NPC_DATA[name] ? NPC_DATA[name].lines: undefined;
   }

@@ -28,9 +28,9 @@ export default class InfoScene extends Phaser.Scene {
   }
   
   create() {
-    const save = JSON.parse(window.localStorage.getItem("saveData"));
-    console.log(save);
-    this.registry.set(Object.assign({
+    // const save = JSON.parse(window.localStorage.getItem("saveData"));
+    // console.log(save);
+    this.registry.set({
       infoInitialized: true,
       
       money: 0,
@@ -42,7 +42,7 @@ export default class InfoScene extends Phaser.Scene {
       
       talkSpeed: 50,
       level: "MainScene"
-    }));
+    });
     
     const { width, height } = this.cameras.main;
     

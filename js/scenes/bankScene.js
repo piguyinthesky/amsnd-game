@@ -54,6 +54,11 @@ export default class BankScene extends Phaser.Scene {
     let y = map.tileToWorldY(startRoom.centerY);
     this.player = new Player(this, x, y);
 
+    this.test = this.physics.add.group();
+    const temp = this.add.rectangle(x+ 16, y + 16, 16, 16, 0x00ff00);
+    this.test.add(temp, true);
+    console.log(this.test);
+
     const endRoom = Phaser.Utils.Array.RemoveRandomElement(rooms);
     x = map.tileToWorldX(endRoom.centerX);
     y = map.tileToWorldY(endRoom.centerY);
@@ -65,8 +70,11 @@ export default class BankScene extends Phaser.Scene {
     const top = map.tileToWorldY(vaultRoom.top + 1);
     const bottom = map.tileToWorldY(vaultRoom.bottom);
     for (x = left; x < right; x += 32)
-      for (y = top; y < bottom; y += 32)
-        this.entities.create(x, y, "bill", null, true, true);
+      for (y = top; y < bottom; y += 32) {
+        const bill = new Bill(this, x, y);
+        console.log(bill);
+        this.entities.add(bill, true);
+      }
 
     const exitRoom = Phaser.Utils.Array.RemoveRandomElement(rooms);
     this.stuffLayer.putTileAt(TILES.STAIRS, exitRoom.centerX, exitRoom.top);
@@ -82,11 +90,12 @@ export default class BankScene extends Phaser.Scene {
     this.stuffLayer.setCollisionByExclusion(TILES.FLOORTILES);
 
     this.physics.add.collider([this.player.sprite, this.entities], [this.groundLayer, this.stuffLayer]);
-    this.physics.add.collider(this.entities);
+    // this.physics.add.collider(this.entities);
     this.physics.add.collider(this.player.sprite, this.entities, (player, npc) => {
       console.log(npc);
       npc.collide(this.player);
     });
+    this.physics.add.collider(this.player.sprite, this.test, () => console.log("collide"))
 
     this.cameras.main
       .setZoom(2)

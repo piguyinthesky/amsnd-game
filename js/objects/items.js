@@ -7,8 +7,8 @@ export class Bill extends Entity {
     super(scene, x, y, "bill");
 
     this
-      .setSize(32, 32)
-      .setDisplaySize(32, 32)
+      .setSize(16, 16)
+      .setDisplaySize(16, 16)
       .setOrigin(0.5, 0.5);
   }
 
@@ -33,7 +33,7 @@ export class DiamondSword extends Entity {
 
 export class RunningShoes extends Entity {
   constructor(scene, x, y) {
-    super(scene, x, y, "runningShoes");
+    super(scene, x, y, "rpgChars", ROGUELIKE_CHARACTERS.BOOTS.BLUE);
   }
 
   collide(player) {

@@ -8,7 +8,7 @@ export default class Player {
       .setOffset(3, 0)
       .setDepth(5)
       .setCollideWorldBounds(true);
-
+    
     this.sprite
       .anims.play("character-front");
 

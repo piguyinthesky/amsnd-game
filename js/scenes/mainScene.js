@@ -1,6 +1,7 @@
 import { NPC, Policeman } from "../objects/npc.js";
 import Player from "../objects/player.js";
 import { InteractiveObject } from "../objects/entity.js";
+import { Bill } from "../objects/items.js";
 
 export default class MainScene extends Phaser.Scene {
   constructor() {
@@ -58,11 +59,14 @@ export default class MainScene extends Phaser.Scene {
         });
         this.entities.add(door);
       }
+
+      if (obj.name === "nothing")
+        this.entities.add(new Bill(this, obj.x, obj.y), true);
     });
     
     this.physics.add.collider([this.player.sprite, this.entities], this.layers);
     this.physics.add.collider(this.entities); // They collide with each other
-    this.physics.add.collider(this.player.sprite, this.entities, (player, npc) => npc.collide(this.player));
+    this.physics.add.collider(this.player.sprite, this.entities, (player, entity) => entity.collide(this.player));
     
     this.cameras.main
       .setZoom(2)
@@ -96,5 +100,10 @@ export default class MainScene extends Phaser.Scene {
   freeze(freeze) {
     this.player.sprite.body.moves = !freeze;
     this.entities.children.iterate(child => child.body.moves = !freeze);
+  }
+
+  destroy() {
+    this.player.destroy();
+    this.entities.destroy();
   }
 }
