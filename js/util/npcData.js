@@ -1,9 +1,24 @@
+import { ROGUELIKE_CHARACTERS } from "./tileMapping.js";
+
+function YesNo(question, yes, no) {
+  return [
+    {
+      text: question,
+      options: ["Yes", "No"]
+    },
+    (infoScene, response) => {
+      if (response === "Yes") yes(infoScene);
+      else if (response === "No") no(infoScene);
+    }
+  ]
+}
+
 export const NPC_DATA = {
-  a: {
+  npcMysterious: {
     frame: 270,
     lines: "Who's being mysterious? I'm not being mysterious!"
   },// Builtin NPCs: 270, 271, 324, 325, 378 ... 594, 595
-  b: {
+  npcName: {
     frame: 324,
     lines: infoScene => {
       return [
@@ -15,11 +30,18 @@ export const NPC_DATA = {
       ];
     }
   },
-  c: {
+  npcRude: {
     lines: "Get out of the way, you little dingus!"
   },
-  d: {
+  npcBlood: {
     lines: "Hey, have you noticed that some of these bills have bloodstains on them?"
+  },
+  runningShoes: {
+    texture: "rpgChars",
+    frame: ROGUELIKE_CHARACTERS.BOOTS.BLUE
+  },
+  bill: {
+    texture: "bill"
   },
   librarian: {
     frame: 271,
@@ -29,7 +51,7 @@ export const NPC_DATA = {
           if (infoScene.registry.get("inventory").includes("diamondSword"))
             return "My gosh my golly, you actually did go and get it! Congrats, you just got 1000 points!";
           else
-            return "What are you waiting for? If you keep loitering, I'm going to start charing fees..."
+            return "What are you waiting for? If you keep loitering, I'm going to start charing fees...";
         } else
           return [
             {
@@ -52,32 +74,41 @@ export const NPC_DATA = {
     ]
   },
   bush1: {
-    lines: [
-        {
-        text: "These are some rather pretty flowers. Would you like to look through them?",
-        options: ["Yes", "No"]
-      },
-      (infoScene, response) => {
-        if (response === "Yes") {
-          infoScene.registry.values.money += 1;
-          return "You find a few loose coins and a lot of litter.";
-        }
-      }
-    ]
+    lines: YesNo("These are some rather pretty flowers. Would you like to look through them?", infoScene => {
+      infoScene.registry.values.money += 1;
+      return "You find a few loose coins and a lot of litter.";
+    })
   },
   bush2: {
-    lines: [
-      {
-        text: "These are some rather pretty flowers. Would you look through them?",
-        options: ["Yes", "No"]
-      },
-      (infoScene, response) => {
-        if (response === "Yes") {
-          infoScene.registry.events.emit("addtoinventory", "hairpin");
-          return "Among the litter, you notice a small hairpin.";
-        }
+    lines: infoScene => {
+      if (infoScene.registry.get("inventory").includes("hairpin")) {
+        return [
+          {
+            text: "These are some rather pretty flowers. Would you like to look through them?",
+            options: ["Yes", "No"]
+          },
+          (infoScene, response) => {
+            if (response === "Yes") {
+              infoScene.registry.values.money += 1;
+              return "You find a few loose coins and a lot of litter.";
+            }
+          }
+        ];
+      } else {
+        return [
+          {
+            text: "These are some rather pretty flowers. Would you look through them?",
+            options: ["Yes", "No"]
+          },
+          (infoScene, response) => {
+            if (response === "Yes") {
+              infoScene.registry.events.emit("addtoinventory", "hairpin");
+              return "Among the litter, you notice a small hairpin.";
+            }
+          }
+        ];
       }
-    ]
+    }
   },
   police: {},
   merchant: {
@@ -101,21 +132,53 @@ export const NPC_DATA = {
                 "$10 - Rare Candy"
               ]
             }
-          ]
+          ];
       }
     ]
   },
   mailbox: {
+    lines: infoScene => {
+      if (infoScene.registry.get("inventory").includes("letter"))
+        return "The mailbox is empty."
+      else
+        return [
+          "To whom it may concern,",
+          "Hello! I hope this letter reaches you well.\nI am writing to tell you that your mother has been taken hostage.\nAll we ask for in return is a ransom of 1 million dollars. That is, $1 000 000.",
+          "For a scrub like you who does not receive income, we understand that this money may be difficult to come by. But fear not! We, the world's most kind and generous kidnappers, have some tips, from our generous experience of theft and thievery.",
+          "First of all, GO ROB THE BANK.\nUh, that's it, really. There's not much fun in burgling old nannies on the street",
+          "But before you brave the mysterious secrets of this city of locked doors, there are a few things you must know.",
+          "This may not make sense to you, but the otherworldly powers tell me to say this.\nUse the WASD keys to move. Press E to interact. When the time comes, we hope you'll know what to do.",
+          "Thank you for your time!\nP.S. Don't try to come and find us.",
+          infoScene => {
+            infoScene.registry.events.emit("addtoinventory", "letter");
+            infoScene.registry.events.emit("move_librarian", 0, 32);
+          }
+        ];
+    }
+  },
+  stairs: {
     lines: [
-      "To whom it may concern,",
-      "Hello! I hope this letter reaches you well.\nI am writing to tell you that your mother has been taken hostage.\nAll we ask for in return is a ransom of 1 million dollars. That is, $1 000 000.",
-      "For a scrub like you who does not receive income, we understand that this money may be difficult to come by. But fear not! We, the world's most kind and generous kidnappers, have some tips, from our generous experience of theft and thievery.",
-      "First of all, GO ROB THE BANK.\nUh, that's it, really. There's not much fun in burgling old nannies on the street",
-      "But before you brave the mysterious secrets of this city of locked doors, there are a few things you must know.",
-      "This may not make sense to you, but the otherworldly powers tell me to say this.\nUse the WASD keys to move. Press E to interact. When the time comes, we hope you'll know what to do.",
-      "Thank you for your time!\nP.S. Don't try to come and find us.",
-      infoScene => infoScene.registry.events.emit("move_librarian", 0, 64)
+      {
+        text: "Go down the stairs?",
+        options: ["Yes", "No"]
+      },
+      (infoScene, response) => {
+        if (response) {
+          this.scene.hasPlayerReachedStairs = true;
+          this.scene.freeze();
+          this.scene.cameras.main
+            .fade(250, 0, 0, 0)
+            .once("camerafadeoutcomplete", () => {
+              this.player.destroy();
+              this.scene.restart();
+            });
+        }
+      }
     ]
+  },
+  nothing: { lines: undefined }, // Means it won't show
+  car: {
+    lines: "It's a locked car."
   },
   locked: {
     lines: "These doors are closed!"
@@ -133,8 +196,8 @@ export const NPC_DATA = {
               options: ["Yes", "No"]
             },
             (infoScene, response) => {
-              if (response === "Yes") infoScene.registry.events.emit("switchscene", "MainScene", "BankScene")
-              else return "You pull the hairpin back out of the door."
+              if (response === "Yes") infoScene.registry.events.emit("switchscene", "MainScene", "BankScene");
+              else return "You pull the hairpin back out of the door.";
             }
           ];
         else

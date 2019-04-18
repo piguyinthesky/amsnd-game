@@ -17,7 +17,6 @@ export default class Player {
   
   update() {
     this.sprite.body.setVelocity(0);
-
     this.speed = (this.keys.SHIFT.isDown && this.scene.registry.get("inventory").indexOf("runningShoes") > -1) ? 300 : 150;
 
     if (this.scene.registry.get("inventory").indexOf("gun") > -1 && this.keys.SPACE.isDown && this.scene.time.now - this.lastShot > this.shootDelay)
@@ -43,6 +42,6 @@ export default class Player {
   }
 
   shoot() {
-    this.scene
+    this.scene;
   }
 }

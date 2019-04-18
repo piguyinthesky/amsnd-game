@@ -42,7 +42,8 @@ export const TILE_MAPPING = {
   TOWER: [
     [c(2, 3)],
     [c(3, 3)]
-  ]
+  ],
+  SEWER: c(3, 7)
 };
 
 export const ROGUELIKE_CHARACTERS = {

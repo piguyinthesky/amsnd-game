@@ -1,31 +1,18 @@
 import { NPC_DATA } from "../util/npcData.js";
+import { Entity } from "./entity.js";
 
-export class NPC extends Phaser.Physics.Arcade.Sprite {
+export class NPC extends Entity {
   constructor(scene, x, y, name) {
-    super(scene, x, y, NPC_DATA[name].texture || "rpgChars", NPC_DATA[name].frame || undefined);
-    this.name = name;
-    this.lines = NPC_DATA[name].lines;
-
-    this.scene.add.existing(this);
-    this.scene.physics.add.existing(this);
-
+    super(scene, x, y, NPC_DATA[name].texture || "rpgChars", NPC_DATA[name].frame || undefined, name);
     this.speed = 30;
 
     this.setSize(16, 16).setDisplaySize(16, 16);
 
-    this.scene.registry.events.on("move_" + this.name, (x, y) => {
-      this.scene.physics.moveTo(this, this.x + x, this.y + y, this.speed);
+    this.scene.registry.events.on("move_" + this.name, (dx, dy) => {
+      const { x, y } = this.body.center;
+      this.scene.physics.moveTo(this, x + dx, y + dy, this.speed, 1000);
+      this.scene.time.delayedCall(1000, () => this.body.setVelocity(0));
     });
-  }
-
-  collide(player) {}
-
-  interact(player) {
-    this.talk();
-  }
-
-  talk() {
-    this.scene.registry.events.emit("talk", this.lines);
   }
 }
 

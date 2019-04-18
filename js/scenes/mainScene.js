@@ -1,17 +1,16 @@
 import { NPC, Policeman } from "../objects/npc.js";
 import Player from "../objects/player.js";
-import { Door } from "../objects/items.js";
+import { InteractiveObject } from "../objects/entity.js";
 
 export default class MainScene extends Phaser.Scene {
   constructor() {
     super({ key: "MainScene" });
     
     this.initialized = false;
+    this.lastEntityTouched = null;
   }
   
   create() {
-    this.playerTouchingNPC = false;
-    
     // ========== LOADING TILEMAP AND LAYERS ==========
     if (!this.map) {
       this.map = this.make.tilemap({ key: "outsideMap" });
@@ -39,7 +38,7 @@ export default class MainScene extends Phaser.Scene {
     ];
     this.objectLayer = this.map.getObjectLayer("Objects");
     
-    this.npcs = this.physics.add.group({
+    this.entities = this.physics.add.group({
       collideWorldBounds: true,
       immovable: true
     });
@@ -47,27 +46,23 @@ export default class MainScene extends Phaser.Scene {
     this.objectLayer.objects.forEach(obj => {
       if (obj.type === "npc") {
         if (obj.name === "policeman")
-          this.npcs.add(new Policeman(this, obj.x, obj.y, obj.name));
+          this.entities.add(new Policeman(this, obj.x, obj.y, obj.name));
         else
-          this.npcs.add(new NPC(this, obj.x, obj.y, obj.name));
+          this.entities.add(new NPC(this, obj.x, obj.y, obj.name));
       } else if (obj.type === "spawn" && obj.name === "player") {
         this.player = new Player(this, obj.x, obj.y);
       } else if (obj.type === "door") {
-        const door = new Door(this, obj.x, obj.y, obj.width, obj.height, obj.name);
+        const door = new InteractiveObject(this, obj.x, obj.y, obj.width, obj.height, obj.name);
         this.layers.forEach(layer => {
           layer.getTilesWithinWorldXY(obj.x, obj.y, obj.width, obj.height).forEach(tile => tile.setCollision(false));
         });
-        this.npcs.add(door);
+        this.entities.add(door);
       }
     });
     
-    this.physics.add.collider([this.player.sprite, this.npcs], this.layers);
-    this.physics.add.collider(this.npcs); // They collide with each other
-    this.physics.add.collider(this.player.sprite, this.npcs, (player, npc) => {
-      npc.collide(this.player);
-      this.playerTouchingNPC = npc;
-      this.time.delayedCall(1500, () => this.playerTouchingNPC = false); // Since I couldn't figure out how to check when they stop colliding, we just assume the user will interact with the npc within 1.5 seconds; if they press enter later it'll still work
-    });
+    this.physics.add.collider([this.player.sprite, this.entities], this.layers);
+    this.physics.add.collider(this.entities); // They collide with each other
+    this.physics.add.collider(this.player.sprite, this.entities, (player, npc) => npc.collide(this.player));
     
     this.cameras.main
       .setZoom(2)
@@ -77,20 +72,18 @@ export default class MainScene extends Phaser.Scene {
     this.input.keyboard
       .on("keyup_ESC", () => this.registry.events.emit("pausegame", "MainScene"))
       .on("keyup_ENTER", () => {
-        if (this.playerTouchingNPC) this.playerTouchingNPC.interact(this.player);
+        if (this.lastEntityTouched) this.lastEntityTouched.interact(this.player);
+      })
+      .on("keyup_B", () => {
+        this.registry.events.emit("switchscene", "MainScene", "BankScene")
       });
-    
-    this.registry.events.on("freeze", freeze => {
-      this.player.sprite.body.moves = !freeze;
-      this.npcs.children.iterate(child => child.body.moves = !freeze);
-    })
     
     if (!this.initialized) {
       this.scene.launch("InfoScene"); // This will only run the first time
-      this.registry.events.emit("freeze", true);
+      this.freeze();
       this.cameras.main
         .setZoom(4).zoomTo(2, 1000, "Linear", false, (cam, progress) => {
-          if (progress === 1) this.registry.events.emit("freeze", false);
+          if (progress === 1) this.freeze(false);
         });
       this.initialized = true;
     }
@@ -98,5 +91,10 @@ export default class MainScene extends Phaser.Scene {
   
   update() {
     if (!this.registry.get("paused")) this.player.update();
+  }
+
+  freeze(freeze) {
+    this.player.sprite.body.moves = !freeze;
+    this.entities.children.iterate(child => child.body.moves = !freeze);
   }
 }

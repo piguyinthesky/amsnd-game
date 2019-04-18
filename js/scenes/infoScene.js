@@ -17,7 +17,7 @@ const selected = {
   fill: "#ffffff",
   padding: { x: 20, y: 10 },
   backgroundColor: "#ffff00"
-}
+};
 
 /**
 * A scene that handles a lot of the global objects, such as the registry and the music
@@ -28,7 +28,9 @@ export default class InfoScene extends Phaser.Scene {
   }
   
   create() {
-    this.registry.set({
+    const save = JSON.parse(window.localStorage.getItem("saveData"));
+    console.log(save);
+    this.registry.set(Object.assign({
       infoInitialized: true,
       
       money: 0,
@@ -40,7 +42,7 @@ export default class InfoScene extends Phaser.Scene {
       
       talkSpeed: 50,
       level: "MainScene"
-    });
+    }));
     
     const { width, height } = this.cameras.main;
     
@@ -53,10 +55,10 @@ export default class InfoScene extends Phaser.Scene {
     // ==================== TEXT BOX ====================
     const margin = { x: width / 64, y: height / 32 };
     this.textImg = this.add.image(margin.x, height / 2 + margin.y, "textBox")
-    .setDisplaySize(width - margin.x * 2, height / 2 - margin.y * 2)
-    .setScrollFactor(0)
-    .setOrigin(0, 0)
-    .setVisible(false);
+      .setDisplaySize(width - margin.x * 2, height / 2 - margin.y * 2)
+      .setScrollFactor(0)
+      .setOrigin(0, 0)
+      .setVisible(false);
     
     const border = { x: this.textImg.displayWidth * 4 / 190, y: this.textImg.displayHeight * 6 / 49 }; // Based off textBox.png
     this.displayText = this.add.text(this.textImg.x + border.x, this.textImg.y + border.y, "", {
@@ -65,9 +67,9 @@ export default class InfoScene extends Phaser.Scene {
       wordWrap: { width: this.textImg.displayWidth - border.x * 2 },
       padding: { x: 20, y: 10 }
     }).setScrollFactor(0)
-    .setOrigin(0, 0)
-    .setVisible(false)
-    .setLineSpacing(border.y / 4);
+      .setOrigin(0, 0)
+      .setVisible(false)
+      .setLineSpacing(border.y / 4);
 
     this.timer = this.time.addEvent();
 
@@ -79,88 +81,83 @@ export default class InfoScene extends Phaser.Scene {
 
     // ==================== MUSIC ====================
     this.audioImage = this.add.image(width - 5, 5, "musicOn")
-    .setDisplaySize(width / 32, height / 32)
-    .setOrigin(1, 0)
-    .setInteractive({ useHandCursor: true })
-    .on("pointerup", () => this.registry.set("mute", !this.registry.get("mute")));
+      .setDisplaySize(width / 32, height / 32)
+      .setOrigin(1, 0)
+      .setInteractive({ useHandCursor: true })
+      .on("pointerup", () => this.registry.set("mute", !this.registry.get("mute")));
     
     this.music = this.sound.add("music", { loop: true });
     this.music.play();
     
     // ==================== EVENTS ====================
     this.registry.events
-    .on("pausegame", prevScene => {
-      this.scene.launch("PauseScene", { prevScene });
-    })
-    .on("changedata", (parent, key, data) => {
-      if (key === "money")
-        this.moneyText.setText("Money $: " + data);
-      else if (key === "lives")
-        this.livesText.setText("Lives ❤: " + data);
-      else if (key === "inventory")
-        this.inventoryText.setText("Inventory: " + data.join(", "));
+      .on("pausegame", prevScene => {
+        this.scene.launch("PauseScene", { prevScene });
+      })
+      .on("changedata", (parent, key, data) => {
+        if (key === "money")
+          this.moneyText.setText("Money $: " + data);
+        else if (key === "lives")
+          this.livesText.setText("Lives ❤: " + data);
+        else if (key === "inventory")
+          this.inventoryText.setText("Inventory: " + data.join(", "));
       
-      else if (key === "mute") {
-        if (data) {
-          this.music.pause();
-          this.audioImage.setTexture("musicOff");
-        } else {
-          this.music.resume();
-          this.audioImage.setTexture("musicOn");
-        }
-      } else if (key === "volume") 
-        this.music.setVolume(data);
-    })
-    .on("addtoinventory", item => {
-      this.registry.set("inventory", this.registry.get("inventory").concat(item));
-    })
-    .on("talk", lines => {
+        else if (key === "mute") {
+          if (data) {
+            this.music.pause();
+            this.audioImage.setTexture("musicOff");
+          } else {
+            this.music.resume();
+            this.audioImage.setTexture("musicOn");
+          }
+        } else if (key === "volume") 
+          this.music.setVolume(data);
+      })
+      .on("addtoinventory", item => {
+        this.registry.set("inventory", this.registry.get("inventory").concat(item));
+      })
+      .on("talk", lines => {
       // If the current text has not yet finished, we ignore other talk events
-      if (this.displayText.visible) return;
-      this.lines = Array.isArray(lines) ? lines.slice() : [lines];
-      this.startText();
-    })
-    .on("switchscene", (scene1, scene2) => {
-      const scene = this.scene.get(scene1);
-      scene.scene.pause();
-      this.cameras.main.fade(500).once("camerafadeoutcomplete", () => {
-        scene.scene.start(scene2);
-        this.cameras.main.resetFX();
-        this.registry.set("level", scene2);
+        if (this.displayText.visible) return;
+        this.lines = Array.isArray(lines) ? lines.slice() : [lines];
+        this.startText();
+      })
+      .on("switchscene", (scene1, scene2) => {
+        this.timer.remove(true);
+        if (this.menu) this.destroyMenu();
+        this.showText(false);
+
+        const scene = this.scene.get(scene1);
+        scene.scene.pause();
+        this.cameras.main.fade(500).once("camerafadeoutcomplete", () => {
+          scene.scene.start(scene2);
+          this.cameras.main.resetFX();
+          this.registry.set("level", scene2);
+        });
       });
-    });
     
     this.input.keyboard
-    .on("keyup_UP", () => {
-      if (this.menu) this.moveSelection(-1);
-    })
-    .on("keyup_DOWN", () => {
-      if (this.menu) this.moveSelection(1);
-    })
-    .on("keyup_ENTER", event => { // This is the only place where the timer will end
-      if (!this.timer || !this.displayText.visible) return; // We only worry about enter presses when the text is showing
-      event.stopPropagation(); // Prevents the event from reaching other scenes
-      if (this.timer.getOverallProgress() === 1) { // Current text is finished
-        if (this.menu) this.response = this.options[this.selected].text;
-        this.startText();
-      } else if (this.timer.getOverallProgress() > 0) // Player presses enter while text is scrolling
-        this.timer.remove(true); // Jump to end of timer
-    });
+      .on("keyup_UP", () => {
+        if (this.menu) this.moveSelection(-1);
+      })
+      .on("keyup_DOWN", () => {
+        if (this.menu) this.moveSelection(1);
+      })
+      .on("keyup_ENTER", event => { // This is the only place where the timer will end
+        if (!this.timer || !this.displayText.visible) return; // We only worry about enter presses when the text is showing
+        event.stopPropagation(); // Prevents the event from reaching other scenes
+        if (this.timer.getOverallProgress() === 1) { // Current text is finished
+          if (this.menu) this.response = this.options[this.selected].text;
+          this.startText();
+        } else if (this.timer.getOverallProgress() > 0) // Player presses enter while text is scrolling
+          this.timer.remove(true); // Jump to end of timer
+      });
   }
 
   startText() {
     this.loadNextLine();
     if (!this.text) return this.showText(false);
-
-    if (this.menu) { // Reset menu
-      for (let i = 0; i < this.options.length; i++)
-        this.options[i].destroy();
-
-      this.menu.destroy()
-      this.options.length = 0;
-      this.selected = 0;
-      this.menu = false;
-    }
+    if (this.menu) this.destroyMenu();
 
     this.timer = this.time.addEvent({
       delay: this.registry.get("talkSpeed"),
@@ -169,7 +166,11 @@ export default class InfoScene extends Phaser.Scene {
         if (this.timer.getOverallProgress() === 1 && this.textData.options) {
           const { x, y } = this.displayText.getBottomLeft();
           this.menu = this.add.container(x, y);
-          for (let option of this.textData.options) this.addOption(option);
+          for (let option of this.textData.options) {
+            const text = new Phaser.GameObjects.Text(this, 0, this.options.length * 20, option, deselected);
+            this.options.push(text);
+            this.menu.add(text);
+          }
           this.moveSelection(0);
         }
       },
@@ -183,7 +184,17 @@ export default class InfoScene extends Phaser.Scene {
     this.textImg.setVisible(val);
     this.displayText.setText("");
     this.displayText.setVisible(val);
-    this.registry.events.emit("freeze", val);
+    this.scene.get(this.registry.get("level")).freeze(val);
+  }
+
+  destroyMenu() {
+    for (let i = 0; i < this.options.length; i++)
+      this.options[i].destroy();
+
+    this.menu.destroy();
+    this.options.length = 0;
+    this.selected = 0;
+    this.menu = false;
   }
 
   /**
@@ -206,12 +217,6 @@ export default class InfoScene extends Phaser.Scene {
       return obj.text;
     else
       return null;
-  }
-
-  addOption(data) {
-    const text = new Phaser.GameObjects.Text(this, 0, this.options.length * 20, data, deselected);
-    this.options.push(text);
-    this.menu.add(text);
   }
 
   moveSelection(dir) {

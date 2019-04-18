@@ -1,5 +1,5 @@
 import Player from "../objects/player.js";
-import { Bill, DiamondSword, RunningShoes, Chest } from "../objects/items.js";
+import { Bill, DiamondSword, RunningShoes, Chest, Stairs } from "../objects/items.js";
 import { TILE_MAPPING as TILES } from "../util/tileMapping.js";
 import TilemapVisibility from "../util/tilemapVisibility.js";
 import { Policeman } from "../objects/npc.js";
@@ -42,10 +42,7 @@ export default class BankScene extends Phaser.Scene {
 
     this.physics.world.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
 
-    this.items = this.physics.add.group({
-      createCallback: item => item.setDepth(25)
-    });
-    this.npcs = this.physics.add.group();
+    this.entities = this.physics.add.group();
 
     // ==================== CREATE ROOMS ====================
     this.dungeon.rooms.forEach(room => this.createRoom(room));
@@ -58,8 +55,10 @@ export default class BankScene extends Phaser.Scene {
     this.player = new Player(this, x, y);
 
     const endRoom = Phaser.Utils.Array.RemoveRandomElement(rooms);
-    this.stuffLayer.putTileAt(TILES.STAIRS, endRoom.centerX, endRoom.centerY);
-
+    x = map.tileToWorldX(endRoom.centerX);
+    y = map.tileToWorldY(endRoom.centerY);
+    this.entities.add(new Stairs(this, x, y), true);
+    
     const vaultRoom = Phaser.Utils.Array.RemoveRandomElement(rooms);
     const left = map.tileToWorldX(vaultRoom.left + 1);
     const right = map.tileToWorldX(vaultRoom.right);
@@ -67,13 +66,13 @@ export default class BankScene extends Phaser.Scene {
     const bottom = map.tileToWorldY(vaultRoom.bottom);
     for (x = left; x < right; x += 32)
       for (y = top; y < bottom; y += 32)
-        this.items.add(new Bill(this, x, y).setOrigin(0.5, 0.5), true);
+        this.entities.create(x, y, "bill", null, true, true);
 
     const exitRoom = Phaser.Utils.Array.RemoveRandomElement(rooms);
     this.stuffLayer.putTileAt(TILES.STAIRS, exitRoom.centerX, exitRoom.top);
-    x = map.tileToWorldX(exitRoom.centerX);
-    y = map.tileToWorldY(exitRoom.centerY);
-    this.npcs.add(new Policeman(this, x, y), true);
+
+    const sewerRoom = Phaser.Utils.Array.RemoveRandomElement(rooms);
+    this.stuffLayer.putTileAt(TILES.SEWER, sewerRoom.centerX, sewerRoom.centerY);
 
     const otherRooms = Phaser.Utils.Array.Shuffle(rooms).slice(0, rooms.length * 0.9);
     otherRooms.forEach(room => this.initOtherRoom(room));
@@ -82,27 +81,12 @@ export default class BankScene extends Phaser.Scene {
     this.groundLayer.setCollisionByExclusion(TILES.FLOORTILES);
     this.stuffLayer.setCollisionByExclusion(TILES.FLOORTILES);
 
-    this.stuffLayer.setTileIndexCallback(TILES.STAIRS, () => {
-      this.stuffLayer.setTileIndexCallback(TILES.STAIRS, null);
-      this.hasPlayerReachedStairs = true;
-      this.registry.events.emit("freezeplayer", true);
-      const cam = this.cameras.main;
-      cam.fade(250, 0, 0, 0);
-      cam.once("camerafadeoutcomplete", () => {
-        this.player.destroy();
-        this.scene.restart();
-      });
-    });
-
-    // Watch the player and tilemap layers for collisions, for the duration of the scene:
-    this.physics.add.collider([this.player.sprite, this.npcs], [this.groundLayer, this.stuffLayer]);
-    this.physics.add.collider(this.npcs);
-    this.physics.add.collider(this.player.sprite, this.npcs, (player, npc) => {
+    this.physics.add.collider([this.player.sprite, this.entities], [this.groundLayer, this.stuffLayer]);
+    this.physics.add.collider(this.entities);
+    this.physics.add.collider(this.player.sprite, this.entities, (player, npc) => {
+      console.log(npc);
       npc.collide(this.player);
-      this.playerTouchingNPC = npc;
-      this.time.delayedCall(1500, () => this.playerTouchingNPC = false); // Since I couldn't figure out how to check when they stop colliding, we just assume the user will interact with the npc within 1.5 seconds; if they press enter later it'll still work
     });
-    this.physics.add.collider(this.player.sprite, this.items, (player, item) => item.onPickup(this.player));
 
     this.cameras.main
       .setZoom(2)
@@ -112,7 +96,7 @@ export default class BankScene extends Phaser.Scene {
     this.input.keyboard
       .on("keyup_ESC", () => this.registry.events.emit("pausegame", "BankScene"))
       .on("keyup_ENTER", () => {
-        if (this.playerTouchingNPC) this.playerTouchingNPC.interact(this.player);
+        if (this.lastEntityTouched) this.lastEntityTouched.interact(this.player);
       });
   }
 
@@ -160,7 +144,7 @@ export default class BankScene extends Phaser.Scene {
     if (rand <= 0.25) { // 25% chance of chest
       const { x, y } = this.stuffLayer.tileToWorldXY(room.centerX, room.centerY);
       const chest = new Chest(this, x, y);
-      this.npcs.add(chest, true);
+      this.entities.add(chest, true);
       chest.body.setImmovable();
     } else if (rand <= 0.5) { // 50% chance of a pot anywhere in the room... except don't block a door!
       const x = Phaser.Math.Between(room.left + 2, room.right - 2);
@@ -173,11 +157,10 @@ export default class BankScene extends Phaser.Scene {
         this.stuffLayer.putTilesAt(TILES.TOWER, room.centerX - 1, room.centerY - 2);
         this.stuffLayer.putTilesAt(TILES.TOWER, room.centerX + 1, room.centerY - 2);
         
-        console.log(this.registry.get("diamondSword_pickedup"))
-        if (!this.registry.get("diamondSword_pickedup", true)) {
+        if (!this.registry.get("diamondSword_spawned")) {
           const { x, y } = this.stuffLayer.tileToWorldXY(room.centerX, room.centerY);
-          this.items.add(new DiamondSword(this, x, y), true);
-          this.registry.set("diamondSword_pickedup", true);
+          this.entities.add(new DiamondSword(this, x, y), true);
+          this.registry.set("diamondSword_spawned", true);
         }
       } else {
         this.stuffLayer.putTilesAt(TILES.TOWER, room.centerX - 1, room.centerY - 1);
@@ -185,10 +168,15 @@ export default class BankScene extends Phaser.Scene {
         
         if (!this.registry.get("runningShoes_spawned")) {
           const { x, y } = this.stuffLayer.tileToWorldXY(room.centerX, room.centerY);
-          this.items.add(new RunningShoes(this, x, y), true);
+          this.entities.add(new RunningShoes(this, x, y), true);
           this.registry.set("runningShoes_spawned", true);
         }
       }
     }
+  }
+
+  freeze(freeze=true) {
+    this.player.sprite.body.moves = !freeze;
+    this.entities.children.iterate(child => child.body.moves = !freeze);
   }
 }
