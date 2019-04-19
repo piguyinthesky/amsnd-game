@@ -50,33 +50,9 @@ export const NPC_DATA = {
       }
     ]
   },
-  merchant: {
-    texture: "rpgChars",
-    frame: 325,
-    lines: [
-      {
-        text: "Hey, I'm the merchant. What're you looking for?",
-        options: [
-          "Buy",
-          "Sell"
-        ]
-      },
-      (infoScene, response) => {
-        if (response === "Buy")
-          return [
-            {
-              text: "Sounds good. What're you looking for?",
-              options: [
-                "$5 - Candy",
-                "$10 - Rare Candy"
-              ]
-            }
-          ];
-      }
-    ]
-  },
   npcBlood: {
     texture: "rpgChars",
+    frame: 594,
     lines: "Hey, have you noticed that some of these bills have bloodstains on them?"
   },
   npcHairpin: {

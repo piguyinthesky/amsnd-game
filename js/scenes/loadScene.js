@@ -136,6 +136,6 @@ export default class LoadScene extends Phaser.Scene {
     this.add.text(width / 2, height / 2, "By Alexander Cai and Alvin Wong", boxStyle).setOrigin(0.5, 0.5);
     this.add.text(width / 2, height * 5 / 8, "Press enter to start", boxStyle).setOrigin(0.5, 0.5);
     
-    this.input.keyboard.once("keyup_ENTER", () => this.scene.start("MainScene"));
+    this.input.keyboard.once("keyup_ENTER", () => this.scene.start("EndScene"));
   }
 }

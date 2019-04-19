@@ -14,6 +14,9 @@ export default class BankScene extends Phaser.Scene {
 
   init(data) {
     if (data.level) this.level += 1;
+    if (this.level === this.numfloors) {
+      this.registry.events.emit("switchscene", "BankScene", "EndScene", { text: "Congrats! You made it to the bottom of the creepy bank."});
+    }
   }
 
   create() {

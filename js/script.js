@@ -8,6 +8,7 @@ import MainScene from "./scenes/mainScene.js";
 import BankScene from "./scenes/bankScene.js";
 import PauseScene from "./scenes/pauseScene.js";
 import InfoScene from "./scenes/infoScene.js";
+import EndScene from "./scenes/endScene.js";
 
 const DEFAULT_WIDTH = 800;
 const DEFAULT_HEIGHT = 600;
@@ -20,11 +21,10 @@ const config = {
   backgroundColor: "#555555",
   parent: "game-container",
   pixelArt: true,
-  scene: [LoadScene, MainScene, BankScene, InfoScene, PauseScene],
+  scene: [LoadScene, MainScene, BankScene, InfoScene, PauseScene, EndScene],
   physics: {
     default: "arcade",
     arcade: {
-      debug: true,
       gravity: { y: 0 }
     }
   },

@@ -63,7 +63,7 @@ export default class Player {
       right: { x: 1, y: 0 },
       up: { x: 0, y: -1 },
       down: { x: 0, y: 1 }
-    }
+    };
     const {x, y} = vecs[this.direction];
     const bullet = new Bullet(this.scene, this.sprite.x, this.sprite.y, this.direction);
     this.scene.bullets.add(bullet);

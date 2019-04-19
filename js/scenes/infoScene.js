@@ -97,9 +97,10 @@ export default class InfoScene extends Phaser.Scene {
         this.scene.launch("PauseScene", { prevScene });
       })
       .on("changedata", (parent, key, data) => {
-        if (key === "money")
-          this.moneyText.setText("Money $: " + data);
-        else if (key === "lives") {
+        if (key === "money") {
+          if (data >= 1000000) this.registry.events.emit("switchscene", this.registry.get("level"), "EndScene", { text: "Wow. I can't believe you actually did it. How long did you grind for? xD" });
+          else this.moneyText.setText("Money $: " + data);
+        } else if (key === "lives") {
           if (data <= 0 ) return this.scene.get(this.registry.get("level")).scene.start("EndScene", { ending: "died" });
           this.livesText.setText("Lives ❤: " + data);
         } else if (key === "hp") {
