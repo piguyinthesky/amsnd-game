@@ -28,13 +28,12 @@ export default class InfoScene extends Phaser.Scene {
   }
   
   create() {
-    // const save = JSON.parse(window.localStorage.getItem("saveData"));
-    // console.log(save);
     this.registry.set({
       infoInitialized: true,
       
       money: 0,
       lives: 3,
+      hp: 1000,
       inventory: [],
       
       mute: false,
@@ -49,7 +48,11 @@ export default class InfoScene extends Phaser.Scene {
     // ==================== MONEY AND LIVES ====================
     this.moneyText = this.add.text(5, 5, "Money $: 0", style);
     let bl = this.moneyText.getBottomLeft();
-    this.livesText = this.add.text(bl.x, bl.y, "Lives ❤: 3", style);
+    this.livesText = this.add.text(bl.x, bl.y + 3, "Lives ❤: 3", style);
+    this.hpBar = this.add.rectangle(width - 5, 5, width / 4, this.moneyText.height, 0xff0000).setOrigin(1, 0);
+    this.baseWidth = width / 4 - 10;
+    this.currentHpBar = this.add.rectangle(width - 10, 10, this.baseWidth, this.moneyText.height - 10, 0x00ff00).setOrigin(1, 0);
+
     this.inventoryText = this.add.text(5, height - 5, "Inventory: Nothing", style).setOrigin(0, 1);
 
     // ==================== TEXT BOX ====================
@@ -70,8 +73,6 @@ export default class InfoScene extends Phaser.Scene {
       .setOrigin(0, 0)
       .setVisible(false)
       .setLineSpacing(border.y / 4);
-
-    this.timer = this.time.addEvent();
 
     // ==================== MENU ====================
     this.menu = false;
@@ -97,9 +98,15 @@ export default class InfoScene extends Phaser.Scene {
       .on("changedata", (parent, key, data) => {
         if (key === "money")
           this.moneyText.setText("Money $: " + data);
-        else if (key === "lives")
+        else if (key === "lives") {
+          if (data <= 0 ) return this.scene.get(this.registry.get("level")).scene.start("EndScene", { ending: "died" });
           this.livesText.setText("Lives ❤: " + data);
-        else if (key === "inventory")
+        } else if (key === "hp") {
+          if (data <= 0) {
+            this.registry.values.lives -= 1;
+            this.registry.events.emit("switchscene", this.registry.get("level"), "MainScene", { died: true });
+          } else this.currentHpBar.displayWidth = this.baseWidth * (data / 1000);
+        } else if (key === "inventory")
           this.inventoryText.setText("Inventory: " + data.join(", "));
       
         else if (key === "mute") {
@@ -122,15 +129,14 @@ export default class InfoScene extends Phaser.Scene {
         this.lines = Array.isArray(lines) ? lines.slice() : [lines];
         this.startText();
       })
-      .on("switchscene", (scene1, scene2) => {
-        this.timer.remove(true);
+      .on("switchscene", (scene1, scene2, data) => {
+        if (this.timer) this.timer.remove(true);
         if (this.menu) this.destroyMenu();
         this.showText(false);
-
+        this.scene.pause(scene1);
         const scene = this.scene.get(scene1);
-        scene.scene.pause();
         this.cameras.main.fade(500).once("camerafadeoutcomplete", () => {
-          scene.scene.start(scene2);
+          scene.scene.start(scene2, data);
           this.cameras.main.resetFX();
           this.registry.set("level", scene2);
         });
@@ -147,7 +153,10 @@ export default class InfoScene extends Phaser.Scene {
         if (!this.timer || !this.displayText.visible) return; // We only worry about enter presses when the text is showing
         event.stopPropagation(); // Prevents the event from reaching other scenes
         if (this.timer.getOverallProgress() === 1) { // Current text is finished
-          if (this.menu) this.response = this.options[this.selected].text;
+          if (this.menu) {
+            this.response = this.options[this.selected].text;
+            this.destroyMenu();
+          }
           this.startText();
         } else if (this.timer.getOverallProgress() > 0) // Player presses enter while text is scrolling
           this.timer.remove(true); // Jump to end of timer
@@ -155,9 +164,10 @@ export default class InfoScene extends Phaser.Scene {
   }
 
   startText() {
-    this.loadNextLine();
+    this.textData = this.lines.shift();
+    this.text = this.parseLine(this.textData);
+
     if (!this.text) return this.showText(false);
-    if (this.menu) this.destroyMenu();
 
     this.timer = this.time.addEvent({
       delay: this.registry.get("talkSpeed"),
@@ -184,7 +194,8 @@ export default class InfoScene extends Phaser.Scene {
     this.textImg.setVisible(val);
     this.displayText.setText("");
     this.displayText.setVisible(val);
-    this.scene.get(this.registry.get("level")).freeze(val);
+    if (val) this.scene.pause(this.registry.get("level"));
+    else this.scene.resume(this.registry.get("level"));
   }
 
   destroyMenu() {
@@ -195,15 +206,6 @@ export default class InfoScene extends Phaser.Scene {
     this.options.length = 0;
     this.selected = 0;
     this.menu = false;
-  }
-
-  /**
-   * Sets {this.textData} to be the next item in this.lines, and {this.text} to be the actual text displayed onscreen.
-   * @param {*} response 
-   */
-  loadNextLine() {
-    this.textData = this.lines.shift();
-    this.text = this.parseLine(this.textData);
   }
   
   parseLine(obj) {

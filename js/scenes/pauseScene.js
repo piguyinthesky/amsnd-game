@@ -65,20 +65,6 @@ export default class PauseScene extends Phaser.Scene {
         this.talkSpeedText.setText("Text speed: " + Object.keys(this.talkSpeeds)[this.talkSpeed]);
       });
 
-    this.saveGame = this.add.text(width / 2, height * 7 / 8, "Save Game", {
-      font: "18px monospace",
-      fill: "#000000",
-      padding: { x: 20, y: 10 },
-      backgroundColor: "#ffffff"
-    });
-    this.saveGame
-      .setOrigin(0.5, 0.5)
-      .setInteractive()
-      .on("pointerup", () => {
-        window.localStorage.setItem("saveData", JSON.stringify(this.registry.getAll()));
-        this.saveGame.setText("Game Saved!");
-      });
-
     const { ESC, ENTER } = Phaser.Input.Keyboard.KeyCodes;
     this.input.keyboard.on("keyup", event => {
       event.stopPropagation();

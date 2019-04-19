@@ -59,6 +59,7 @@ export default class LoadScene extends Phaser.Scene {
         .audio("coin3", "Pickup_Coin3.wav")
         .audio("coin4", "Pickup_Coin4.wav")
         .audio("powerup", "Powerup.wav")
+        .audio("shoot", "Laser_Shoot.wav")
         .audio("music", "jlbrock44_-_Staying_Positive.mp3")
 
         .setPath("sprites/")
@@ -135,9 +136,5 @@ export default class LoadScene extends Phaser.Scene {
     this.add.text(width / 2, height * 5 / 8, "Press enter to start", boxStyle).setOrigin(0.5, 0.5);
     
     this.input.keyboard.once("keyup_ENTER", () => this.scene.start("MainScene"));
-    const combo = this.input.keyboard.createCombo([ 38, 38, 40, 40, 37, 39, 37, 39, "A", "B" ], { resetOnMatch: true });
-    this.input.keyboard.on("keycombomatch", () => {
-      this.registry.set("konami", true);
-    });
   }
 }

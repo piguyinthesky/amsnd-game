@@ -14,62 +14,18 @@ function YesNo(question, yes, no) {
 }
 
 export const NPC_DATA = {
-  diamondSword: {
-    texture: "rpgChars",
-    frame: ROGUELIKE_CHARACTERS.SWORD.DIAMOND,
-    lines: "You have obtained the legendary diamond sword!"
-  },
-  runningShoes: {
-    texture: "rpgChars",
-    frame: ROGUELIKE_CHARACTERS.BOOTS.BLUE,
-    lines: "You have obtained the mythical running shoes! Hold Z to go faster."
-  },
-  chest: {
-    texture: "dungeonTileset",
-    frame: TILE_MAPPING.CHEST[0].index,
-    lines: "You received $1000!"
-  },
-  npcMysterious: {
-    texture: "rpgChars",
-    frame: 270,
-    lines: "Who's being mysterious? I'm not being mysterious!"
-  },// Builtin NPCs: 270, 271, 324, 325, 378 ... 594, 595
-  npcName: {
-    texture: "rpgChars",
-    frame: 324,
-    lines: infoScene => {
-      return [
-        {
-          text: "Hey, what's your name?",
-          options: infoScene.registry.get("name")
-        },
-        "Oh, actually I don't really care. Nice to meet you, though!"
-      ];
-    }
-  },
-  npcRude: {
-    texture: "rpgChars",
-    lines: "Get out of the way, you little dingus!"
-  },
-  npcBlood: {
-    texture: "rpgChars",
-    lines: "Hey, have you noticed that some of these bills have bloodstains on them?"
-  },
-  runningShoes: {
-    texture: "rpgChars",
-    frame: ROGUELIKE_CHARACTERS.BOOTS.BLUE
-  },
-  bill: {
-    texture: "bill"
-  },
+  nothing: { lines: undefined }, // Means it won't show
+
+  // NPCs
+
   librarian: {
     texture: "rpgChars",
     frame: 271,
     lines: [
       infoScene => {
         if (infoScene.registry.get("name")) {
-          if (infoScene.registry.get("inventory").includes("diamondSword"))
-            return "My gosh my golly, you actually did go and get it! Congrats, you just got 1000 points!";
+          if (infoScene.registry.get("inventory").includes("gun"))
+            return "My gosh my golly, you actually did go and get it! Congrats, you just got 1000 points! (jk, the only actual score system is your money.)";
           else
             return "What are you waiting for? If you keep loitering, I'm going to start charing fees...";
         } else {
@@ -91,6 +47,86 @@ export const NPC_DATA = {
             }
           ];
         }
+      }
+    ]
+  },
+  merchant: {
+    texture: "rpgChars",
+    frame: 325,
+    lines: [
+      {
+        text: "Hey, I'm the merchant. What're you looking for?",
+        options: [
+          "Buy",
+          "Sell"
+        ]
+      },
+      (infoScene, response) => {
+        if (response === "Buy")
+          return [
+            {
+              text: "Sounds good. What're you looking for?",
+              options: [
+                "$5 - Candy",
+                "$10 - Rare Candy"
+              ]
+            }
+          ];
+      }
+    ]
+  },
+  npcBlood: {
+    texture: "rpgChars",
+    lines: "Hey, have you noticed that some of these bills have bloodstains on them?"
+  },
+  npcHairpin: {
+    texture: "rpgChars",
+    frame: 379,
+    lines: "Where did my hairpin go? Did you steal it from me?"
+  },
+  npcMysterious: {
+    texture: "rpgChars",
+    frame: 270,
+    lines: "Who's being mysterious? I'm not being mysterious!"
+  },// Builtin NPCs: 270, 271, 324, 325, 378 ... 594, 595
+  npcName: {
+    texture: "rpgChars",
+    frame: 324,
+    lines: infoScene => {
+      return [
+        {
+          text: "Hey, what's your name?",
+          options: infoScene.registry.get("name")
+        },
+        "Oh, actually I don't really care. Nice to meet you, though!"
+      ];
+    }
+  },
+  npcRude: {
+    texture: "rpgChars",
+    frame: 325,
+    lines: "Get out of the way, you little dingus!"
+  },
+  police: {},
+
+  // Objects
+
+  bank: {
+    lines: [
+      infoScene => {
+        if (infoScene.registry.get("inventory").includes("hairpin"))
+          return [
+            {
+              text: "With a satisfying click, you get the hairpin into the door. Enter the bank?",
+              options: ["Yes", "No"]
+            },
+            (infoScene, response) => {
+              if (response === "Yes") infoScene.registry.events.emit("switchscene", "MainScene", "BankScene");
+              else return "You pull the hairpin back out of the door.";
+            }
+          ];
+        else
+          return "The bank seems to be closed. The doors are locked. Maybe you need something to unlock it...";
       }
     ]
   },
@@ -131,38 +167,23 @@ export const NPC_DATA = {
       }
     }
   },
-  police: {
-    texture: "rpgChars",
+  bullet: {
+    texture: "dungeonTileset",
+    frame: TILE_MAPPING.BULLET
   },
-  merchant: {
-    texture: "rpgChars",
-    frame: 325,
-    lines: [
-      {
-        text: "Hey, I'm the merchant. What're you looking for?",
-        options: [
-          "Buy",
-          "Sell"
-        ]
-      },
-      (infoScene, response) => {
-        if (response === "Buy")
-          return [
-            {
-              text: "Sounds good. What're you looking for?",
-              options: [
-                "$5 - Candy",
-                "$10 - Rare Candy"
-              ]
-            }
-          ];
-      }
-    ]
+  car: {
+    lines: "It's a locked car."
+  },
+  house: {
+    lines: "The doors to your own house have been forced back into the frame. They do not open."
+  },
+  locked: {
+    lines: "These doors are closed!"
   },
   mailbox: {
     lines: infoScene => {
       if (infoScene.registry.get("inventory").includes("letter"))
-        return "The mailbox is empty."
+        return "The mailbox is empty.";
       else
         return [
           "To whom it may concern,",
@@ -179,53 +200,55 @@ export const NPC_DATA = {
         ];
     }
   },
+  sewer: {
+    texture: "dungeonTileset",
+    frame: TILE_MAPPING.SEWER,
+    lines: [
+      {
+        text: "Climb into the sewer?",
+        options: ["Yes", "No"]
+      },
+      (infoScene, response) => {
+        if (response === "Yes") {
+          infoScene.registry.events.emit("switchscene", "BankScene", "MainScene", { fromSewer: true });
+        }
+      }
+    ]
+  },
   stairs: {
+    texture: "dungeonTileset",
+    frame: TILE_MAPPING.STAIRS,
     lines: [
       {
         text: "Go down the stairs?",
         options: ["Yes", "No"]
       },
       (infoScene, response) => {
-        if (response) {
-          this.scene.hasPlayerReachedStairs = true;
-          this.scene.freeze();
-          this.scene.cameras.main
-            .fade(250, 0, 0, 0)
-            .once("camerafadeoutcomplete", () => {
-              this.player.destroy();
-              this.scene.restart();
-            });
+        if (response === "Yes") {
+          infoScene.registry.events.emit("switchscene", "BankScene", "BankScene", { level: 1 });
         }
       }
     ]
   },
-  nothing: { lines: undefined }, // Means it won't show
-  car: {
-    lines: "It's a locked car."
+
+  // Items
+
+  bill: {
+    texture: "bill"
   },
-  locked: {
-    lines: "These doors are closed!"
+  chest: {
+    texture: "dungeonTileset",
+    frame: TILE_MAPPING.CHEST.CLOSED[0].index,
+    openFrame: TILE_MAPPING.CHEST.OPEN[0].index
   },
-  house: {
-    lines: "The doors to your own house have been forced back into the frame. They do not open."
+  gun: {
+    texture: "rpgChars",
+    frame: ROGUELIKE_CHARACTERS.SWORD.DIAMOND,
+    lines: "You have obtained the legendary diamond sword! Upon further inspection, you discover it is actually a gun. Press space to fire."
   },
-  bank: {
-    lines: [
-      infoScene => {
-        if (infoScene.registry.get("inventory").includes("hairpin"))
-          return [
-            {
-              text: "With a satisfying click, you get the hairpin into the door. Enter the bank?",
-              options: ["Yes", "No"]
-            },
-            (infoScene, response) => {
-              if (response === "Yes") infoScene.registry.events.emit("switchscene", "MainScene", "BankScene");
-              else return "You pull the hairpin back out of the door.";
-            }
-          ];
-        else
-          return "The bank seems to be closed. The doors are locked. Maybe you need something to unlock it...";
-      }
-    ]
+  runningShoes: {
+    texture: "rpgChars",
+    frame: ROGUELIKE_CHARACTERS.BOOTS.BLUE,
+    lines: "You have obtained the mythical running shoes! Hold shift to go faster."
   }
 };

@@ -1,4 +1,4 @@
-import { Policeman, Entity } from "../objects/entity.js";
+import { Entity } from "../objects/entity.js";
 import Player from "../objects/player.js";
 
 export default class MainScene extends Phaser.Scene {
@@ -7,6 +7,11 @@ export default class MainScene extends Phaser.Scene {
     
     this.initialized = false;
     this.lastEntityTouched = null;
+  }
+
+  init(data) {
+    this.fromSewer = data.fromSewer;
+    if (data.died) this.registry.set("hp", 1000);
   }
   
   create() {    
@@ -23,8 +28,6 @@ export default class MainScene extends Phaser.Scene {
       ];
     }
 
-    this.physics.world.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
-
     this.layers = [
       this.map.createStaticLayer("Below World", this.tilesets, 0, 0),
       this.map.createStaticLayer("World", this.tilesets, 0, 0)
@@ -35,36 +38,46 @@ export default class MainScene extends Phaser.Scene {
         .setCollisionByProperty({ collides: true })
         .setDepth(10)
     ];
+
     this.objectLayer = this.map.getObjectLayer("Objects");
+
+    this.physics.world.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
     
     this.entities = this.physics.add.group({
       collideWorldBounds: true,
       immovable: true
     });
+    this.bullets = this.physics.add.group();
 
     this.objectLayer.objects.forEach(obj => {
-      if (obj.type === "npc") {
-        if (obj.name === "policeman")
-          this.entities.add(new Policeman(this, obj.x, obj.y, obj.name));
-        else
-          this.npcs.add(new Entity(this, obj.x, obj.y, obj.name), true);
-      } else if (obj.type === "spawn" && obj.name === "player") {
+      if (obj.type === "npc")
+        this.entities.add(new Entity(this, obj.x, obj.y, obj.name));
+      else if (obj.type === "spawn" && obj.name === "player" && !this.fromSewer)
+        this.player = new Player(this, obj.x, obj.y); 
+      else if (obj.type === "spawn" && obj.name === "sewer" && this.fromSewer)
         this.player = new Player(this, obj.x, obj.y);
-      } else if (obj.type === "door") {
-        const door = new Entity(this, obj.x, obj.y, obj.name).setOrigin(0, 0).setSize(obj.width, obj.height).setDisplaySize(obj.width, obj.height);
+      else if (obj.type === "door") {
         this.layers.forEach(layer => {
           layer.getTilesWithinWorldXY(obj.x, obj.y, obj.width, obj.height).forEach(tile => tile.setCollision(false));
         });
-        this.entities.add(door);
+        this.entities.add(new Entity(this, obj.x, obj.y, obj.name).setOrigin(0, 0).setSize(obj.width, obj.height).setDisplaySize(obj.width, obj.height));
       }
-
-      if (obj.name === "nothing")
-        this.entities.add(new Bill(this, obj.x, obj.y), true);
     });
+
+    this.hitboxes = this.physics.add.staticGroup();
+    this.map.getObjectLayer("Hitboxes").objects.forEach(o => {
+      this.hitboxes.create(o.x, o.y).setOrigin(0).setSize(o.width, o.height).setVisible(false);
+    });
+    this.hitboxes.refresh();
     
-    this.physics.add.collider([this.player.sprite, this.npcs], this.layers);
-    this.physics.add.collider(this.npcs); // They collide with each other
-    this.physics.add.collider(this.player.sprite, this.npcs, (player, npc) => npc.collide(this.player));
+    this.physics.add.collider([this.player.sprite, this.entities], this.layers.concat(this.hitboxes));
+    this.physics.add.collider(this.entities); // They collide with each other
+    this.physics.add.collider(this.player.sprite, this.entities, (player, npc) => npc.collide(this.player));
+    this.physics.add.collider(this.bullets, [this.entities, this.layers.concat(this.hitboxes)], (bullet, entity) => {
+      if (entity.hp) entity.hp -= bullet.damage;
+      if (entity.hp <= 0) entity.destroy();
+      bullet.destroy();
+    });
     
     this.cameras.main
       .setZoom(2)
@@ -75,30 +88,18 @@ export default class MainScene extends Phaser.Scene {
       .on("keyup_ESC", () => this.registry.events.emit("pausegame", "MainScene"))
       .on("keyup_ENTER", () => {
         if (this.lastEntityTouched) this.lastEntityTouched.interact(this.player);
-      });
+      })
+      .on("keyup_B", () => this.registry.events.emit("switchscene", "MainScene", "BankScene"));
     
     if (!this.initialized) {
       this.scene.launch("InfoScene"); // This will only run the first time
-      this.freeze();
       this.cameras.main
-        .setZoom(4).zoomTo(2, 1000, "Linear", false, (cam, progress) => {
-          if (progress === 1) this.freeze(false);
-        });
+        .setZoom(4).zoomTo(2, 1000, "Linear");
       this.initialized = true;
     }
   }
   
   update() {
     if (!this.registry.get("paused")) this.player.update();
-  }
-
-  freeze(freeze) {
-    this.player.sprite.body.moves = !freeze;
-    this.entities.children.iterate(child => child.body.moves = !freeze);
-  }
-
-  destroy() {
-    this.player.destroy();
-    this.entities.destroy();
   }
 }

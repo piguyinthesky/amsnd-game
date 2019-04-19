@@ -325,17 +325,6 @@
                 }, 
                 {
                  "height":0,
-                 "id":17,
-                 "name":"Sewer",
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":0,
-                 "x":759.5,
-                 "y":423.75
-                }, 
-                {
-                 "height":0,
                  "id":13,
                  "name":"Market",
                  "point":true,
@@ -369,6 +358,30 @@
                  "width":0,
                  "x":293.333333333333,
                  "y":1064.66666666667
+                }, 
+                {
+                 "height":0,
+                 "id":298,
+                 "name":"npcHairpin",
+                 "point":true,
+                 "rotation":0,
+                 "type":"npc",
+                 "visible":true,
+                 "width":0,
+                 "x":1060.45800229426,
+                 "y":788.545694013681
+                }, 
+                {
+                 "height":0,
+                 "id":299,
+                 "name":"sewer",
+                 "point":true,
+                 "rotation":0,
+                 "type":"spawn",
+                 "visible":true,
+                 "width":0,
+                 "x":760.079874240558,
+                 "y":423.58839274334
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -381,18 +394,6 @@
          "id":9,
          "name":"Hitboxes",
          "objects":[
-                {
-                 "height":0,
-                 "id":30,
-                 "name":"npcName",
-                 "point":true,
-                 "rotation":0,
-                 "type":"npc",
-                 "visible":true,
-                 "width":0,
-                 "x":296.287482151356,
-                 "y":1063.77915278439
-                }, 
                 {
                  "height":17.3333333333335,
                  "id":38,
@@ -2702,27 +2703,15 @@
                  "width":3.8977,
                  "x":79.3844833333333,
                  "y":1249.10316666667
-                }, 
-                {
-                 "height":0,
-                 "id":296,
-                 "name":"npcName",
-                 "point":true,
-                 "rotation":0,
-                 "type":"npc",
-                 "visible":true,
-                 "width":0,
-                 "x":357.333333333333,
-                 "y":976
                 }],
          "opacity":1,
          "type":"objectgroup",
-         "visible":false,
+         "visible":true,
          "x":0,
          "y":0
         }],
  "nextlayerid":15,
- "nextobjectid":298,
+ "nextobjectid":300,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.2.3",

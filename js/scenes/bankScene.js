@@ -1,7 +1,6 @@
 import Player from "../objects/player.js";
-import { Bill, DiamondSword, RunningShoes, Chest, Policeman } from "../objects/entity.js";
+import { Bill, Gun, RunningShoes, Chest, Policeman, Stairs, Sewer } from "../objects/entity.js";
 import { TILE_MAPPING as TILES } from "../util/tileMapping.js";
-import TilemapVisibility from "../util/tilemapVisibility.js";
 
 /**
  * Scene that generates a new dungeon
@@ -9,13 +8,15 @@ import TilemapVisibility from "../util/tilemapVisibility.js";
 export default class BankScene extends Phaser.Scene {
   constructor() { // This only gets called once
     super({ key: "BankScene" });
-    this.level = 0;
+    this.level = 2;
+    this.numfloors = 5;
+  }
+
+  init(data) {
+    if (data.level) this.level += 1;
   }
 
   create() {
-    this.level++;
-    this.hasPlayerReachedStairs = false;
-
     this.dungeon = new Dungeon({
       width: 50,
       height: 50,
@@ -36,49 +37,57 @@ export default class BankScene extends Phaser.Scene {
     const tileset = map.addTilesetImage("dungeonTiles", null, 16, 16, 0, 1);
     this.groundLayer = map.createBlankDynamicLayer("Ground", tileset).fill(TILES.BLANK);
     this.stuffLayer = map.createBlankDynamicLayer("Stuff", tileset);
-    const shadowLayer = map.createBlankDynamicLayer("Shadow", tileset).fill(TILES.BLANK).setDepth(30);
-    this.tilemapVisibility = new TilemapVisibility(shadowLayer);
+    this.shadowLayer = map.createBlankDynamicLayer("Shadow", tileset).fill(TILES.BLANK).setDepth(30);
+    this.activeRoom = null;
 
     this.physics.world.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
 
     this.entities = this.physics.add.group({
       createCallback: item => item.setDepth(25)
     });
+    this.bullets = this.physics.add.group();
 
     // ==================== CREATE ROOMS ====================
     this.dungeon.rooms.forEach(room => this.createRoom(room));
-
     const rooms = this.dungeon.rooms.slice();
 
     const startRoom = rooms.shift();
-    let x = map.tileToWorldX(startRoom.centerX);
-    let y = map.tileToWorldY(startRoom.centerY);
+    let { x, y } = map.tileToWorldXY(startRoom.centerX, startRoom.centerY);
     this.player = new Player(this, x, y);
 
-    this.test = this.physics.add.group();
-    const temp = this.add.rectangle(x+ 16, y + 16, 16, 16, 0x00ff00);
-    this.test.add(temp, true);
-    console.log(this.test);
+    if (this.level === this.numfloors) {
+      rooms.forEach(room => {
+        ({x, y} = map.tileToWorldXY(room.centerX, room.centerY));
+        this.entities.add(new Policeman(this, x, y));
+      });
+    } else {
+      const endRoom = Phaser.Utils.Array.RemoveRandomElement(rooms);
+      ({x, y} = map.tileToWorldXY(endRoom.centerX, endRoom.centerY));
+      const stairs = new Stairs(this, x, y);
+      this.entities.add(stairs);
+      stairs.body.setImmovable();
 
-    const endRoom = Phaser.Utils.Array.RemoveRandomElement(rooms);
-    x = map.tileToWorldX(endRoom.centerX);
-    y = map.tileToWorldY(endRoom.centerY);
-    this.entities.add(new Stairs(this, x, y), true);
-    
-    const vaultRoom = Phaser.Utils.Array.RemoveRandomElement(rooms);
-    const left = map.tileToWorldX(vaultRoom.left + 1);
-    const right = map.tileToWorldX(vaultRoom.right);
-    const top = map.tileToWorldY(vaultRoom.top + 1);
-    const bottom = map.tileToWorldY(vaultRoom.bottom);
-    for (x = left; x < right; x += 32)
-      for (y = top; y < bottom; y += 32)
-        this.entities.add(new Bill(this, x, y).setOrigin(0.5, 0.5), true);
+      [[x, y-1], [x+1, y], [x, y+1], [x-1, y]].forEach((val) => this.stuffLayer.removeTileAt(val[0], val[1]));
 
-    const exitRoom = Phaser.Utils.Array.RemoveRandomElement(rooms);
-    this.stuffLayer.putTileAt(TILES.STAIRS, exitRoom.centerX, exitRoom.top);
-    x = map.tileToWorldX(exitRoom.centerX);
-    y = map.tileToWorldY(exitRoom.centerY);
-    this.entities.add(new Policeman(this, x, y), true);
+      const vaultRoom = Phaser.Utils.Array.RemoveRandomElement(rooms);
+      const { left, top } = map.tileToWorldXY(vaultRoom.left + 1, vaultRoom.top + 1);
+      const { right, bottom } = map.tileToWorldXY(vaultRoom.right, vaultRoom.bottom);
+      for (x = left; x < right; x += 32)
+        for (y = top; y < bottom; y += 32)
+          this.entities.add(new Bill(this, x, y));
+  
+      const exitRoom = Phaser.Utils.Array.RemoveRandomElement(rooms);
+      ({x, y} = map.tileToWorldXY(exitRoom.centerX, exitRoom.centerY));
+      const sewer = new Sewer(this, x, y);
+      this.entities.add(sewer);
+      sewer.body.setImmovable();
+
+      Phaser.Utils.Array.Shuffle(rooms);
+      for (let i = 0; i < this.level; i++) {
+        ({x, y} = map.tileToWorldXY(rooms[i].centerX, rooms[i].centerY));
+        this.entities.add(new Policeman(this, x, y));
+      } 
+    }
 
     const otherRooms = Phaser.Utils.Array.Shuffle(rooms).slice(0, rooms.length * 0.9);
     otherRooms.forEach(room => this.initOtherRoom(room));
@@ -87,23 +96,14 @@ export default class BankScene extends Phaser.Scene {
     this.groundLayer.setCollisionByExclusion(TILES.FLOORTILES);
     this.stuffLayer.setCollisionByExclusion(TILES.FLOORTILES);
 
-    this.stuffLayer.setTileIndexCallback(TILES.STAIRS, () => {
-      this.stuffLayer.setTileIndexCallback(TILES.STAIRS, null);
-      this.hasPlayerReachedStairs = true;
-      this.registry.events.emit("freezeplayer", true);
-      const cam = this.cameras.main;
-      cam.fade(250, 0, 0, 0);
-      cam.once("camerafadeoutcomplete", () => {
-        this.player.destroy();
-        this.scene.restart();
-      });
-    });
-
     // Watch the player and tilemap layers for collisions, for the duration of the scene:
     this.physics.add.collider([this.player.sprite, this.entities], [this.groundLayer, this.stuffLayer]);
     this.physics.add.collider(this.entities);
-    this.physics.add.collider(this.player.sprite, this.entities, (player, npc) => {
-      npc.collide(this.player);
+    this.physics.add.collider(this.player.sprite, this.entities, (player, npc) => npc.collide(this.player));
+    this.physics.add.collider(this.bullets, [this.entities, this.groundLayer, this.stuffLayer], (bullet, entity) => {
+      if (entity.hp) entity.hp -= bullet.damage;
+      if (entity.hp <= 0) entity.destroy();
+      bullet.destroy();
     });
 
     this.cameras.main
@@ -119,20 +119,23 @@ export default class BankScene extends Phaser.Scene {
   }
 
   update(time, delta) {
-    if (this.hasPlayerReachedStairs) return;
-
-    this.player.update();
-
+    if (this.player.sprite.body) this.player.update();
     const { x, y } = this.groundLayer.worldToTileXY(this.player.sprite.x, this.player.sprite.y);
     const playerRoom = this.dungeon.getRoomAt(x, y);
-
-    this.tilemapVisibility.setActiveRoom(playerRoom);
+    this.setActiveRoom(playerRoom);
   }
 
   createRoom(room) {
     const { x, y, width, height, left, right, top, bottom } = room;
 
     this.groundLayer.weightedRandomize(x + 1, y + 1, width - 2, height - 2, TILES.FLOOR);
+
+    if (this.level > 1) {
+      let weightedBones = [];
+      for (let i = 0; i < this.numfloors + 3 - this.level; i++)
+        weightedBones = weightedBones.concat(TILES.FLOOR);
+      this.stuffLayer.weightedRandomize(x + 1, y + 1, width - 2, height - 2, weightedBones.concat(TILES.BONES));
+    }
 
     this.groundLayer.putTileAt(TILES.WALL.TOP_LEFT, left, top);
     this.groundLayer.putTileAt(TILES.WALL.TOP_RIGHT, right, top);
@@ -146,23 +149,29 @@ export default class BankScene extends Phaser.Scene {
 
     const doors = room.getDoorLocations();
     for (let i = 0; i < doors.length; i++) {
-      if (doors[i].y === 0)
+      if (doors[i].y === 0) {
         this.groundLayer.putTilesAt(TILES.DOOR.TOP, x + doors[i].x - 1, y + doors[i].y);
-      else if (doors[i].y === room.height - 1)
+        this.stuffLayer.removeTileAt(x + doors[i].x, y + doors[i].y + 1);
+      } else if (doors[i].y === room.height - 1) {
         this.groundLayer.putTilesAt(TILES.DOOR.BOTTOM, x + doors[i].x - 1, y + doors[i].y);
-      else if (doors[i].x === 0)
+        this.stuffLayer.removeTileAt(x + doors[i].x, y + doors[i].y - 1);
+      } else if (doors[i].x === 0) {
         this.groundLayer.putTilesAt(TILES.DOOR.LEFT, x + doors[i].x, y + doors[i].y - 1);
-      else if (doors[i].x === room.width - 1)
+        this.stuffLayer.removeTileAt(x + doors[i].x + 1, y + doors[i].y);
+      } else if (doors[i].x === room.width - 1) {
         this.groundLayer.putTilesAt(TILES.DOOR.RIGHT, x + doors[i].x, y + doors[i].y - 1);
+        this.stuffLayer.removeTileAt(x + doors[i].x - 1, y + doors[i].y);
+      }
     }
   }
 
   initOtherRoom(room) {
     const rand = Math.random();
+    const { x, y } = this.stuffLayer.tileToWorldXY(room.centerX, room.centerY);
+
     if (rand <= 0.25) { // 25% chance of chest
-      const { x, y } = this.stuffLayer.tileToWorldXY(room.centerX, room.centerY);
       const chest = new Chest(this, x, y);
-      this.entities.add(chest, true);
+      this.entities.add(chest);
       chest.body.setImmovable();
     } else if (rand <= 0.5) { // 50% chance of a pot anywhere in the room... except don't block a door!
       const x = Phaser.Math.Between(room.left + 2, room.right - 2);
@@ -175,26 +184,44 @@ export default class BankScene extends Phaser.Scene {
         this.stuffLayer.putTilesAt(TILES.TOWER, room.centerX - 1, room.centerY - 2);
         this.stuffLayer.putTilesAt(TILES.TOWER, room.centerX + 1, room.centerY - 2);
         
-        if (!this.registry.get("diamondSword_spawned")) {
-          const { x, y } = this.stuffLayer.tileToWorldXY(room.centerX, room.centerY);
-          this.entities.add(new DiamondSword(this, x, y), true);
-          this.registry.set("diamondSword_pickup", true);
+        if (!this.registry.get("gun_spawned")) {
+          this.entities.add(new Gun(this, x, y));
+          this.registry.set("gun_spawned", true);
         }
       } else {
         this.stuffLayer.putTilesAt(TILES.TOWER, room.centerX - 1, room.centerY - 1);
         this.stuffLayer.putTilesAt(TILES.TOWER, room.centerX + 1, room.centerY - 1);
         
         if (!this.registry.get("runningShoes_spawned")) {
-          const { x, y } = this.stuffLayer.tileToWorldXY(room.centerX, room.centerY);
-          this.entities.add(new RunningShoes(this, x, y), true);
-          this.registry.set("runningShoes_pickedup", true);
+          this.entities.add(new RunningShoes(this, x, y));
+          this.registry.set("runningShoes_spawned", true);
         }
       }
     }
   }
 
-  freeze(freeze=true) {
-    this.player.sprite.body.moves = !freeze;
-    this.entities.children.iterate(child => child.body.moves = !freeze);
+  setActiveRoom(room) {
+    // We only need to update the tiles if the active room has changed
+    if (room !== this.activeRoom) {
+      this.setRoomAlpha(room, 0); // Make the new room visible
+      if (this.activeRoom) this.setRoomAlpha(this.activeRoom, 0.5); // Dim the old room
+      this.activeRoom = room;
+      const {x, y} = this.shadowLayer.tileToWorldXY(room.x, room.y);
+      const rect = new Phaser.Geom.Rectangle(x, y, room.width * 16, room.height * 16);
+      this.entities.children.iterate(child => {
+        if (child.name === "police" && rect.contains(child.body.x, child.body.y))
+          child.aggro = true;
+      });
+    }
+  }
+
+  // Helper to set the alpha on all tiles within a room
+  setRoomAlpha(room, alpha) {
+    this.shadowLayer.forEachTile(t => t.alpha = alpha, this, room.x, room.y, room.width, room.height);
+  }
+
+  destroy() {
+    this.player.destroy();
+    this.entities.destroy();
   }
 }
