@@ -1,8 +1,7 @@
 import Player from "../objects/player.js";
-import { Bill, DiamondSword, RunningShoes, Chest } from "../objects/items.js";
+import { Bill, DiamondSword, RunningShoes, Chest, Policeman } from "../objects/entity.js";
 import { TILE_MAPPING as TILES } from "../util/tileMapping.js";
 import TilemapVisibility from "../util/tilemapVisibility.js";
-import { Policeman } from "../objects/npc.js";
 
 /**
  * Scene that generates a new dungeon
@@ -42,10 +41,9 @@ export default class BankScene extends Phaser.Scene {
 
     this.physics.world.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
 
-    this.items = this.physics.add.group({
+    this.entities = this.physics.add.group({
       createCallback: item => item.setDepth(25)
     });
-    this.npcs = this.physics.add.group();
 
     // ==================== CREATE ROOMS ====================
     this.dungeon.rooms.forEach(room => this.createRoom(room));
@@ -67,13 +65,13 @@ export default class BankScene extends Phaser.Scene {
     const bottom = map.tileToWorldY(vaultRoom.bottom);
     for (x = left; x < right; x += 32)
       for (y = top; y < bottom; y += 32)
-        this.items.add(new Bill(this, x, y).setOrigin(0.5, 0.5), true);
+        this.entities.add(new Bill(this, x, y).setOrigin(0.5, 0.5), true);
 
     const exitRoom = Phaser.Utils.Array.RemoveRandomElement(rooms);
     this.stuffLayer.putTileAt(TILES.STAIRS, exitRoom.centerX, exitRoom.top);
     x = map.tileToWorldX(exitRoom.centerX);
     y = map.tileToWorldY(exitRoom.centerY);
-    this.npcs.add(new Policeman(this, x, y), true);
+    this.entities.add(new Policeman(this, x, y), true);
 
     const otherRooms = Phaser.Utils.Array.Shuffle(rooms).slice(0, rooms.length * 0.9);
     otherRooms.forEach(room => this.initOtherRoom(room));
@@ -95,14 +93,13 @@ export default class BankScene extends Phaser.Scene {
     });
 
     // Watch the player and tilemap layers for collisions, for the duration of the scene:
-    this.physics.add.collider([this.player.sprite, this.npcs], [this.groundLayer, this.stuffLayer]);
-    this.physics.add.collider(this.npcs);
-    this.physics.add.collider(this.player.sprite, this.npcs, (player, npc) => {
+    this.physics.add.collider([this.player.sprite, this.entities], [this.groundLayer, this.stuffLayer]);
+    this.physics.add.collider(this.entities);
+    this.physics.add.collider(this.player.sprite, this.entities, (player, npc) => {
       npc.collide(this.player);
       this.playerTouchingNPC = npc;
       this.time.delayedCall(1500, () => this.playerTouchingNPC = false); // Since I couldn't figure out how to check when they stop colliding, we just assume the user will interact with the npc within 1.5 seconds; if they press enter later it'll still work
     });
-    this.physics.add.collider(this.player.sprite, this.items, (player, item) => item.onPickup(this.player));
 
     this.cameras.main
       .setZoom(2)
@@ -160,7 +157,7 @@ export default class BankScene extends Phaser.Scene {
     if (rand <= 0.25) { // 25% chance of chest
       const { x, y } = this.stuffLayer.tileToWorldXY(room.centerX, room.centerY);
       const chest = new Chest(this, x, y);
-      this.npcs.add(chest, true);
+      this.entities.add(chest, true);
       chest.body.setImmovable();
     } else if (rand <= 0.5) { // 50% chance of a pot anywhere in the room... except don't block a door!
       const x = Phaser.Math.Between(room.left + 2, room.right - 2);
@@ -175,7 +172,7 @@ export default class BankScene extends Phaser.Scene {
         
         if (!this.registry.get("diamondSword_pickedup", true)) {
           const { x, y } = this.stuffLayer.tileToWorldXY(room.centerX, room.centerY);
-          this.items.add(new DiamondSword(this, x, y), true);
+          this.entities.add(new DiamondSword(this, x, y), true);
           this.registry.set("diamondSword_pickup", true);
         }
       } else {
@@ -184,7 +181,7 @@ export default class BankScene extends Phaser.Scene {
         
         if (!this.registry.get("runningShoes_pickedup", true)) {
           const { x, y } = this.stuffLayer.tileToWorldXY(room.centerX, room.centerY);
-          this.items.add(new RunningShoes(this, x, y), true);
+          this.entities.add(new RunningShoes(this, x, y), true);
           this.registry.set("runningShoes_pickedup", true);
         }
       }

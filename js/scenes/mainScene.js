@@ -1,17 +1,15 @@
-import { NPC, Policeman } from "../objects/npc.js";
+import { Policeman, Entity } from "../objects/entity.js";
 import Player from "../objects/player.js";
-import { Door } from "../objects/items.js";
 
 export default class MainScene extends Phaser.Scene {
   constructor() {
     super({ key: "MainScene" });
     
     this.initialized = false;
+    this.lastEntityTouched = null;
   }
   
-  create() {
-    this.playerTouchingNPC = false;
-    
+  create() {    
     // ========== LOADING TILEMAP AND LAYERS ==========
     if (!this.map) {
       this.map = this.make.tilemap({ key: "outsideMap" });
@@ -49,11 +47,11 @@ export default class MainScene extends Phaser.Scene {
         if (obj.name === "policeman")
           this.npcs.add(new Policeman(this, obj.x, obj.y, obj.name));
         else
-          this.npcs.add(new NPC(this, obj.x, obj.y, obj.name));
+          this.npcs.add(new Entity(this, obj.x, obj.y, obj.name), true);
       } else if (obj.type === "spawn" && obj.name === "player") {
         this.player = new Player(this, obj.x, obj.y);
       } else if (obj.type === "door") {
-        const door = new Door(this, obj.x, obj.y, obj.width, obj.height, obj.name);
+        const door = new Entity(this, obj.x, obj.y, obj.name).setOrigin(0, 0).setSize(obj.width, obj.height).setDisplaySize(obj.width, obj.height);
         this.layers.forEach(layer => {
           layer.getTilesWithinWorldXY(obj.x, obj.y, obj.width, obj.height).forEach(tile => tile.setCollision(false));
         });
@@ -63,11 +61,7 @@ export default class MainScene extends Phaser.Scene {
     
     this.physics.add.collider([this.player.sprite, this.npcs], this.layers);
     this.physics.add.collider(this.npcs); // They collide with each other
-    this.physics.add.collider(this.player.sprite, this.npcs, (player, npc) => {
-      npc.collide(this.player);
-      this.playerTouchingNPC = npc;
-      this.time.delayedCall(1500, () => this.playerTouchingNPC = false); // Since I couldn't figure out how to check when they stop colliding, we just assume the user will interact with the npc within 1.5 seconds; if they press enter later it'll still work
-    });
+    this.physics.add.collider(this.player.sprite, this.npcs, (player, npc) => npc.collide(this.player));
     
     this.cameras.main
       .setZoom(2)
@@ -77,7 +71,7 @@ export default class MainScene extends Phaser.Scene {
     this.input.keyboard
       .on("keyup_ESC", () => this.registry.events.emit("pausegame", "MainScene"))
       .on("keyup_ENTER", () => {
-        if (this.playerTouchingNPC) this.playerTouchingNPC.interact(this.player);
+        if (this.lastEntityTouched) this.lastEntityTouched.interact(this.player);
       });
     
     if (!this.initialized) {
