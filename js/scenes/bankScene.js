@@ -1,8 +1,7 @@
 import Player from "../objects/player.js";
-import { Bill, DiamondSword, RunningShoes, Chest, Stairs } from "../objects/items.js";
+import { Bill, DiamondSword, RunningShoes, Chest, Policeman } from "../objects/entity.js";
 import { TILE_MAPPING as TILES } from "../util/tileMapping.js";
 import TilemapVisibility from "../util/tilemapVisibility.js";
-import { Policeman } from "../objects/npc.js";
 
 /**
  * Scene that generates a new dungeon
@@ -42,7 +41,9 @@ export default class BankScene extends Phaser.Scene {
 
     this.physics.world.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
 
-    this.entities = this.physics.add.group();
+    this.entities = this.physics.add.group({
+      createCallback: item => item.setDepth(25)
+    });
 
     // ==================== CREATE ROOMS ====================
     this.dungeon.rooms.forEach(room => this.createRoom(room));
@@ -70,17 +71,14 @@ export default class BankScene extends Phaser.Scene {
     const top = map.tileToWorldY(vaultRoom.top + 1);
     const bottom = map.tileToWorldY(vaultRoom.bottom);
     for (x = left; x < right; x += 32)
-      for (y = top; y < bottom; y += 32) {
-        const bill = new Bill(this, x, y);
-        console.log(bill);
-        this.entities.add(bill, true);
-      }
+      for (y = top; y < bottom; y += 32)
+        this.entities.add(new Bill(this, x, y).setOrigin(0.5, 0.5), true);
 
     const exitRoom = Phaser.Utils.Array.RemoveRandomElement(rooms);
     this.stuffLayer.putTileAt(TILES.STAIRS, exitRoom.centerX, exitRoom.top);
-
-    const sewerRoom = Phaser.Utils.Array.RemoveRandomElement(rooms);
-    this.stuffLayer.putTileAt(TILES.SEWER, sewerRoom.centerX, sewerRoom.centerY);
+    x = map.tileToWorldX(exitRoom.centerX);
+    y = map.tileToWorldY(exitRoom.centerY);
+    this.entities.add(new Policeman(this, x, y), true);
 
     const otherRooms = Phaser.Utils.Array.Shuffle(rooms).slice(0, rooms.length * 0.9);
     otherRooms.forEach(room => this.initOtherRoom(room));
@@ -89,13 +87,24 @@ export default class BankScene extends Phaser.Scene {
     this.groundLayer.setCollisionByExclusion(TILES.FLOORTILES);
     this.stuffLayer.setCollisionByExclusion(TILES.FLOORTILES);
 
+    this.stuffLayer.setTileIndexCallback(TILES.STAIRS, () => {
+      this.stuffLayer.setTileIndexCallback(TILES.STAIRS, null);
+      this.hasPlayerReachedStairs = true;
+      this.registry.events.emit("freezeplayer", true);
+      const cam = this.cameras.main;
+      cam.fade(250, 0, 0, 0);
+      cam.once("camerafadeoutcomplete", () => {
+        this.player.destroy();
+        this.scene.restart();
+      });
+    });
+
+    // Watch the player and tilemap layers for collisions, for the duration of the scene:
     this.physics.add.collider([this.player.sprite, this.entities], [this.groundLayer, this.stuffLayer]);
-    // this.physics.add.collider(this.entities);
+    this.physics.add.collider(this.entities);
     this.physics.add.collider(this.player.sprite, this.entities, (player, npc) => {
-      console.log(npc);
       npc.collide(this.player);
     });
-    this.physics.add.collider(this.player.sprite, this.test, () => console.log("collide"))
 
     this.cameras.main
       .setZoom(2)
@@ -169,7 +178,7 @@ export default class BankScene extends Phaser.Scene {
         if (!this.registry.get("diamondSword_spawned")) {
           const { x, y } = this.stuffLayer.tileToWorldXY(room.centerX, room.centerY);
           this.entities.add(new DiamondSword(this, x, y), true);
-          this.registry.set("diamondSword_spawned", true);
+          this.registry.set("diamondSword_pickup", true);
         }
       } else {
         this.stuffLayer.putTilesAt(TILES.TOWER, room.centerX - 1, room.centerY - 1);
@@ -178,7 +187,7 @@ export default class BankScene extends Phaser.Scene {
         if (!this.registry.get("runningShoes_spawned")) {
           const { x, y } = this.stuffLayer.tileToWorldXY(room.centerX, room.centerY);
           this.entities.add(new RunningShoes(this, x, y), true);
-          this.registry.set("runningShoes_spawned", true);
+          this.registry.set("runningShoes_pickedup", true);
         }
       }
     }

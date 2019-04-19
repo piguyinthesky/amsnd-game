@@ -1,4 +1,4 @@
-import { ROGUELIKE_CHARACTERS } from "./tileMapping.js";
+import { ROGUELIKE_CHARACTERS, TILE_MAPPING } from "./tileMapping.js";
 
 function YesNo(question, yes, no) {
   return [
@@ -10,15 +10,32 @@ function YesNo(question, yes, no) {
       if (response === "Yes") yes(infoScene);
       else if (response === "No") no(infoScene);
     }
-  ]
+  ];
 }
 
 export const NPC_DATA = {
+  diamondSword: {
+    texture: "rpgChars",
+    frame: ROGUELIKE_CHARACTERS.SWORD.DIAMOND,
+    lines: "You have obtained the legendary diamond sword!"
+  },
+  runningShoes: {
+    texture: "rpgChars",
+    frame: ROGUELIKE_CHARACTERS.BOOTS.BLUE,
+    lines: "You have obtained the mythical running shoes! Hold Z to go faster."
+  },
+  chest: {
+    texture: "dungeonTileset",
+    frame: TILE_MAPPING.CHEST[0].index,
+    lines: "You received $1000!"
+  },
   npcMysterious: {
+    texture: "rpgChars",
     frame: 270,
     lines: "Who's being mysterious? I'm not being mysterious!"
   },// Builtin NPCs: 270, 271, 324, 325, 378 ... 594, 595
   npcName: {
+    texture: "rpgChars",
     frame: 324,
     lines: infoScene => {
       return [
@@ -31,9 +48,11 @@ export const NPC_DATA = {
     }
   },
   npcRude: {
+    texture: "rpgChars",
     lines: "Get out of the way, you little dingus!"
   },
   npcBlood: {
+    texture: "rpgChars",
     lines: "Hey, have you noticed that some of these bills have bloodstains on them?"
   },
   runningShoes: {
@@ -44,6 +63,7 @@ export const NPC_DATA = {
     texture: "bill"
   },
   librarian: {
+    texture: "rpgChars",
     frame: 271,
     lines: [
       infoScene => {
@@ -52,7 +72,7 @@ export const NPC_DATA = {
             return "My gosh my golly, you actually did go and get it! Congrats, you just got 1000 points!";
           else
             return "What are you waiting for? If you keep loitering, I'm going to start charing fees...";
-        } else
+        } else {
           return [
             {
               text: "Hey, what's your name?",
@@ -70,6 +90,7 @@ export const NPC_DATA = {
               ];
             }
           ];
+        }
       }
     ]
   },
@@ -110,7 +131,9 @@ export const NPC_DATA = {
       }
     }
   },
-  police: {},
+  police: {
+    texture: "rpgChars",
+  },
   merchant: {
     texture: "rpgChars",
     frame: 325,
