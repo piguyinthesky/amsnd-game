@@ -88,6 +88,7 @@ export default class InfoScene extends Phaser.Scene {
       .on("pointerup", () => this.registry.set("mute", !this.registry.get("mute")));
     
     this.music = this.sound.add("music", { loop: true });
+    this.dungeonMusic = this.sound.add("dungeonMusic", { loop: true });
     this.music.play();
     
     // ==================== EVENTS ====================
@@ -110,15 +111,27 @@ export default class InfoScene extends Phaser.Scene {
           this.inventoryText.setText("Inventory: " + data.join(", "));
       
         else if (key === "mute") {
-          if (data) {
-            this.music.pause();
-            this.audioImage.setTexture("musicOff");
-          } else {
-            this.music.resume();
-            this.audioImage.setTexture("musicOn");
+          if (this.registry.get("level") === "MainScene") {
+            if (data) {
+              this.music.pause();
+              this.audioImage.setTexture("musicOff");
+            } else {
+              this.music.resume();
+              this.audioImage.setTexture("musicOn");
+            }
+          } else if (this.registry.get("level") === "BankScene") {
+            if (data) {
+              this.dungeonMusic.pause();
+              this.audioImage.setTexture("musicOff");
+            } else {
+              this.dungeonMusic.resume();
+              this.audioImage.setTexture("musicOn");
+            }
           }
-        } else if (key === "volume") 
+        } else if (key === "volume") {
           this.music.setVolume(data);
+          this.dungeonMusic.setVolume(data);
+        }
       })
       .on("addtoinventory", item => {
         this.registry.set("inventory", this.registry.get("inventory").concat(item));
@@ -139,6 +152,7 @@ export default class InfoScene extends Phaser.Scene {
           scene.scene.start(scene2, data);
           this.cameras.main.resetFX();
           this.registry.set("level", scene2);
+          this.playMusic();
         });
       });
     
@@ -161,6 +175,16 @@ export default class InfoScene extends Phaser.Scene {
         } else if (this.timer.getOverallProgress() > 0) // Player presses enter while text is scrolling
           this.timer.remove(true); // Jump to end of timer
       });
+  }
+
+  playMusic() {
+    if (this.registry.get("level") === "MainScene") {
+      this.dungeonMusic.pause();
+      this.music.play();
+    } else if (this.registry.get("level") === "BankScene") {
+      this.music.pause();
+      this.dungeonMusic.play();
+    }
   }
 
   startText() {

@@ -27,6 +27,18 @@ export default class BankScene extends Phaser.Scene {
       }
     });
 
+    // Help text that has a "fixed" position on the screen
+    this.add
+      .text(this.cameras.main.width - 5, this.cameras.main.height - 5, `Find the stairs. Go deeper.\nCurrent level: ${this.level}`, {
+        font: "16px monospace",
+        fill: "#000000",
+        padding: { x: 20, y: 10 },
+        backgroundColor: "#ffffff"
+      })
+      .setScrollFactor(0)
+      .setDepth(50)
+      .setOrigin(1, 1);
+
     // ==================== CREATING TILEMAP AND LAYERS ====================
     const map = this.make.tilemap({
       tileWidth: 16,

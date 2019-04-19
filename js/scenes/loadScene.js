@@ -61,6 +61,7 @@ export default class LoadScene extends Phaser.Scene {
         .audio("powerup", "Powerup.wav")
         .audio("shoot", "Laser_Shoot.wav")
         .audio("music", "jlbrock44_-_Staying_Positive.mp3")
+        .audio("dungeonMusic", "8bit-dungeon-level.mp3")
 
         .setPath("sprites/")
         .image("bill", "bill.png")
