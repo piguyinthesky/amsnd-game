@@ -5,11 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
 
-    <meta name="author" content="Alexander Cai, Edward Han, Alvin Wong" />
+    <meta name="author" content="Alexander Cai" />
     <meta name="description" content="A submission by a couple of high school students for the March 2019 Repl.it Game Jam." />
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
     
-    <title>Rob the Bank!</title>
+    <title>A Midsummer Night's Game</title>
     <script src="//cdn.jsdelivr.net/npm/phaser@3.16.2/dist/phaser.js"></script>
     <script src="//cdn.jsdelivr.net/npm/@mikewesthad/dungeon@1.2.1"></script>
 
@@ -32,10 +32,19 @@
       #game-container > canvas {
         border-radius: 5px;
       }
+
+      @font-face {
+        font-family: gothic;
+        src: url('assets/fonts/Bitmgothic.ttf');
+        font-weight: 400;
+        font-weight: normal;
+      }
+</style>
     </style>
   </head>
 
   <body>
+    <div style="font-family:gothic; position:absolute; left:-1000px; visibility:hidden;">.</div>
     <div id="game-container"></div>
     <script src="js/script.js" type="module"></script>
     <noscript>How do you expect to play our game without Javascript? Go turn it on!</noscript>

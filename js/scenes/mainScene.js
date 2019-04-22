@@ -24,7 +24,6 @@ export default class MainScene extends Phaser.Scene {
         this.map.addTilesetImage("RoguelikeCity", "roguelikeCity"),
         this.map.addTilesetImage("Rogue Like Rpg", "roguelikeRPG"),
         this.map.addTilesetImage("Pond", "pond", 16, 16, 0, 1),
-        this.map.addTilesetImage("Money Sign", "moneySign")
       ];
     }
 
@@ -40,6 +39,15 @@ export default class MainScene extends Phaser.Scene {
     ];
 
     this.objectLayer = this.map.getObjectLayer("Objects");
+
+    // this.characters = {};
+    // for (let name of ["Theseus", "Hippolyta",
+    //   "Helena", "Hermia", "Demetrius", "Lysander",
+    //   "Egeus",
+    //   "Puck", "Oberon", "Titania"]) {
+    //   const obj = this.map.findObject("Object", obj => obj.name === name);
+    //   this.characters[name] = this.add.sprite() 
+    // }
 
     this.physics.world.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
     
@@ -92,10 +100,17 @@ export default class MainScene extends Phaser.Scene {
       .on("keyup_B", () => this.registry.events.emit("switchscene", "MainScene", "BankScene"));
     
     if (!this.initialized) {
+      this.time.delayedCall(1000, () => {
+        this.registry.set("currentAct", 0);
+        this.registry.set("currentScene", 0)
+        this.registry.events.emit("beginscene")
+      });
       this.scene.launch("InfoScene"); // This will only run the first time
+
       this.cameras.main
         .setZoom(4).zoomTo(2, 1000, "Linear");
       this.initialized = true;
+      // this.scene.launch("IntermissionScene", { act: this.act + 1 });
     }
   }
   

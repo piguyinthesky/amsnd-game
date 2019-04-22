@@ -5,7 +5,6 @@
  */
 import LoadScene from "./scenes/loadScene.js";
 import MainScene from "./scenes/mainScene.js";
-import BankScene from "./scenes/bankScene.js";
 import PauseScene from "./scenes/pauseScene.js";
 import InfoScene from "./scenes/infoScene.js";
 import EndScene from "./scenes/endScene.js";
@@ -21,7 +20,7 @@ const config = {
   backgroundColor: "#555555",
   parent: "game-container",
   pixelArt: true,
-  scene: [LoadScene, MainScene, BankScene, InfoScene, PauseScene, EndScene],
+  scene: [LoadScene, MainScene, InfoScene, PauseScene, EndScene],
   physics: {
     default: "arcade",
     arcade: {

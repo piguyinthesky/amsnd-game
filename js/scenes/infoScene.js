@@ -30,6 +30,9 @@ export default class InfoScene extends Phaser.Scene {
   create() {
     this.registry.set({
       infoInitialized: true,
+
+      currentAct: null,
+      currentScene: null,
       
       money: 0,
       lives: 3,
@@ -79,6 +82,9 @@ export default class InfoScene extends Phaser.Scene {
     this.options = [];
     this.selected = 0;
     this.response = "";
+
+    this.actText = this.add.text().setVisible(false);
+    this.sceneText = this.add.text().setVisible(false);
 
     // ==================== MUSIC ====================
     this.audioImage = this.add.image(width - 5, 5, "musicOn")
@@ -155,6 +161,33 @@ export default class InfoScene extends Phaser.Scene {
           this.registry.set("level", scene2);
           this.playMusic();
         });
+      })
+      .on("beginscene", () => {
+        this.scene.pause(this.registry.get("level"));
+        this.currAct = this.cache.json.get("fullPlay").acts[this.registry.get("currentAct")];
+        this.currScene = this.currAct.scenes[this.registry.get("currentScene")];
+
+        this.actText = this.add.text(width / 2, height * 3 / 8, this.currAct.title, {
+          fontFamily: "gothic",
+          fontSize: 18,
+          backgroundColor: "#000000"
+        }).setOrigin(0.5);
+        this.sceneText = this.add.text(width / 2, height * 5 / 8, this.currScene.title, {
+          fontFamily: "gothic",
+          fontSize: 18,
+          backgroundColor: "#000000"
+        }).setOrigin(0.5);
+
+        this.titleBounce = this.add.tween({
+          targets: this.actText,
+          y: 100,
+          ease: "Linear",
+          duration: 1000,
+          repeat: -1,
+          yoyo: true
+        });
+        
+        this.currSpeaker = 0;
       });
     
     this.input.keyboard
@@ -165,17 +198,26 @@ export default class InfoScene extends Phaser.Scene {
         if (this.menu) this.moveSelection(1);
       })
       .on("keyup_ENTER", event => { // This is the only place where the timer will end
-        if (!this.timer || !this.displayText.visible) return; // We only worry about enter presses when the text is showing
-        event.stopPropagation(); // Prevents the event from reaching other scenes
-        if (this.timer.getOverallProgress() === 1) { // Current text is finished
-          if (this.menu) {
-            this.response = this.options[this.selected].text;
-            this.destroyMenu();
-          }
-          this.startText();
-        } else if (this.timer.getOverallProgress() > 0) // Player presses enter while text is scrolling
-          this.timer.remove(true); // Jump to end of timer
+        if (this.displayText.visible) {
+          event.stopPropagation(); // Prevents the event from reaching other scenes
+          if (this.timer.getOverallProgress() === 1) { // Current text is finished
+            if (this.menu) {
+              this.response = this.options[this.selected].text;
+              this.destroyMenu();
+            }
+            this.startText();
+          } else if (this.timer.getOverallProgress() > 0) // Player presses enter while text is scrolling
+            this.timer.remove(true); // Jump to end of timer
+        } else if (this.actText.visible) {
+          event.stopPropagation();
+          this.actText.destroy();
+          this.sceneText.destroy();
+          this.titleBounce.stop();
+          this.scene.resume(this.registry.get("level"));
+          this.registry.events.emit("talk", this.currScene.speakers)
+        }
       });
+      
   }
 
   playMusic() {
@@ -240,9 +282,19 @@ export default class InfoScene extends Phaser.Scene {
       this.lines = obj.concat(this.lines); // add to the start of the line
       this.textData = this.lines.shift();
       return this.parseLine(this.textData);
-    } else if (typeof obj === "object")
+    } else if (typeof obj === "object") {
+      if (obj.speaker) {
+        let result = [];
+        while (true) {
+          let temp = obj.lines.splice(0, 5);
+          if (temp.length !== 0) result.push(obj.speaker + "\n\n" + temp.join("\n"));
+          if (temp.length < 5) break;
+        }
+        this.registry.events.emit("zoomto", obj.speaker);
+        return this.parseLine(result);
+      }
       return obj.text;
-    else
+    } else
       return null;
   }
 

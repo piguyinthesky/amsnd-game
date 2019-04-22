@@ -9,7 +9,8 @@ const h2style = {
 };
 
 const boxStyle = {
-  font: "18px monospace",
+  fontFamily: "gothic",
+  fontSize: "20px",
   fill: "#000000",
   padding: { x: 20, y: 10 },
   backgroundColor: "#ffffff"
@@ -63,6 +64,8 @@ export default class LoadScene extends Phaser.Scene {
         .audio("music", "jlbrock44_-_Staying_Positive.mp3")
         .audio("dungeonMusic", "8bit-dungeon-level.mp3")
 
+        .json("fullPlay", "../../js/util/amsnd.json")
+
         .setPath("sprites/")
         .image("bill", "bill.png")
         .image("camera", "camera1.png")
@@ -84,11 +87,6 @@ export default class LoadScene extends Phaser.Scene {
           spacing: 1
         })
         .spritesheet("rpgChars", "roguelike-chars.png", {
-          frameWidth: 16,
-          frameHeight: 16,
-          spacing: 1
-        })
-        .spritesheet("dungeonTileset", "../tilesets/custom-dungeon.png", {
           frameWidth: 16,
           frameHeight: 16,
           spacing: 1
@@ -131,11 +129,11 @@ export default class LoadScene extends Phaser.Scene {
       i += 3;
     });
     
-    this.add.text(width / 2, height / 4, "Rob the Bank!", boxStyle).setOrigin(0.5, 0.5);
-    this.add.text(width / 2, height * 3 / 8, "Use the arrow keys or WASD to move", boxStyle).setOrigin(0.5, 0.5);
-    this.add.text(width / 2, height / 2, "By Alexander Cai and Alvin Wong", boxStyle).setOrigin(0.5, 0.5);
+    this.add.text(width / 2, height / 4, "A Midsummer Night's Dream", boxStyle).setOrigin(0.5, 0.5);
+    this.add.text(width / 2, height * 3 / 8, "Use the arrow keys or WASD to move and press enter to interact with people", boxStyle).setOrigin(0.5, 0.5);
+    this.add.text(width / 2, height / 2, "By Alexander Cai", boxStyle).setOrigin(0.5, 0.5);
     this.add.text(width / 2, height * 5 / 8, "Press enter to start", boxStyle).setOrigin(0.5, 0.5);
     
-    this.input.keyboard.once("keyup_ENTER", () => this.scene.start("EndScene"));
+    this.input.keyboard.once("keyup_ENTER", () => this.scene.start("MainScene"));
   }
 }

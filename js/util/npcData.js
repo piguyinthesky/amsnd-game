@@ -16,6 +16,28 @@ function YesNo(question, yes, no) {
 export const NPC_DATA = {
   nothing: { lines: undefined }, // Means it won't show
 
+  // Characters
+
+  Hermia: {
+    texture: "rpgChars",
+    frame: 378
+  },
+
+  Helena: {
+    texture: "rpgChars",
+    frame: 270
+  },
+
+  Demetrius: {
+    texture: "rpgChars",
+    frame: 487
+  },
+
+  Lysander: {
+    texture: "rpgChars",
+    frame: 324
+  },
+
   // NPCs
 
   librarian: {
