@@ -3,7 +3,7 @@ import { NPC_DATA } from "../util/npcData.js";
 export class Entity extends Phaser.GameObjects.Sprite {
   constructor(scene, x, y, name) {
     const data = NPC_DATA[name];
-    if (!data) return console.error("That NPC was not initialized in NPC_DATA");
+    if (!data) console.error(name);
     super(scene, x, y, data.texture, data.frame);
     this.setName(name);
 

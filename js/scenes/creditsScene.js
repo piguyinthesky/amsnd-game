@@ -5,9 +5,9 @@ const boxStyle = {
   backgroundColor: "#ffffff"
 };
 
-export default class EndScene extends Phaser.Scene {
+export default class CreditsScene extends Phaser.Scene {
   constructor() {
-    super({ key: "EndScene" });
+    super("CreditsScene");
   }
 
   init(data) {
@@ -59,7 +59,7 @@ export default class EndScene extends Phaser.Scene {
       ease: "Power1",
       duration: 3000,
       delay: 4000
-    })
+    });
 
     this.madeByTween = this.tweens.add({
       targets: this.finalCredits,

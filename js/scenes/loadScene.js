@@ -1,3 +1,5 @@
+import { Entity } from "../objects/entity.js";
+
 const h1style = {
   font: "20px monospace",
   fill: "#ffffff"
@@ -8,17 +10,18 @@ const h2style = {
   fill: "#ffffff"
 };
 
-const boxStyle = {
+const boxStyle = (size, width) => ({
   fontFamily: "gothic",
-  fontSize: "20px",
-  fill: "#000000",
+  fontSize: `${size}px`,
+  fill: "#ffff00",
   padding: { x: 20, y: 10 },
-  backgroundColor: "#ffffff"
-};
+  wordWrap: {width, useAdvancedWrap: true},
+  align: "center"
+});
 
 export default class LoadScene extends Phaser.Scene {
   constructor() {
-    super({ key: "LoadScene" });
+    super("LoadScene");
   }
   
   /**
@@ -26,6 +29,8 @@ export default class LoadScene extends Phaser.Scene {
    */
   preload() {
     const { width, height } = this.cameras.main;
+
+    this.background = this.add.tileSprite(0, 0, width, height, "background").setOrigin(0).setScrollFactor(0);
     
     const boxW = width / 2.5;
     const boxH = height / 12;
@@ -62,7 +67,6 @@ export default class LoadScene extends Phaser.Scene {
         .audio("powerup", "Powerup.wav")
         .audio("shoot", "Laser_Shoot.wav")
         .audio("music", "jlbrock44_-_Staying_Positive.mp3")
-        .audio("dungeonMusic", "8bit-dungeon-level.mp3")
 
         .json("fullPlay", "../../js/util/amsnd.json")
 
@@ -71,16 +75,11 @@ export default class LoadScene extends Phaser.Scene {
         .image("camera", "camera1.png")
         .image("rightArrow", "rightArrow.png")
         .image("textBox", "textBox.png")
+        .image("textBoxPressed", "textBox_pressed.png")
         .image("musicOn", "musicOn.png")
         .image("musicOff", "musicOff.png")
-        .image("title", "title-page.png")
 
         .setPath("spritesheets/")
-        .spritesheet("character", "character.png", {
-          frameWidth: 16,
-          frameHeight: 16,
-          spacing: 1
-        })
         .spritesheet("police", "police.png", {
           frameWidth: 16,
           frameHeight: 32,
@@ -90,6 +89,11 @@ export default class LoadScene extends Phaser.Scene {
           frameWidth: 16,
           frameHeight: 16,
           spacing: 1
+        })
+        .spritesheet("customChars", "characters.png", {
+          frameWidth: 16,
+          frameHeight: 16,
+          spacing: 0
         })
 
         .setPath("tilemaps/")
@@ -108,9 +112,7 @@ export default class LoadScene extends Phaser.Scene {
   
   create() {
     const { width, height } = this.cameras.main;
-
-    this.add.image(0, 0, "title").setDisplaySize(width, height).setOrigin(0);
-
+    
     this.anims.create({
       key: "police-moving",
       frames: this.anims.generateFrameNumbers("police", { frames: [0, 1, 0, 2] }),
@@ -128,12 +130,29 @@ export default class LoadScene extends Phaser.Scene {
       });
       i += 3;
     });
-    
-    this.add.text(width / 2, height / 4, "A Midsummer Night's Dream", boxStyle).setOrigin(0.5, 0.5);
-    this.add.text(width / 2, height * 3 / 8, "Use the arrow keys or WASD to move and press enter to interact with people", boxStyle).setOrigin(0.5, 0.5);
-    this.add.text(width / 2, height / 2, "By Alexander Cai", boxStyle).setOrigin(0.5, 0.5);
-    this.add.text(width / 2, height * 5 / 8, "Press enter to start", boxStyle).setOrigin(0.5, 0.5);
-    
-    this.input.keyboard.once("keyup_ENTER", () => this.scene.start("MainScene"));
+
+    this.add.text(width / 2, height / 4, "A Midsummer Night's Dream", boxStyle(36, width)).setOrigin(0.5);
+    this.add.text(width / 2, height * 3 / 8, "Use the arrow keys or WASD to move and press enter to interact with people", boxStyle(24, width)).setOrigin(0.5);
+    this.add.text(width / 2, height / 2, "By Alexander Cai", boxStyle(24, width)).setOrigin(0.5);
+    this.add.text(width / 2, height * 5 / 8, "Choose one of the following to start!", boxStyle(24, width)).setOrigin(0.5);
+
+    this.scene.launch("InfoScene");
+
+    const characters = ["Helena", "Hermia", "Lysander", "Demetrius"];
+    const y = height * 7 / 8;
+    for (let i in characters) {
+      const x = width * (parseInt(i) + 0.5) / 4;
+      this.add.text(x, y - width / 8, characters[i], boxStyle(18, width)).setOrigin(0.5);
+      const player = this.add.existing(new Entity(this, x, y, characters[i].toLowerCase()).setDisplaySize(width / 8, width / 8));
+      player.setInteractive()
+      .on("pointerup", () => {
+        this.registry.set("name", characters[i]);
+        this.scene.start("IntermissionScene");
+      });
+    }
+  }
+
+  update() {
+    this.background.tilePositionX += 1;
   }
 }

@@ -7,6 +7,7 @@ export default class MainScene extends Phaser.Scene {
     
     this.initialized = false;
     this.lastEntityTouched = null;
+    this.timesRun = 0;
   }
 
   init(data) {
@@ -15,6 +16,8 @@ export default class MainScene extends Phaser.Scene {
   }
   
   create() {    
+    this.timesRun++;
+    
     // ========== LOADING TILEMAP AND LAYERS ==========
     if (!this.map) {
       this.map = this.make.tilemap({ key: "outsideMap" });
@@ -38,17 +41,6 @@ export default class MainScene extends Phaser.Scene {
         .setDepth(10)
     ];
 
-    this.objectLayer = this.map.getObjectLayer("Objects");
-
-    // this.characters = {};
-    // for (let name of ["Theseus", "Hippolyta",
-    //   "Helena", "Hermia", "Demetrius", "Lysander",
-    //   "Egeus",
-    //   "Puck", "Oberon", "Titania"]) {
-    //   const obj = this.map.findObject("Object", obj => obj.name === name);
-    //   this.characters[name] = this.add.sprite() 
-    // }
-
     this.physics.world.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
     
     this.entities = this.physics.add.group({
@@ -57,7 +49,7 @@ export default class MainScene extends Phaser.Scene {
     });
     this.bullets = this.physics.add.group();
 
-    this.objectLayer.objects.forEach(obj => {
+    this.map.getObjectLayer("Objects").objects.forEach(obj => {
       if (obj.type === "npc")
         this.entities.add(new Entity(this, obj.x, obj.y, obj.name));
       else if (obj.type === "spawn" && obj.name === "player" && !this.fromSewer)
@@ -96,21 +88,19 @@ export default class MainScene extends Phaser.Scene {
       .on("keyup_ESC", () => this.registry.events.emit("pausegame", "MainScene"))
       .on("keyup_ENTER", () => {
         if (this.lastEntityTouched) this.lastEntityTouched.interact(this.player);
-      })
-      .on("keyup_B", () => this.registry.events.emit("switchscene", "MainScene", "BankScene"));
+      });
+
+    this.registry.events.on("zoomto", speaker => {
+      const speakerObj = this.entities.getChildren().filter(child => child.name.toLowerCase() === speaker.toLowerCase())[0];
+      this.cameras.main.startFollow(speakerObj, false, 0.5, 0.5).zoomTo(4, 1000, "Linear");
+    });
     
     if (!this.initialized) {
-      this.time.delayedCall(1000, () => {
-        this.registry.set("currentAct", 0);
-        this.registry.set("currentScene", 0)
-        this.registry.events.emit("beginscene")
-      });
       this.scene.launch("InfoScene"); // This will only run the first time
 
-      this.cameras.main
-        .setZoom(4).zoomTo(2, 1000, "Linear");
+      this.cameras.main.setZoom(4).zoomTo(2, 1000, "Linear");
+      this.time.delayedCall(1005, () => this.registry.events.emit("talk", this.registry.values.sceneInfo.speakers))
       this.initialized = true;
-      // this.scene.launch("IntermissionScene", { act: this.act + 1 });
     }
   }
   

@@ -18,24 +18,35 @@ export const NPC_DATA = {
 
   // Characters
 
-  Hermia: {
+  hermia: {
     texture: "rpgChars",
     frame: 378
   },
-
-  Helena: {
+  helena: {
     texture: "rpgChars",
     frame: 270
   },
-
-  Demetrius: {
+  demetrius: {
     texture: "rpgChars",
     frame: 487
   },
-
-  Lysander: {
+  lysander: {
     texture: "rpgChars",
     frame: 324
+  },
+
+  theseus: {
+    texture: "customChars",
+    frame: 0
+  },
+  hippolyta: {
+    texture: "customChars",
+    frame: 1
+  },
+
+  egeus: {
+    texture: "customChars",
+    frame: 2
   },
 
   // NPCs
