@@ -21,7 +21,7 @@ export class Entity extends Phaser.GameObjects.Sprite {
     this.hp = 1000;
   }
 
-  collide(player) {
+  collide() {
     this.scene.lastEntityTouched = this;
     this.scene.time.clearPendingEvents();
     this.scene.time.addEvent({
@@ -30,7 +30,7 @@ export class Entity extends Phaser.GameObjects.Sprite {
     }); // Since I couldn't figure out how to check when they stop colliding, we just assume the user will interact with the npc within 1.5 seconds; if they press enter later it'll still work
   }
   
-  interact(player) {
+  interact() {
     this.scene.registry.events.emit("talk", this.lines);
   }
 }

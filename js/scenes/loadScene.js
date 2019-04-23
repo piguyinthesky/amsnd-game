@@ -134,10 +134,10 @@ export default class LoadScene extends Phaser.Scene {
       this.add.text(x, y - width / 8, characters[i], boxStyle(18, width)).setOrigin(0.5);
       const player = this.add.existing(new Entity(this, x, y, characters[i].toLowerCase()).setDisplaySize(width / 8, width / 8));
       player.setInteractive()
-      .on("pointerup", () => {
-        this.registry.set("name", characters[i]);
-        this.scene.start("IntermissionScene");
-      });
+        .on("pointerup", () => {
+          this.registry.set("name", characters[i]);
+          this.scene.start("IntermissionScene");
+        });
     }
   }
 

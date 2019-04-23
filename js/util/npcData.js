@@ -1,18 +1,3 @@
-import { ROGUELIKE_CHARACTERS, TILE_MAPPING } from "./tileMapping.js";
-
-function YesNo(question, yes, no) {
-  return [
-    {
-      text: question,
-      options: ["Yes", "No"]
-    },
-    (infoScene, response) => {
-      if (response === "Yes") yes(infoScene);
-      else if (response === "No") no(infoScene);
-    }
-  ];
-}
-
 export const NPC_DATA = {
   nothing: { lines: undefined }, // Means it won't show
 

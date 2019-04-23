@@ -19,11 +19,6 @@ const selected = {
   backgroundColor: "#ffff00"
 };
 
-const option = {
-  fontFamily: "gothic",
-  fill: "#000000"
-};
-
 const textBoxStyle = (width) => ({
   font: "16px monospace",
   fill: "#000000",
@@ -55,13 +50,15 @@ export default class InfoScene extends Phaser.Scene {
       .setDisplaySize(width - margin.x * 2, height / 2 - margin.y * 2)
       .setScrollFactor(0)
       .setOrigin(0, 0)
-      .setVisible(false);
+      .setVisible(false)
+      .setDepth(50);
     
     const border = { x: this.textImg.displayWidth * 4 / 190, y: this.textImg.displayHeight * 6 / 49 }; // Based off textBox.png
     this.displayText = this.add.text(this.textImg.x + border.x, this.textImg.y + border.y, "", textBoxStyle(this.textImg.displayWidth - border.x * 2)).setScrollFactor(0)
       .setOrigin(0, 0)
       .setVisible(false)
-      .setLineSpacing(border.y / 4);
+      .setLineSpacing(border.y / 4)
+      .setDepth(51);
 
     // ==================== MENU ====================
     this.menu = false;
@@ -80,26 +77,32 @@ export default class InfoScene extends Phaser.Scene {
         if (this.menu) this.moveSelection(1);
       })
       .on("keyup_ENTER", event => { // This is the only place where the timer will end
-        console.log(this.registry.values);
+
         if (this.displayText.visible) {
           event.stopPropagation(); // Prevents the event from reaching other scenes
+
           if (this.timer.getOverallProgress() === 1) { // Current text is finished
             if (this.menu) {
               this.response = this.options[this.selected].text;
               this.destroyMenu();
             }
-            this.startText();
+
+            this.showText(false);
+
+            if (this.texts.length === 0) this.nextLine();
           } else if (this.timer.getOverallProgress() > 0) // Player presses enter while text is scrolling
             this.timer.remove(true); // Jump to end of timer
         } else if (this.texts.length > 0) {
           const result = this.texts.sort((a, b) => a.y - b.y).map(obj => obj.text).join();
           
           if (result === this.speakerInfo.lines.join()) {
-            this.registry.events.emit("talk", "Well done!");
+            this.speechBubble("Well done!");
             this.texts.forEach(obj => obj.destroy());
             this.images.forEach(img => img.destroy());
+            this.texts = [];
+            this.images = [];
           } else {
-            this.registry.events.emit("talk", "Hmm, something doesn't look quite right...");
+            this.speechBubble("Hmm, something doesn't look quite right...");
           }
         }
       });
@@ -107,81 +110,75 @@ export default class InfoScene extends Phaser.Scene {
     this.initRegistry();
   }
 
-  startText() {
-    this.textData = this.lines.shift();
-    this.text = this.parseLine(this.textData);
+  nextLine() {
+    this.registry.values.speakerIndex++;
+    this.startText(this.speakerInfo);
+  }
 
-    if (!this.text) return this.showText(false);
+  startText(data) {
+    if (data.speaker) this.registry.events.emit("zoomto", data.speaker);
 
-    if (this.speakerInfo.lines) {
-      if (this.texts) this.texts.forEach(text => text.destroy());
-      if (this.images) this.images.forEach(img => img.destroy());
-
-      this.showText(false);
-
-      const { width, height } = this.cameras.main;
-
-      this.texts = [];
-      this.images = [];
-
-      const currLines = Phaser.Utils.Array.Shuffle(this.speakerInfo.lines.slice());
-
-      this.add.text(width / 2, height * 0.5 / currLines.length, `Put ${this.speakerInfo.speaker}'s lines into order! Press enter when you're finished.`, {
-        font: "16px monospace",
-        fill: "#000000",
-        padding: { x: 20, y: 10 },
-        wordWrap: {width, useAdvancedWrap: true},
-        backgroundColor: "#ffffff",
-        align: "center"
-      }).setOrigin(0.5);
-
-      for (let i in currLines) {
-        const text = this.add.text(width / 2, height * (parseInt(i) + 1.5) / (currLines.length + 1), currLines[i], textBoxStyle(width / 2)).setOrigin(0.5).setName(i).setDepth(21);
-        const {x, y} = text.getTopLeft();
-        text.setPosition(x, y).setOrigin(0);
-        const image = this.add.image(x - 5, y - 5, "textBox").setDisplaySize(text.displayWidth + 10, text.displayHeight + 10).setOrigin(0).setName(i).setDepth(20).setInteractive({ useHandCursor: true });
-
-        this.input.setDraggable(image)
-          .on("dragstart", (pointer, obj) => {
-            obj.setTexture("textBoxPressed").setDisplaySize(obj.displayWidth, obj.displayHeight);
-          })
-          .on("drag", (pointer, obj, dx, dragY) => {
-            obj.setY(dragY);
-            this.texts[obj.name].setY(dragY);
-          }).on("dragend", (pointer, obj) => {
-            obj.setTexture("textBox").setDisplaySize(obj.displayWidth, obj.displayHeight);
-          });
-
-        this.texts.push(text);
-        this.images.push(image);
-        console.log("created")
-      }
+    if (data.lines && 4 <= data.lines.length && data.lines.length <= 8) {
+      this.sortInOrder(data.lines);
     } else {
-      this.timer = this.time.addEvent({
-        delay: this.registry.get("talkSpeed"),
-        callback: () => {
-          this.displayText.setText(this.text.slice(0, this.text.length - this.timer.getRepeatCount()));
-          if (this.timer.getOverallProgress() === 1 && this.textData.options) {
-            const { x, y } = this.displayText.getBottomLeft();
-            this.menu = this.add.container(x, y);
-            for (let option of this.textData.options) {
-              const text = new Phaser.GameObjects.Text(this, 0, this.options.length * 20, option, deselected);
-              this.options.push(text);
-              this.menu.add(text);
-            }
-            this.moveSelection(0);
-          }
-        },
-        repeat: this.text.length
-      });
-    
-      this.showText(true);
+      this.speechBubble(this.parseLine(data));
     }
   }
+
+  sortInOrder() {
+    const { width, height } = this.cameras.main;
+
+    const currLines = Phaser.Utils.Array.Shuffle(this.speakerInfo.lines.slice());
+
+    this.speechBubble(`Put ${this.speakerInfo.speaker}'s lines into order! Press enter when you're finished.`);
+
+    for (let i in currLines) {
+      const text = this.add.text(width / 2, height * (parseInt(i) + 0.5) / currLines.length, currLines[i], textBoxStyle(width / 2)).setOrigin(0.5).setName(i).setDepth(21);
+      const {x, y} = text.getTopLeft();
+      text.setPosition(x, y).setOrigin(0);
+      const image = this.add.image(x - 5, y - 5, "textBox").setDisplaySize(text.displayWidth + 10, text.displayHeight + 10).setOrigin(0).setName(i).setDepth(20).setInteractive({ useHandCursor: true });
+
+      this.input.setDraggable(image)
+        .on("dragstart", (pointer, obj) => {
+          obj.setTexture("textBoxPressed").setDisplaySize(obj.displayWidth, obj.displayHeight);
+        })
+        .on("drag", (pointer, obj, dx, dragY) => {
+          obj.setY(dragY);
+          this.texts[obj.name].setY(dragY);
+        }).on("dragend", (pointer, obj) => {
+          obj.setTexture("textBox").setDisplaySize(obj.displayWidth, obj.displayHeight);
+        });
+
+      this.texts.push(text);
+      this.images.push(image);
+    }
+  }
+
+  speechBubble(text) {
+    this.showText(true);
+
+    this.timer = this.time.addEvent({
+      delay: this.registry.get("talkSpeed"),
+      callback: () => {
+        this.displayText.setText(text.slice(0, text.length - this.timer.getRepeatCount()));
+        if (this.timer.getOverallProgress() === 1 && this.speakerInfo.options) {
+          const { x, y } = this.displayText.getBottomLeft();
+          this.menu = this.add.container(x, y);
+          for (let option of this.textData.options) {
+            const temp = new Phaser.GameObjects.Text(this, 0, this.options.length * 20, option, deselected);
+            this.options.push(temp);
+            this.menu.add(temp);
+          }
+          this.moveSelection(0);
+        }
+      },
+      repeat: text.length
+    });
+  }
   
-  showText(val) {
+  showText(val, lines) {
     this.textImg.setVisible(val);
-    this.displayText.setText("");
+    this.displayText.setText(lines || "");
     this.displayText.setVisible(val);
     if (val) this.scene.pause("MainScene");
     else this.scene.resume("MainScene");
@@ -202,24 +199,21 @@ export default class InfoScene extends Phaser.Scene {
     else if (typeof obj === "function") return this.parseLine(obj(this, this.response));
     else if (Array.isArray(obj)) {
       this.lines = obj.concat(this.lines); // add to the start of the line
-      this.textData = this.lines.shift();
-      return this.parseLine(this.textData);
+      return this.parseLine(this.lines.shift());
     } else if (typeof obj === "object") {
       if (obj.speaker) {
         const lines = obj.lines.slice();
+        let temp = lines.splice(0, 5);
         let result = [];
-        while (true) {
-          let temp = lines.splice(0, 5);
-          if (temp.length !== 0) result.push(obj.speaker + "\n\n" + temp.join("\n"));
-          if (temp.length < 5) break;
+        while (temp.length > 0) {
+          result.push(obj.speaker + "\n\n" + temp.join("\n"));
+          temp = lines.splice(0, 5);
         }
         this.registry.values.speakerIndex++;
-        this.registry.events.emit("zoomto", obj.speaker);
         return this.parseLine(result);
       }
       return obj.text;
-    } else
-      return null;
+    } else return null;
   }
 
   moveSelection(dir) {
@@ -235,12 +229,8 @@ export default class InfoScene extends Phaser.Scene {
       })
       .on("changedata", this.handleData.bind(this))
       .on("setdata", this.handleData.bind(this))
-      .on("talk", (lines, override = false) => {
-        // If the current text has not yet finished, we ignore other talk events
-        if (this.displayText.visible) return;
-        const incoming = Array.isArray(lines) ? lines.slice() : [lines];
-        this.lines = override ? incoming : this.lines.unshift(incoming);
-        this.startText();
+      .on("talk", () => {
+        this.startText(this.parseLine(this.speakerInfo));
       })
       .on("switchscene", (scene1, scene2, data) => {
         if (this.timer) this.timer.remove(true);
@@ -266,23 +256,22 @@ export default class InfoScene extends Phaser.Scene {
       talkSpeed: 50,
     });
     this.registry.set("actIndex", 0);
-    this.registry.set("sceneIndex", 0);
-    this.registry.set("speakerIndex", 0);
   }
 
   handleData(parent, key, data) {
     switch (key) {
     case "actIndex":
-      this.registry.set("actInfo", this.cache.json.get("fullPlay").acts[this.registry.values.actIndex]);
+      this.registry.values.actInfo = this.cache.json.get("fullPlay").acts[data];
+      this.registry.set("sceneIndex", 0);
       break;
 
     case "sceneIndex":
-      this.registry.set("sceneInfo", this.registry.get("actInfo").scenes[this.registry.values.sceneIndex]);
+      this.registry.values.sceneInfo = this.registry.values.actInfo.scenes[data];
+      this.registry.set("speakerIndex", 0);
       break;
 
     case "speakerIndex":
-      console.log("speaker change")
-      this.registry.set("speakerInfo", this.registry.get("sceneInfo").speakers[this.registry.values.speakerIndex]);
+      this.registry.values.speakerInfo = this.registry.values.sceneInfo.speakers[data];
       break;
             
     default:
@@ -291,5 +280,4 @@ export default class InfoScene extends Phaser.Scene {
   }
 
   get speakerInfo() { return this.registry.values.speakerInfo; }
-
 }

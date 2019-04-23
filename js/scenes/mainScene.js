@@ -87,8 +87,8 @@ export default class MainScene extends Phaser.Scene {
     if (!this.initialized) {
       this.cameras.main.setZoom(4).zoomTo(2, 1000, "Linear");
       this.time.delayedCall(1005, () => {
-        this.registry.events.emit("talk", this.registry.values.sceneInfo.speakers)
-      })
+        this.registry.events.emit("talk");
+      });
       this.initialized = true;
     }
   }
