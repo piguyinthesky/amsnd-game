@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.2" tiledversion="1.2.3" orientation="orthogonal" renderorder="right-down" width="4" height="4" tilewidth="16" tileheight="16" infinite="0" nextlayerid="13" nextobjectid="1">
+ <tileset firstgid="1" name="roguelike-characters" tilewidth="16" tileheight="16" spacing="1" tilecount="648" columns="54">
+  <image source="../tilesets/roguelike-characters.png" width="918" height="203"/>
+ </tileset>
+ <tileset firstgid="649" name="roguelike-accessories" tilewidth="16" tileheight="16" spacing="1" tilecount="612" columns="51">
+  <image source="../../../../Documents/assets/roguelike-characters-pack/Spritesheet/roguelike-accessories.png" width="866" height="203"/>
+ </tileset>
+ <layer id="7" name="body" width="4" height="4">
+  <data encoding="base64">
+   AQAAAAIAAAABAAAAAQAAAKMAAACkAAAAowAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==
+  </data>
+ </layer>
+ <layer id="8" name="pants" width="4" height="4">
+  <data encoding="base64">
+   iQIAAFUDAADvAgAAwgMAAFQEAADvAwAAIgMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==
+  </data>
+ </layer>
+ <layer id="9" name="armor" width="4" height="4">
+  <data encoding="base64">
+   lAMAAPYCAACSAwAAkQIAAL8CAAD9AgAA+QIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==
+  </data>
+ </layer>
+ <layer id="10" name="helmet" width="4" height="4">
+  <data encoding="base64">
+   awMAAGcEAAA0BAAAAwMAAGgDAAAyBAAABgMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==
+  </data>
+ </layer>
+ <layer id="11" name="shield" width="4" height="4">
+  <data encoding="base64">
+   PgMAADsDAAAAAAAAAAAAAKQDAAChAwAAPAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==
+  </data>
+ </layer>
+ <layer id="12" name="weapon" width="4" height="4">
+  <data encoding="base64">
+   AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==
+  </data>
+ </layer>
+</map>
