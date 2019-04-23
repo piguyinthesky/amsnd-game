@@ -62,18 +62,10 @@ export default class LoadScene extends Phaser.Scene {
         .json("fullPlay", "../js/util/amsnd.json")
 
         .setPath("sprites/")
-        .image("bill", "bill.png")
-        .image("camera", "camera1.png")
-        .image("rightArrow", "rightArrow.png")
         .image("textBox", "textBox.png")
         .image("textBoxPressed", "textBox_pressed.png")
 
         .setPath("spritesheets/")
-        .spritesheet("police", "police.png", {
-          frameWidth: 16,
-          frameHeight: 32,
-          spacing: 1
-        })
         .spritesheet("rpgChars", "roguelike-chars.png", {
           frameWidth: 16,
           frameHeight: 16,
@@ -93,9 +85,6 @@ export default class LoadScene extends Phaser.Scene {
         .setPath("tilesets/")
         .image("roguelikeCity", "roguelike-city.png")
         .image("roguelikeRPG", "roguelike-rpg.png")
-        .image("dungeonTiles", "custom-dungeon.png")
-        .image("pond", "pond.png")
-        .image("moneySign", "money-sign.png");
     } catch (error) {
       assetText.setText("Error: " + error);
     }

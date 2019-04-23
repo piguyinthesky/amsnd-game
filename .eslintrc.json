@@ -7,8 +7,7 @@
     "globals": {
         "Atomics": "readonly",
         "SharedArrayBuffer": "readonly",
-        "Phaser": "readonly",
-        "Dungeon": "readonly"
+        "Phaser": "readonly"
     },
     "parserOptions": {
         "ecmaVersion": 2018,
