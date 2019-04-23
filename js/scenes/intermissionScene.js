@@ -41,7 +41,7 @@ export default class IntermissionScene extends Phaser.Scene {
 
   set currScene(val) {
     if (val >= this.currActInfo.scenes.length) {
-      this.registry.values.actIndex++;
+      this.registry.set("actIndex", (this.currAct + val + 5) % 5);
       this.actText.setText(this.currActInfo.title);
     } else if (val < 0) {
       this.registry.set("actIndex", (this.currAct + val + 5) % 5);

@@ -86,7 +86,9 @@ export default class LoadScene extends Phaser.Scene {
         })
 
         .setPath("tilemaps/")
-        .tilemapTiledJSON("outsideMap", "outside-bank.json")
+        .tilemapTiledJSON("palace")
+        .tilemapTiledJSON("house")
+        .tilemapTiledJSON("woods")
 
         .setPath("tilesets/")
         .image("roguelikeCity", "roguelike-city.png")

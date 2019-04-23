@@ -5,7 +5,8 @@
       "scenes": [
         {
           "title": "SCENE I. Athens. The palace of THESEUS.",
-          "setting": "Palace",
+          "setting": "palace",
+          "characters": ["Theseus", "Hippolyta", "Egeus", "Hermia", "Demetrius", "Lysander", "Helena"],
           "speakers": [
             "Enter THESEUS, HIPPOLYTA, PHILOSTRATE, and Attendants",
             {
@@ -526,6 +527,8 @@
         },
         {
           "title": "SCENE II. Athens. QUINCE'S house.",
+          "setting": "house",
+          "characters": ["Quince", "Snug", "Bottom", "Flute", "Snout", "Starveling"],
           "speakers": [
             "Enter QUINCE, SNUG, BOTTOM, FLUTE, SNOUT, and STARVELING",
             {
@@ -845,6 +848,9 @@
       "scenes": [
         {
           "title": "SCENE I. A wood near Athens.",
+          "setting": "woods",
+          "objectLayer": "2.1",
+          "characters": ["Puck", "Fairy", "Oberon", "Titania", "Helena", "Demetrius"],
           "speakers": [
             "Enter, from opposite sides, a Fairy, and PUCK",
             {
@@ -886,8 +892,12 @@
                 "And now they never meet in grove or green,",
                 "By fountain clear, or spangled starlight sheen,",
                 "But, they do square, that all their elves for fear",
-                "Creep into acorn-cups and hide them there.",
-                "Fairy",
+                "Creep into acorn-cups and hide them there."
+              ]
+            },
+            {
+              "speaker": "Fairy",
+              "lines": [
                 "Either I mistake your shape and making quite,",
                 "Or else you are that shrewd and knavish sprite",
                 "Call'd Robin Goodfellow: are not you he",
@@ -1323,6 +1333,9 @@
         },
         {
           "title": "SCENE II. Another part of the wood.",
+          "setting": "woods",
+          "objectLayer": "2.2",
+          "characters": ["Titania", "Oberon", "Lysander", "Hermia", "Puck", "Helena", "Demetrius"],
           "speakers": [
             "Enter TITANIA, with her train",
             {
@@ -1627,6 +1640,9 @@
       "scenes": [
         {
           "title": "SCENE I. The wood. TITANIA lying asleep.",
+          "setting": "woods",
+          "objectLayer": "3.1",
+          "characters": ["Quince", "Snout", "Snug", "Starveling", "Bottom", "Flute", "Puck", "Titania", "Peaseblossom", "Cobweb", "Mustardseed", "Moth"],
           "speakers": [
             "Enter QUINCE, SNUG, BOTTOM, FLUTE, SNOUT, and STARVELING",
             {
@@ -2194,6 +2210,9 @@
         },
         {
           "title": "SCENE II. Another part of the wood.",
+          "setting": "woods",
+          "objectLayer": "2.2",
+          "characters": ["Oberon", "Puck", "Demetrius", "Hermia", "Lysander", "Helena"],
           "speakers": [
             "Enter OBERON",
             {
@@ -3305,6 +3324,9 @@
       "scenes": [
         {
           "title": "SCENE I. The same. LYSANDER, DEMETRIUS, HELENA, and HERMIA",
+          "setting": "woods",
+          "objectLayer": "4.1",
+          "characters": ["Lysander", "Demetrius", "Helena", "Hermia", "Titania", "Bottom", "Peaseblossom", "Cobweb", "Moth", "Mustardseed", "Theseus", "Hippolyta", "Egeus"],
           "speakers": [
             "lying asleep.",
             "Enter TITANIA and BOTTOM; PEASEBLOSSOM, COBWEB, MOTH, MUSTARDSEED, and other Fairies attending; OBERON behind unseen",

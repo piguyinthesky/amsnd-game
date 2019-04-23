@@ -36,13 +36,6 @@ export default class InfoScene extends Phaser.Scene {
   
   create() {
     const { width, height } = this.cameras.main;
-    
-    // ==================== MONEY AND LIVES ====================
-    this.livesText = this.add.text(5, 5, "Lives ❤: 3", style);
-    this.hpBar = this.add.rectangle(width - 5, 5, width / 4, 24, 0xff0000).setOrigin(1, 0);
-    this.baseWidth = width / 4 - 10;
-    this.currentHpBar = this.add.rectangle(width - 10, 10, this.baseWidth, 14, 0x00ff00).setOrigin(1, 0);
-    this.inventoryText = this.add.text(5, height - 5, "Inventory: Nothing", style).setOrigin(0, 1);
 
     // ==================== TEXT BOX ====================
     const margin = { x: width / 64, y: height / 32 };
@@ -68,6 +61,8 @@ export default class InfoScene extends Phaser.Scene {
     this.texts = [];
     this.images = [];
     this.lines = [];
+
+    this.input.off("keyup_UP").off("keyup_DOWN").off("keyup_ENTER");
     
     this.input.keyboard
       .on("keyup_UP", () => {
@@ -77,23 +72,26 @@ export default class InfoScene extends Phaser.Scene {
         if (this.menu) this.moveSelection(1);
       })
       .on("keyup_ENTER", event => { // This is the only place where the timer will end
-
         if (this.displayText.visible) {
           event.stopPropagation(); // Prevents the event from reaching other scenes
 
           if (this.timer.getOverallProgress() === 1) { // Current text is finished
             if (this.menu) {
-              this.response = this.options[this.selected].text;
+              if (this.options.length > 0) {
+                const next = this.cb(this, this.options[this.selected].text);
+                if (next) this.lines.unshift(next);
+              }
+              this.menuoptions = [];
+              this.cb = null;
               this.destroyMenu();
+              console.log(this.lines);
             }
-
             this.showText(false);
-
             if (this.texts.length === 0) this.nextLine();
           } else if (this.timer.getOverallProgress() > 0) // Player presses enter while text is scrolling
             this.timer.remove(true); // Jump to end of timer
         } else if (this.texts.length > 0) {
-          const result = this.texts.sort((a, b) => a.y - b.y).map(obj => obj.text).join();
+          const result = this.texts.slice().sort((a, b) => a.y - b.y).map(obj => obj.text).join();
           
           if (result === this.speakerInfo.lines.join()) {
             this.speechBubble("Well done!");
@@ -111,15 +109,41 @@ export default class InfoScene extends Phaser.Scene {
   }
 
   nextLine() {
-    this.registry.values.speakerIndex++;
-    this.startText(this.speakerInfo);
+    if (this.lines.length > 0)
+      this.startText(this.lines.shift());
+    else {
+      console.log(this.registry.values.speakerIndex)
+      console.log(this.registry.values.sceneInfo.speakers.length)
+      if (this.registry.values.speakerIndex === this.registry.values.sceneInfo.speakers.length - 1) {
+        this.scene.get("MainScene").scene.start("IntermissionScene");
+      } else {
+        this.registry.values.speakerIndex++;
+        this.startText(this.speakerInfo);
+      }
+    }
   }
 
   startText(data) {
+    this.currentLine = data;
     if (data.speaker) this.registry.events.emit("zoomto", data.speaker);
+    console.log("data")
+    console.log(data);
 
-    if (data.lines && 4 <= data.lines.length && data.lines.length <= 8) {
+    if (data.lines && 4 <= data.lines.length && data.lines.length <= 8 && Math.random() < 0.5) {
       this.sortInOrder(data.lines);
+    } else if (Math.random() < 0.5 && data.speaker) {
+      this.speechBubble(this.parseLine([
+        data,
+        {
+          text: "Who said this?",
+          cb: (infoScene, response) => {
+            console.log("callback")
+            if (response.toLowerCase() === data.speaker.toLowerCase()) return "Well done!";
+            else return "Actually, it was " + capitalize(data.speaker);
+          },
+          options: this.registry.values.sceneInfo.characters
+        }
+      ], { hidden: true }));
     } else {
       this.speechBubble(this.parseLine(data));
     }
@@ -161,10 +185,10 @@ export default class InfoScene extends Phaser.Scene {
       delay: this.registry.get("talkSpeed"),
       callback: () => {
         this.displayText.setText(text.slice(0, text.length - this.timer.getRepeatCount()));
-        if (this.timer.getOverallProgress() === 1 && this.speakerInfo.options) {
+        if (this.timer.getOverallProgress() === 1 && this.menuoptions) {
           const { x, y } = this.displayText.getBottomLeft();
-          this.menu = this.add.container(x, y);
-          for (let option of this.textData.options) {
+          this.menu = this.add.container(x, y).setDepth(52);
+          for (let option of this.menuoptions) {
             const temp = new Phaser.GameObjects.Text(this, 0, this.options.length * 20, option, deselected);
             this.options.push(temp);
             this.menu.add(temp);
@@ -180,8 +204,8 @@ export default class InfoScene extends Phaser.Scene {
     this.textImg.setVisible(val);
     this.displayText.setText(lines || "");
     this.displayText.setVisible(val);
-    if (val) this.scene.pause("MainScene");
-    else this.scene.resume("MainScene");
+    if (val) this.registry.set("paused", true)
+    else this.registry.set("paused", false);
   }
 
   destroyMenu() {
@@ -194,29 +218,35 @@ export default class InfoScene extends Phaser.Scene {
     this.menu = false;
   }
   
-  parseLine(obj) {
+  parseLine(obj, flags = {}) {
     if (typeof obj === "string") return obj;
     else if (typeof obj === "function") return this.parseLine(obj(this, this.response));
     else if (Array.isArray(obj)) {
       this.lines = obj.concat(this.lines); // add to the start of the line
-      return this.parseLine(this.lines.shift());
+      return this.parseLine(this.lines.shift(), flags);
     } else if (typeof obj === "object") {
+      console.log("parsing obj")
+      console.log(obj)
       if (obj.speaker) {
         const lines = obj.lines.slice();
         let temp = lines.splice(0, 5);
         let result = [];
         while (temp.length > 0) {
-          result.push(obj.speaker + "\n\n" + temp.join("\n"));
+          result.push((flags.hidden ? "?????" : obj.speaker) + "\n\n" + temp.join("\n"));
           temp = lines.splice(0, 5);
         }
-        this.registry.values.speakerIndex++;
-        return this.parseLine(result);
+        return this.parseLine(result, flags);
+      } else if (obj.options) {
+        this.menuoptions = obj.options;
+        this.cb = obj.cb;
+        return obj.text;
       }
-      return obj.text;
     } else return null;
   }
 
   moveSelection(dir) {
+    console.log(this.options)
+    if (this.options.length === 0) return;
     this.options[this.selected].setStyle(deselected);
     this.selected = Math.min(Math.max(this.selected + dir, 0), this.options.length - 1);
     this.options[this.selected].setStyle(selected);
@@ -247,12 +277,6 @@ export default class InfoScene extends Phaser.Scene {
 
     this.registry.set({
       infoInitialized: true,
-      
-      money: 0,
-      lives: 3,
-      hp: 1000,
-      inventory: [],
-      
       talkSpeed: 50,
     });
     this.registry.set("actIndex", 0);
@@ -280,4 +304,10 @@ export default class InfoScene extends Phaser.Scene {
   }
 
   get speakerInfo() { return this.registry.values.speakerInfo; }
+  // get currentLine() { return this.lines.length > 0 ? this.lines[0] : this.speakerInfo; }
+  
+}
+
+function capitalize(name) {
+  return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
 }

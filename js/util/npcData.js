@@ -34,74 +34,64 @@ export const NPC_DATA = {
     frame: 2
   },
 
-  // NPCs
+  bottom: {
+    texture: "rpgChars",
+    frame: 324
+  },
+  flute: {
+    texture: "rpgChars",
+    frame: 433
+  },
+  starveling: {
+    texture: "rpgChars",
+    frame: 432
+  },
+  snug: {
+    texture: "rpgChars",
+    frame: 487
+  },
+  snout: {
+    texture: "customChars",
+    frame: 3
+  },
+  quince: {
+    texture: "rpgChars",
+    frame: 541
+  },
 
-  librarian: {
-    texture: "rpgChars",
-    frame: 271,
-    lines: [
-      infoScene => {
-        if (infoScene.registry.get("name")) {
-          if (infoScene.registry.get("inventory").includes("gun"))
-            return "My gosh my golly, you actually did go and get it! Congrats, you just got 1000 points! (jk, the only actual score system is your money.)";
-          else
-            return "What are you waiting for? If you keep loitering, I'm going to start charing fees...";
-        } else {
-          return [
-            {
-              text: "Hey, what's your name?",
-              options: [
-                "Alice",
-                "Bob",
-                "non-binary"
-              ]
-            },
-            (infoScene, response) => {
-              infoScene.registry.set("name", response);
-              return [
-                `Hey there ${response}, how do you do? I'm the librarian, I'll be here to help out.`,
-                "But before I tell you anything, I have this strange feeling that mailbox has something important you should read inside it. Go walk up to it and press E, whatever that means!"
-              ];
-            }
-          ];
-        }
-      }
-    ]
+  oberon: {
+    texture: "customChars",
+    frame: 4
   },
-  npcBlood: {
-    texture: "rpgChars",
-    frame: 594,
-    lines: "Hey, have you noticed that some of these bills have bloodstains on them?"
+  titania: {
+    texture: "customChars",
+    frame: 5
   },
-  npcHairpin: {
+  puck: {
     texture: "rpgChars",
-    frame: 379,
-    lines: "Where did my hairpin go? Did you steal it from me?"
+    frame: 540
   },
-  npcMysterious: {
-    texture: "rpgChars",
-    frame: 270,
-    lines: "Who's being mysterious? I'm not being mysterious!"
-  },// Builtin NPCs: 270, 271, 324, 325, 378 ... 594, 595
-  npcName: {
-    texture: "rpgChars",
-    frame: 324,
-    lines: infoScene => {
-      return [
-        {
-          text: "Hey, what's your name?",
-          options: infoScene.registry.get("name")
-        },
-        "Oh, actually I don't really care. Nice to meet you, though!"
-      ];
-    }
+  fairy: {
+    texture: "customChars",
+    frame: 6
   },
-  npcRude: {
-    texture: "rpgChars",
-    frame: 325,
-    lines: "Get out of the way, you little dingus!"
+
+  peaseblossom: {
+    texture: "customChars",
+    frame: 6
   },
-  police: {},
+  cobweb: {
+    texture: "customChars",
+    frame: 6
+  },
+  moth: {
+    texture: "customChars",
+    frame: 6
+  },
+  mustardseed: {
+    texture: "customChars",
+    frame: 6
+  },
 
   // Objects
   car: {

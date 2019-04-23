@@ -1,3 +1,9 @@
+const boxStyle = size => ({
+  font: `${size}px monospace`,
+  fill: "#000000",
+  padding: { x: 20, y: 10 },
+  backgroundColor: "#ffffff"
+});
 export default class PauseScene extends Phaser.Scene {
   constructor() {
     super({ key: "PauseScene" });
@@ -20,17 +26,18 @@ export default class PauseScene extends Phaser.Scene {
   create() {
     const { width, height } = this.cameras.main;
     
-    this.add.text(width / 2, height / 4, "Paused", {
-      font: "24px monospace",
-      fill: "#ffffff"
-    }).setOrigin(0.5, 0.5);
+    this.add.text(width / 2, height / 4, "Paused", boxStyle(24)).setOrigin(0.5, 0.5);
 
-    this.talkSpeedText = this.add.text(width / 2, height * 3 / 4, "Text speed: medium", {
-      font: "18px monospace",
-      fill: "#000000",
-      padding: { x: 20, y: 10 },
-      backgroundColor: "#ffffff"
-    })
+    this.restartText = this.add.text(width / 2, height / 2, "Choose scene", boxStyle(18))
+      .setOrigin(0.5)
+      .setInteractive()
+      .on("pointerup", () => {
+        this.scene.get("MainScene").scene.start("IntermissionScene");
+        this.scene.get("InfoScene").scene.restart();
+        this.scene.stop();
+      })
+
+    this.talkSpeedText = this.add.text(width / 2, height * 3 / 4, "Text speed: medium", boxStyle(18))
       .setOrigin(0.5)
       .setInteractive()
       .on("pointerup", () => {
