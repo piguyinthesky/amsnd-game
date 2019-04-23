@@ -84,7 +84,6 @@ export default class InfoScene extends Phaser.Scene {
               this.menuoptions = [];
               this.cb = null;
               this.destroyMenu();
-              console.log(this.lines);
             }
             this.showText(false);
             if (this.texts.length === 0) this.nextLine();
@@ -112,8 +111,8 @@ export default class InfoScene extends Phaser.Scene {
     if (this.lines.length > 0)
       this.startText(this.lines.shift());
     else {
-      console.log(this.registry.values.speakerIndex)
-      console.log(this.registry.values.sceneInfo.speakers.length)
+      console.log(this.registry.values.speakerIndex);
+      console.log(this.registry.values.sceneInfo.speakers.length);
       if (this.registry.values.speakerIndex === this.registry.values.sceneInfo.speakers.length - 1) {
         this.scene.get("MainScene").scene.start("IntermissionScene");
       } else {
@@ -126,7 +125,7 @@ export default class InfoScene extends Phaser.Scene {
   startText(data) {
     this.currentLine = data;
     if (data.speaker) this.registry.events.emit("zoomto", data.speaker);
-    console.log("data")
+    console.log("data");
     console.log(data);
 
     if (data.lines && 4 <= data.lines.length && data.lines.length <= 8 && Math.random() < 0.5) {
@@ -137,7 +136,7 @@ export default class InfoScene extends Phaser.Scene {
         {
           text: "Who said this?",
           cb: (infoScene, response) => {
-            console.log("callback")
+            console.log("callback");
             if (response.toLowerCase() === data.speaker.toLowerCase()) return "Well done!";
             else return "Actually, it was " + capitalize(data.speaker);
           },
@@ -204,7 +203,7 @@ export default class InfoScene extends Phaser.Scene {
     this.textImg.setVisible(val);
     this.displayText.setText(lines || "");
     this.displayText.setVisible(val);
-    if (val) this.registry.set("paused", true)
+    if (val) this.registry.set("paused", true);
     else this.registry.set("paused", false);
   }
 
@@ -225,8 +224,8 @@ export default class InfoScene extends Phaser.Scene {
       this.lines = obj.concat(this.lines); // add to the start of the line
       return this.parseLine(this.lines.shift(), flags);
     } else if (typeof obj === "object") {
-      console.log("parsing obj")
-      console.log(obj)
+      console.log("parsing obj");
+      console.log(obj);
       if (obj.speaker) {
         const lines = obj.lines.slice();
         let temp = lines.splice(0, 5);
@@ -245,7 +244,6 @@ export default class InfoScene extends Phaser.Scene {
   }
 
   moveSelection(dir) {
-    console.log(this.options)
     if (this.options.length === 0) return;
     this.options[this.selected].setStyle(deselected);
     this.selected = Math.min(Math.max(this.selected + dir, 0), this.options.length - 1);
@@ -260,7 +258,7 @@ export default class InfoScene extends Phaser.Scene {
       .on("changedata", this.handleData.bind(this))
       .on("setdata", this.handleData.bind(this))
       .on("talk", () => {
-        this.startText(this.parseLine(this.speakerInfo));
+        if (!this.displayText.visible) this.startText(this.parseLine(this.speakerInfo));
       })
       .on("switchscene", (scene1, scene2, data) => {
         if (this.timer) this.timer.remove(true);

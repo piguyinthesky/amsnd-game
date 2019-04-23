@@ -52,7 +52,7 @@ export default class MainScene extends Phaser.Scene {
       else {
         const speakerObj = this.entities.getChildren().filter(child => {
           console.log(child.name);
-          return child.name === speaker.toLowerCase()
+          return child.name === speaker.toLowerCase();
         })[0];
         
         this.cameras.main.startFollow(speakerObj, false, 0.5, 0.5).zoomTo(4, 1000, "Linear");

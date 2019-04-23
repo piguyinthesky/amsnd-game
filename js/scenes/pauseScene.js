@@ -35,7 +35,7 @@ export default class PauseScene extends Phaser.Scene {
         this.scene.get("MainScene").scene.start("IntermissionScene");
         this.scene.get("InfoScene").scene.restart();
         this.scene.stop();
-      })
+      });
 
     this.talkSpeedText = this.add.text(width / 2, height * 3 / 4, "Text speed: medium", boxStyle(18))
       .setOrigin(0.5)

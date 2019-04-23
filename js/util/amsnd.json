@@ -39,13 +39,12 @@
                 "Turn melancholy forth to funerals;",
                 "The pale companion is not for our pomp.",
                 "Exit PHILOSTRATE",
-                "",
+                
                 "Hippolyta, I woo'd thee with my sword,",
                 "And won thy love, doing thee injuries;",
                 "But I will wed thee in another key,",
                 "With pomp, with triumph and with revelling.",
-                "Enter EGEUS, HERMIA, LYSANDER, and DEMETRIUS",
-                ""
+                "Enter EGEUS, HERMIA, LYSANDER, and DEMETRIUS"
               ]
             },
             {
@@ -245,8 +244,7 @@
               "speaker": "EGEUS",
               "lines": [
                 "With duty and desire we follow you.",
-                "Exeunt all but LYSANDER and HERMIA",
-                ""
+                "Exeunt all but LYSANDER and HERMIA"
               ]
             },
             {
@@ -365,8 +363,7 @@
               "speaker": "LYSANDER",
               "lines": [
                 "Keep promise, love. Look, here comes Helena.",
-                "Enter HELENA",
-                ""
+                "Enter HELENA"
               ]
             },
             {
@@ -483,11 +480,10 @@
               "lines": [
                 "I will, my Hermia.",
                 "Exit HERMIA",
-                "",
+                
                 "Helena, adieu:",
                 "As you on him, Demetrius dote on you!",
-                "Exit",
-                ""
+                "Exit"
               ]
             },
             {
@@ -519,8 +515,7 @@
                 "If I have thanks, it is a dear expense:",
                 "But herein mean I to enrich my pain,",
                 "To have his sight thither and back again.",
-                "Exit",
-                ""
+                "Exit"
               ]
             }
           ]
@@ -835,8 +830,7 @@
               "speaker": "BOTTOM",
               "lines": [
                 "Enough; hold or cut bow-strings.",
-                "Exeunt",
-                ""
+                "Exeunt"
               ]
             }
           ]
@@ -933,8 +927,7 @@
                 "But, room, fairy! here comes Oberon.",
                 "Fairy",
                 "And here my mistress. Would that he were gone!",
-                "Enter, from one side, OBERON, with his train; from the other, TITANIA, with hers",
-                ""
+                "Enter, from one side, OBERON, with his train; from the other, TITANIA, with hers"
               ]
             },
             {
@@ -1082,8 +1075,7 @@
               "lines": [
                 "Not for thy fairy kingdom. Fairies, away!",
                 "We shall chide downright, if I longer stay.",
-                "Exit TITANIA with her train",
-                ""
+                "Exit TITANIA with her train"
               ]
             },
             {
@@ -1136,8 +1128,7 @@
               "lines": [
                 "I'll put a girdle round about the earth",
                 "In forty minutes.",
-                "Exit",
-                ""
+                "Exit"
               ]
             },
             {
@@ -1155,8 +1146,7 @@
                 "I'll make her render up her page to me.",
                 "But who comes here? I am invisible;",
                 "And I will overhear their conference.",
-                "Enter DEMETRIUS, HELENA, following him",
-                ""
+                "Enter DEMETRIUS, HELENA, following him"
               ]
             },
             {
@@ -1273,11 +1263,10 @@
                 "We cannot fight for love, as men may do;",
                 "We should be wood and were not made to woo.",
                 "Exit DEMETRIUS",
-                "",
+                
                 "I'll follow thee and make a heaven of hell,",
                 "To die upon the hand I love so well.",
-                "Exit",
-                ""
+                "Exit"
               ]
             },
             {
@@ -1286,7 +1275,7 @@
                 "Fare thee well, nymph: ere he do leave this grove,",
                 "Thou shalt fly him and he shall seek thy love.",
                 "Re-enter PUCK",
-                "",
+                
                 "Hast thou the flower there? Welcome, wanderer."
               ]
             },
@@ -1325,8 +1314,7 @@
               "speaker": "PUCK",
               "lines": [
                 "Fear not, my lord, your servant shall do so.",
-                "Exeunt",
-                ""
+                "Exeunt"
               ]
             }
           ]
@@ -1350,7 +1338,7 @@
                 "At our quaint spirits. Sing me now asleep;",
                 "Then to your offices and let me rest.",
                 "The Fairies sing",
-                "",
+                
                 "You spotted snakes with double tongue,",
                 "Thorny hedgehogs, be not seen;",
                 "Newts and blind-worms, do no wrong,",
@@ -1371,9 +1359,8 @@
                 "Hence, away! now all is well:",
                 "One aloof stand sentinel.",
                 "Exeunt Fairies. TITANIA sleeps",
-                "",
-                "Enter OBERON and squeezes the flower on TITANIA's eyelids",
-                ""
+                
+                "Enter OBERON and squeezes the flower on TITANIA's eyelids"
               ]
             },
             {
@@ -1388,9 +1375,8 @@
                 "When thou wakest, it is thy dear:",
                 "Wake when some vile thing is near.",
                 "Exit",
-                "",
-                "Enter LYSANDER and HERMIA",
-                ""
+                
+                "Enter LYSANDER and HERMIA"
               ]
             },
             {
@@ -1463,9 +1449,8 @@
               "lines": [
                 "With half that wish the wisher's eyes be press'd!",
                 "They sleep",
-                "",
-                "Enter PUCK",
-                ""
+                
+                "Enter PUCK"
               ]
             },
             {
@@ -1490,9 +1475,8 @@
                 "So awake when I am gone;",
                 "For I must now to Oberon.",
                 "Exit",
-                "",
-                "Enter DEMETRIUS and HELENA, running",
-                ""
+                
+                "Enter DEMETRIUS and HELENA, running"
               ]
             },
             {
@@ -1517,8 +1501,7 @@
               "speaker": "DEMETRIUS",
               "lines": [
                 "Stay, on thy peril: I alone will go.",
-                "Exit",
-                ""
+                "Exit"
               ]
             },
             {
@@ -1591,8 +1574,7 @@
                 "I thought you lord of more true gentleness.",
                 "O, that a lady, of one man refused.",
                 "Should of another therefore be abused!",
-                "Exit",
-                ""
+                "Exit"
               ]
             },
             {
@@ -1608,8 +1590,7 @@
                 "Of all be hated, but the most of me!",
                 "And, all my powers, address your love and might",
                 "To honour Helen and to be her knight!",
-                "Exit",
-                ""
+                "Exit"
               ]
             },
             {
@@ -1627,8 +1608,7 @@
                 "Speak, of all loves! I swoon almost with fear.",
                 "No? then I well perceive you all not nigh",
                 "Either death or you I'll find immediately.",
-                "Exit",
-                ""
+                "Exit"
               ]
             }
           ]
@@ -1831,8 +1811,7 @@
                 "Pyramus, you begin: when you have spoken your",
                 "speech, enter into that brake: and so every one",
                 "according to his cue.",
-                "Enter PUCK behind",
-                ""
+                "Enter PUCK behind"
               ]
             },
             {
@@ -1869,16 +1848,14 @@
                 "So hath thy breath, my dearest Thisby dear.",
                 "But hark, a voice! stay thou but here awhile,",
                 "And by and by I will to thee appear.",
-                "Exit",
-                ""
+                "Exit"
               ]
             },
             {
               "speaker": "PUCK",
               "lines": [
                 "A stranger Pyramus than e'er played here.",
-                "Exit",
-                ""
+                "Exit"
               ]
             },
             {
@@ -1918,8 +1895,7 @@
               "lines": [
                 "O,--As true as truest horse, that yet would",
                 "never tire.",
-                "Re-enter PUCK, and BOTTOM with an ass's head",
-                ""
+                "Re-enter PUCK, and BOTTOM with an ass's head"
               ]
             },
             {
@@ -1933,8 +1909,7 @@
               "lines": [
                 "O monstrous! O strange! we are haunted. Pray,",
                 "masters! fly, masters! Help!",
-                "Exeunt QUINCE, SNUG, FLUTE, SNOUT, and STARVELING",
-                ""
+                "Exeunt QUINCE, SNUG, FLUTE, SNOUT, and STARVELING"
               ]
             },
             {
@@ -1946,8 +1921,7 @@
                 "A hog, a headless bear, sometime a fire;",
                 "And neigh, and bark, and grunt, and roar, and burn,",
                 "Like horse, hound, hog, bear, fire, at every turn.",
-                "Exit",
-                ""
+                "Exit"
               ]
             },
             {
@@ -1955,8 +1929,7 @@
               "lines": [
                 "Why do they run away? this is a knavery of them to",
                 "make me afeard.",
-                "Re-enter SNOUT",
-                ""
+                "Re-enter SNOUT"
               ]
             },
             {
@@ -1971,9 +1944,8 @@
                 "What do you see? you see an asshead of your own, do",
                 "you?",
                 "Exit SNOUT",
-                "",
-                "Re-enter QUINCE",
-                ""
+                
+                "Re-enter QUINCE"
               ]
             },
             {
@@ -1981,8 +1953,7 @@
               "lines": [
                 "Bless thee, Bottom! bless thee! thou art",
                 "translated.",
-                "Exit",
-                ""
+                "Exit"
               ]
             },
             {
@@ -1994,7 +1965,7 @@
                 "and down here, and I will sing, that they shall hear",
                 "I am not afraid.",
                 "Sings",
-                "",
+                
                 "The ousel cock so black of hue,",
                 "With orange-tawny bill,",
                 "The throstle with his note so true,",
@@ -2067,8 +2038,7 @@
                 "And I will purge thy mortal grossness so",
                 "That thou shalt like an airy spirit go.",
                 "Peaseblossom! Cobweb! Moth! and Mustardseed!",
-                "Enter PEASEBLOSSOM, COBWEB, MOTH, and MUSTARDSEED",
-                ""
+                "Enter PEASEBLOSSOM, COBWEB, MOTH, and MUSTARDSEED"
               ]
             },
             {
@@ -2202,8 +2172,7 @@
                 "And when she weeps, weeps every little flower,",
                 "Lamenting some enforced chastity.",
                 "Tie up my love's tongue bring him silently.",
-                "Exeunt",
-                ""
+                "Exeunt"
               ]
             }
           ]
@@ -2222,7 +2191,7 @@
                 "Then, what it was that next came in her eye,",
                 "Which she must dote on in extremity.",
                 "Enter PUCK",
-                "",
+                
                 "Here comes my messenger.",
                 "How now, mad spirit!",
                 "What night-rule now about this haunted grove?"
@@ -2278,8 +2247,7 @@
                 "I took him sleeping,--that is finish'd too,--",
                 "And the Athenian woman by his side:",
                 "That, when he waked, of force she must be eyed.",
-                "Enter HERMIA and DEMETRIUS",
-                ""
+                "Enter HERMIA and DEMETRIUS"
               ]
             },
             {
@@ -2381,8 +2349,7 @@
                 "A privilege never to see me more.",
                 "And from thy hated presence part I so:",
                 "See me no more, whether he be dead or no.",
-                "Exit",
-                ""
+                "Exit"
               ]
             },
             {
@@ -2394,8 +2361,7 @@
                 "For debt that bankrupt sleep doth sorrow owe:",
                 "Which now in some slight measure it will pay,",
                 "If for his tender here I make some stay.",
-                "Lies down and sleeps",
-                ""
+                "Lies down and sleeps"
               ]
             },
             {
@@ -2430,8 +2396,7 @@
               "lines": [
                 "I go, I go; look how I go,",
                 "Swifter than arrow from the Tartar's bow.",
-                "Exit",
-                ""
+                "Exit"
               ]
             },
             {
@@ -2445,8 +2410,7 @@
                 "As the Venus of the sky.",
                 "When thou wakest, if she be by,",
                 "Beg of her for remedy.",
-                "Re-enter PUCK",
-                ""
+                "Re-enter PUCK"
               ]
             },
             {
@@ -2474,8 +2438,7 @@
                 "That must needs be sport alone;",
                 "And those things do best please me",
                 "That befal preposterously.",
-                "Enter LYSANDER and HELENA",
-                ""
+                "Enter LYSANDER and HELENA"
               ]
             },
             {
@@ -2592,8 +2555,7 @@
                 "Disparage not the faith thou dost not know,",
                 "Lest, to thy peril, thou aby it dear.",
                 "Look, where thy love comes; yonder is thy dear.",
-                "Re-enter HERMIA",
-                ""
+                "Re-enter HERMIA"
               ]
             },
             {
@@ -3014,8 +2976,7 @@
               "speaker": "DEMETRIUS",
               "lines": [
                 "Follow! nay, I'll go with thee, cheek by jole.",
-                "Exeunt LYSANDER and DEMETRIUS",
-                ""
+                "Exeunt LYSANDER and DEMETRIUS"
               ]
             },
             {
@@ -3032,16 +2993,14 @@
                 "Nor longer stay in your curst company.",
                 "Your hands than mine are quicker for a fray,",
                 "My legs are longer though, to run away.",
-                "Exit",
-                ""
+                "Exit"
               ]
             },
             {
               "speaker": "HERMIA",
               "lines": [
                 "I am amazed, and know not what to say.",
-                "Exit",
-                ""
+                "Exit"
               ]
             },
             {
@@ -3118,8 +3077,7 @@
                 "Turns into yellow gold his salt green streams.",
                 "But, notwithstanding, haste; make no delay:",
                 "We may effect this business yet ere day.",
-                "Exit",
-                ""
+                "Exit"
               ]
             },
             {
@@ -3130,8 +3088,7 @@
                 "I am fear'd in field and town:",
                 "Goblin, lead them up and down.",
                 "Here comes one.",
-                "Re-enter LYSANDER",
-                ""
+                "Re-enter LYSANDER"
               ]
             },
             {
@@ -3158,9 +3115,8 @@
                 "Follow me, then,",
                 "To plainer ground.",
                 "Exit LYSANDER, as following the voice",
-                "",
-                "Re-enter DEMETRIUS",
-                ""
+                
+                "Re-enter DEMETRIUS"
               ]
             },
             {
@@ -3192,9 +3148,8 @@
               "lines": [
                 "Follow my voice: we'll try no manhood here.",
                 "Exeunt",
-                "",
-                "Re-enter LYSANDER",
-                ""
+                
+                "Re-enter LYSANDER"
               ]
             },
             {
@@ -3207,14 +3162,13 @@
                 "That fallen am I in dark uneven way,",
                 "And here will rest me.",
                 "Lies down",
-                "",
+                
                 "Come, thou gentle day!",
                 "For if but once thou show me thy grey light,",
                 "I'll find Demetrius and revenge this spite.",
                 "Sleeps",
-                "",
-                "Re-enter PUCK and DEMETRIUS",
-                ""
+                
+                "Re-enter PUCK and DEMETRIUS"
               ]
             },
             {
@@ -3247,9 +3201,8 @@
                 "To measure out my length on this cold bed.",
                 "By day's approach look to be visited.",
                 "Lies down and sleeps",
-                "",
-                "Re-enter HELENA",
-                ""
+                
+                "Re-enter HELENA"
               ]
             },
             {
@@ -3261,8 +3214,7 @@
                 "From these that my poor company detest:",
                 "And sleep, that sometimes shuts up sorrow's eye,",
                 "Steal me awhile from mine own company.",
-                "Lies down and sleeps",
-                ""
+                "Lies down and sleeps"
               ]
             },
             {
@@ -3273,8 +3225,7 @@
                 "Here she comes, curst and sad:",
                 "Cupid is a knavish lad,",
                 "Thus to make poor females mad.",
-                "Re-enter HERMIA",
-                ""
+                "Re-enter HERMIA"
               ]
             },
             {
@@ -3286,8 +3237,7 @@
                 "My legs can keep no pace with my desires.",
                 "Here will I rest me till the break of day.",
                 "Heavens shield Lysander, if they mean a fray!",
-                "Lies down and sleeps",
-                ""
+                "Lies down and sleeps"
               ]
             },
             {
@@ -3299,7 +3249,7 @@
                 "To your eye,",
                 "Gentle lover, remedy.",
                 "Squeezing the juice on LYSANDER's eyes",
-                "",
+                
                 "When thou wakest,",
                 "Thou takest",
                 "True delight",
@@ -3311,8 +3261,7 @@
                 "Jack shall have Jill;",
                 "Nought shall go ill;",
                 "The man shall have his mare again, and all shall be well.",
-                "Exit",
-                ""
+                "Exit"
               ]
             }
           ]
@@ -3323,14 +3272,14 @@
       "title": "ACT IV",
       "scenes": [
         {
-          "title": "SCENE I. The same. LYSANDER, DEMETRIUS, HELENA, and HERMIA",
+          "title": "SCENE I. The same.",
           "setting": "woods",
           "objectLayer": "4.1",
           "characters": ["Lysander", "Demetrius", "Helena", "Hermia", "Titania", "Bottom", "Peaseblossom", "Cobweb", "Moth", "Mustardseed", "Theseus", "Hippolyta", "Egeus"],
           "speakers": [
-            "lying asleep.",
+            "LYSANDER, DEMETRIUS, HELENA, and HERMIA lying asleep.",
             "Enter TITANIA and BOTTOM; PEASEBLOSSOM, COBWEB, MOTH, MUSTARDSEED, and other Fairies attending; OBERON behind unseen",
-            "",
+            
             {
               "speaker": "TITANIA",
               "lines": [
@@ -3455,15 +3404,14 @@
                 "Sleep thou, and I will wind thee in my arms.",
                 "Fairies, begone, and be all ways away.",
                 "Exeunt fairies",
-                "",
+                
                 "So doth the woodbine the sweet honeysuckle",
                 "Gently entwist; the female ivy so",
                 "Enrings the barky fingers of the elm.",
                 "O, how I love thee! how I dote on thee!",
                 "They sleep",
-                "",
-                "Enter PUCK",
-                ""
+                
+                "Enter PUCK"
               ]
             },
             {
@@ -3534,8 +3482,7 @@
               "speaker": "TITANIA",
               "lines": [
                 "Music, ho! music, such as charmeth sleep!",
-                "Music, still",
-                ""
+                "Music, still"
               ]
             },
             {
@@ -3582,11 +3529,10 @@
                 "That I sleeping here was found",
                 "With these mortals on the ground.",
                 "Exeunt",
-                "",
+                
                 "Horns winded within",
-                "",
-                "Enter THESEUS, HIPPOLYTA, EGEUS, and train",
-                ""
+                
+                "Enter THESEUS, HIPPOLYTA, EGEUS, and train"
               ]
             },
             {
@@ -3599,7 +3545,7 @@
                 "Uncouple in the western valley; let them go:",
                 "Dispatch, I say, and find the forester.",
                 "Exit an Attendant",
-                "",
+                
                 "We will, fair queen, up to the mountain's top,",
                 "And mark the musical confusion",
                 "Of hounds and echo in conjunction."
@@ -3661,7 +3607,7 @@
               "lines": [
                 "Go, bid the huntsmen wake them with their horns.",
                 "Horns and shout within. LYSANDER, DEMETRIUS, HELENA, and HERMIA wake and start up",
-                "",
+                
                 "Good morrow, friends. Saint Valentine is past:",
                 "Begin these wood-birds but to couple now?"
               ]
@@ -3741,8 +3687,7 @@
                 "Away with us to Athens; three and three,",
                 "We'll hold a feast in great solemnity.",
                 "Come, Hippolyta.",
-                "Exeunt THESEUS, HIPPOLYTA, EGEUS, and train",
-                ""
+                "Exeunt THESEUS, HIPPOLYTA, EGEUS, and train"
               ]
             },
             {
@@ -3798,8 +3743,7 @@
               "lines": [
                 "Why, then, we are awake: let's follow him",
                 "And by the way let us recount our dreams.",
-                "Exeunt",
-                ""
+                "Exeunt"
               ]
             },
             {
@@ -3825,8 +3769,7 @@
                 "latter end of a play, before the duke:",
                 "peradventure, to make it the more gracious, I shall",
                 "sing it at her death.",
-                "Exit",
-                ""
+                "Exit"
               ]
             }
           ]
@@ -3881,8 +3824,7 @@
               "lines": [
                 "You must say 'paragon:' a paramour is, God bless us,",
                 "a thing of naught.",
-                "Enter SNUG",
-                ""
+                "Enter SNUG"
               ]
             },
             {
@@ -3903,8 +3845,7 @@
                 "sixpence a day for playing Pyramus, I'll be hanged;",
                 "he would have deserved it: sixpence a day in",
                 "Pyramus, or nothing.",
-                "Enter BOTTOM",
-                ""
+                "Enter BOTTOM"
               ]
             },
             {
@@ -3948,8 +3889,7 @@
                 "nor garlic, for we are to utter sweet breath; and I",
                 "do not doubt but to hear them say, it is a sweet",
                 "comedy. No more words: away! go, away!",
-                "Exeunt",
-                ""
+                "Exeunt"
               ]
             }
           ]
@@ -4011,7 +3951,7 @@
               "lines": [
                 "Here come the lovers, full of joy and mirth.",
                 "Enter LYSANDER, DEMETRIUS, HERMIA, and HELENA",
-                "",
+                
                 "Joy, gentle friends! joy and fresh days of love",
                 "Accompany your hearts!"
               ]
@@ -4054,8 +3994,7 @@
               "lines": [
                 "There is a brief how many sports are ripe:",
                 "Make choice of which your highness will see first.",
-                "Giving a paper",
-                ""
+                "Giving a paper"
               ]
             },
             {
@@ -4066,19 +4005,19 @@
                 "We'll none of that: that have I told my love,",
                 "In glory of my kinsman Hercules.",
                 "Reads",
-                "",
+                
                 "'The riot of the tipsy Bacchanals,",
                 "Tearing the Thracian singer in their rage.'",
                 "That is an old device; and it was play'd",
                 "When I from Thebes came last a conqueror.",
                 "Reads",
-                "",
+                
                 "'The thrice three Muses mourning for the death",
                 "Of Learning, late deceased in beggary.'",
                 "That is some satire, keen and critical,",
                 "Not sorting with a nuptial ceremony.",
                 "Reads",
-                "",
+                
                 "'A tedious brief scene of young Pyramus",
                 "And his love Thisbe; very tragical mirth.'",
                 "Merry and tragical! tedious and brief!",
@@ -4140,8 +4079,7 @@
                 "For never anything can be amiss,",
                 "When simpleness and duty tender it.",
                 "Go, bring them in: and take your places, ladies.",
-                "Exit PHILOSTRATE",
-                ""
+                "Exit PHILOSTRATE"
               ]
             },
             {
@@ -4183,8 +4121,7 @@
                 "Of saucy and audacious eloquence.",
                 "Love, therefore, and tongue-tied simplicity",
                 "In least speak most, to my capacity.",
-                "Re-enter PHILOSTRATE",
-                ""
+                "Re-enter PHILOSTRATE"
               ]
             },
             {
@@ -4198,9 +4135,9 @@
               "lines": [
                 "Let him approach.",
                 "Flourish of trumpets",
-                "",
+                
                 "Enter QUINCE for the Prologue",
-                "",
+                
                 "Prologue",
                 "If we offend, it is with our good will.",
                 "That you should think, we come not to offend,",
@@ -4241,7 +4178,7 @@
                 "His speech, was like a tangled chain; nothing",
                 "impaired, but all disordered. Who is next?",
                 "Enter Pyramus and Thisbe, Wall, Moonshine, and Lion",
-                "",
+                
                 "Prologue",
                 "Gentles, perchance you wonder at this show;",
                 "But wonder on, till truth make all things plain.",
@@ -4268,8 +4205,7 @@
                 "His dagger drew, and died. For all the rest,",
                 "Let Lion, Moonshine, Wall, and lovers twain",
                 "At large discourse, while here they do remain.",
-                "Exeunt Prologue, Thisbe, Lion, and Moonshine",
-                ""
+                "Exeunt Prologue, Thisbe, Lion, and Moonshine"
               ]
             },
             {
@@ -4306,8 +4242,7 @@
               "lines": [
                 "It is the wittiest partition that ever I heard",
                 "discourse, my lord.",
-                "Enter Pyramus",
-                ""
+                "Enter Pyramus"
               ]
             },
             {
@@ -4324,7 +4259,7 @@
                 "Thou wall, O wall, O sweet and lovely wall,",
                 "Show me thy chink, to blink through with mine eyne!",
                 "Wall holds up his fingers",
-                "",
+                
                 "Thanks, courteous wall: Jove shield thee well for this!",
                 "But what see I? No Thisby do I see.",
                 "O wicked wall, through whom I see no bliss!",
@@ -4341,7 +4276,7 @@
                 "spy her through the wall. You shall see, it will",
                 "fall pat as I told you. Yonder she comes.",
                 "Enter Thisbe",
-                "",
+                
                 "Thisbe",
                 "O wall, full often hast thou heard my moans,",
                 "For parting my fair Pyramus and me!",
@@ -4370,12 +4305,11 @@
                 "Thisbe",
                 "'Tide life, 'tide death, I come without delay.",
                 "Exeunt Pyramus and Thisbe",
-                "",
+                
                 "Wall",
                 "Thus have I, Wall, my part discharged so;",
                 "And, being done, thus Wall away doth go.",
-                "Exit",
-                ""
+                "Exit"
               ]
             },
             {
@@ -4417,7 +4351,7 @@
                 "themselves, they may pass for excellent men. Here",
                 "come two noble beasts in, a man and a lion.",
                 "Enter Lion and Moonshine",
-                "",
+                
                 "Lion",
                 "You, ladies, you, whose gentle hearts do fear",
                 "The smallest monstrous mouse that creeps on floor,",
@@ -4531,13 +4465,12 @@
                 "Why, all these should be in the lanthorn; for all",
                 "these are in the moon. But, silence! here comes Thisbe.",
                 "Enter Thisbe",
-                "",
+                
                 "Thisbe",
                 "This is old Ninny's tomb. Where is my love?",
                 "Lion",
                 "[Roaring] Oh--",
-                "Thisbe runs off",
-                ""
+                "Thisbe runs off"
               ]
             },
             {
@@ -4557,8 +4490,7 @@
               "lines": [
                 "Well shone, Moon. Truly, the moon shines with a",
                 "good grace.",
-                "The Lion shakes Thisbe's mantle, and exit",
-                ""
+                "The Lion shakes Thisbe's mantle, and exit"
               ]
             },
             {
@@ -4578,7 +4510,7 @@
               "lines": [
                 "And then came Pyramus.",
                 "Enter Pyramus",
-                "",
+                
                 "Pyramus",
                 "Sweet Moon, I thank thee for thy sunny beams;",
                 "I thank thee, Moon, for shining now so bright;",
@@ -4621,7 +4553,7 @@
                 "Ay, that left pap,",
                 "Where heart doth hop:",
                 "Stabs himself",
-                "",
+                
                 "Thus die I, thus, thus, thus.",
                 "Now am I dead,",
                 "Now am I fled;",
@@ -4629,10 +4561,9 @@
                 "Tongue, lose thy light;",
                 "Moon take thy flight:",
                 "Exit Moonshine",
-                "",
+                
                 "Now die, die, die, die, die.",
-                "Dies",
-                ""
+                "Dies"
               ]
             },
             {
@@ -4666,8 +4597,7 @@
               "lines": [
                 "She will find him by starlight. Here she comes; and",
                 "her passion ends the play.",
-                "Re-enter Thisbe",
-                ""
+                "Re-enter Thisbe"
               ]
             },
             {
@@ -4718,12 +4648,11 @@
                 "Come, trusty sword;",
                 "Come, blade, my breast imbrue:",
                 "Stabs herself",
-                "",
+                
                 "And, farewell, friends;",
                 "Thus Thisby ends:",
                 "Adieu, adieu, adieu.",
-                "Dies",
-                ""
+                "Dies"
               ]
             },
             {
@@ -4759,7 +4688,7 @@
                 "discharged. But come, your Bergomask: let your",
                 "epilogue alone.",
                 "A dance",
-                "",
+                
                 "The iron tongue of midnight hath told twelve:",
                 "Lovers, to bed; 'tis almost fairy time.",
                 "I fear we shall out-sleep the coming morn",
@@ -4769,9 +4698,8 @@
                 "A fortnight hold we this solemnity,",
                 "In nightly revels and new jollity.",
                 "Exeunt",
-                "",
-                "Enter PUCK",
-                ""
+                
+                "Enter PUCK"
               ]
             },
             {
@@ -4797,8 +4725,7 @@
                 "Shall disturb this hallow'd house:",
                 "I am sent with broom before,",
                 "To sweep the dust behind the door.",
-                "Enter OBERON and TITANIA with their train",
-                ""
+                "Enter OBERON and TITANIA with their train"
               ]
             },
             {
@@ -4819,8 +4746,7 @@
                 "To each word a warbling note:",
                 "Hand in hand, with fairy grace,",
                 "Will we sing, and bless this place.",
-                "Song and dance",
-                ""
+                "Song and dance"
               ]
             },
             {
@@ -4848,8 +4774,7 @@
                 "Ever shall in safety rest.",
                 "Trip away; make no stay;",
                 "Meet me all by break of day.",
-                "Exeunt OBERON, TITANIA, and train",
-                ""
+                "Exeunt OBERON, TITANIA, and train"
               ]
             },
             {
