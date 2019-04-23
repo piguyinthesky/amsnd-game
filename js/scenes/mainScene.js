@@ -48,7 +48,7 @@ export default class MainScene extends Phaser.Scene {
 
     this.registry.events.on("zoomto", speaker => {
       console.log(speaker);
-      if (speaker === "ALL") this.cameras.main.zoomTo(2, 100);
+      if (speaker === "ALL" || speaker === "Fairies") this.cameras.main.zoomTo(2, 100);
       else {
         const speakerObj = this.entities.getChildren().filter(child => {
           console.log(child.name);

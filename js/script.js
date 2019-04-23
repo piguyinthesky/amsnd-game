@@ -26,12 +26,6 @@ const config = {
       gravity: { y: 0 }
     }
   },
-  scale: {
-    parent: "game-container",
-    mode: Phaser.Scale.FIT,
-    width: 800,
-    height: 600
-  },
   scene: [BootScene, LoadScene, IntermissionScene, MainScene, InfoScene, PauseScene, CreditsScene]
 };
 

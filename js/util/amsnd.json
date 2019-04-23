@@ -850,8 +850,12 @@
             {
               "speaker": "PUCK",
               "lines": [
-                "How now, spirit! whither wander you?",
-                "Fairy",
+                "How now, spirit! whither wander you?"
+              ]
+            },
+            {
+              "speaker": "Fairy",
+              "lines": [
                 "Over hill, over dale,",
                 "Thorough bush, thorough brier,",
                 "Over park, over pale,",
@@ -1337,8 +1341,12 @@
                 "The clamorous owl that nightly hoots and wonders",
                 "At our quaint spirits. Sing me now asleep;",
                 "Then to your offices and let me rest.",
-                "The Fairies sing",
-                
+                "The Fairies sing"
+              ]
+            },
+            {
+              "speaker": "Fairies",
+              "lines": [
                 "You spotted snakes with double tongue,",
                 "Thorny hedgehogs, be not seen;",
                 "Newts and blind-worms, do no wrong,",
@@ -1354,8 +1362,12 @@
                 "Hence, you long-legg'd spinners, hence!",
                 "Beetles black, approach not near;",
                 "Worm nor snail, do no offence.",
-                "Philomel, with melody, & c.",
-                "Fairy",
+                "Philomel, with melody, & c."
+              ]
+            },
+            {
+              "speaker": "Fairy",
+              "lines": [
                 "Hence, away! now all is well:",
                 "One aloof stand sentinel.",
                 "Exeunt Fairies. TITANIA sleeps",

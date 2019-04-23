@@ -130,7 +130,7 @@ export default class InfoScene extends Phaser.Scene {
 
     if (data.lines && 4 <= data.lines.length && data.lines.length <= 8 && Math.random() < 0.5) {
       this.sortInOrder(data.lines);
-    } else if (Math.random() < 0.5 && data.speaker) {
+    } else if (Math.random() < 0.5 && data.speaker && data.lines.length > 1) {
       this.speechBubble(this.parseLine([
         data,
         {
@@ -140,7 +140,7 @@ export default class InfoScene extends Phaser.Scene {
             if (response.toLowerCase() === data.speaker.toLowerCase()) return "Well done!";
             else return "Actually, it was " + capitalize(data.speaker);
           },
-          options: this.registry.values.sceneInfo.characters
+          options: Phaser.Utils.Array.Shuffle(this.registry.values.sceneInfo.characters.slice())
         }
       ], { hidden: true }));
     } else {
