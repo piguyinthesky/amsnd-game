@@ -59,16 +59,7 @@ export default class LoadScene extends Phaser.Scene {
     
     try {
       this.load.setBaseURL("assets/")
-        .setPath("audio/") // Generated using bfxr
-        .audio("coin1", "Pickup_Coin.wav")
-        .audio("coin2", "Pickup_Coin2.wav")
-        .audio("coin3", "Pickup_Coin3.wav")
-        .audio("coin4", "Pickup_Coin4.wav")
-        .audio("powerup", "Powerup.wav")
-        .audio("shoot", "Laser_Shoot.wav")
-        .audio("music", "jlbrock44_-_Staying_Positive.mp3")
-
-        .json("fullPlay", "../../js/util/amsnd.json")
+        .json("fullPlay", "../js/util/amsnd.json")
 
         .setPath("sprites/")
         .image("bill", "bill.png")
@@ -76,8 +67,6 @@ export default class LoadScene extends Phaser.Scene {
         .image("rightArrow", "rightArrow.png")
         .image("textBox", "textBox.png")
         .image("textBoxPressed", "textBox_pressed.png")
-        .image("musicOn", "musicOn.png")
-        .image("musicOff", "musicOff.png")
 
         .setPath("spritesheets/")
         .spritesheet("police", "police.png", {

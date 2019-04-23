@@ -25,39 +25,13 @@ export default class PauseScene extends Phaser.Scene {
       fill: "#ffffff"
     }).setOrigin(0.5, 0.5);
 
-    this.add.text(width / 2, height / 3, "Music Volume", {
-      font: "18px monospace",
-      fill: "#ffffff"
-    }).setOrigin(0.5, 0.5);
-
-    const musicVolumeBar = this.add.rectangle(width / 2, height / 2, width * 3 / 4, height / 64, 0xff0000)
-      .setOrigin(0.5, 0.5);
-    const tl = musicVolumeBar.getTopLeft();
-    const tr = musicVolumeBar.getTopRight();
-    const volButtonX = (width / 2) * this.registry.get("volume");
-    const volumeDragger = this.add.circle(tl.x + volButtonX, height / 2, 10, 0x0000ff)
-      .setInteractive({ useHandCursor: true })
-      .setOrigin(0.5, 0.5);
-    
-    this.input.setDraggable(volumeDragger)
-      .on("dragstart", (pointer, obj) => {
-        obj.setFillStyle(0x00ff00);
-      })
-      .on("drag", (pointer, obj, dx) => {
-        if (tl.x < dx && dx < tr.x) obj.x = dx;
-      })
-      .on("dragend", (pointer, obj) => {
-        obj.setFillStyle(0x0000ff);
-        this.registry.set("volume", (obj.x - musicVolumeBar.getTopLeft().x) / musicVolumeBar.width);
-      });
-
     this.talkSpeedText = this.add.text(width / 2, height * 3 / 4, "Text speed: medium", {
       font: "18px monospace",
       fill: "#000000",
       padding: { x: 20, y: 10 },
       backgroundColor: "#ffffff"
     })
-      .setOrigin(0.5, 0.5)
+      .setOrigin(0.5)
       .setInteractive()
       .on("pointerup", () => {
         this.talkSpeed = (this.talkSpeed + 1) % 3;

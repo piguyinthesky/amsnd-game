@@ -34,6 +34,5 @@ This game is nowhere near complete! If I had more time I would put a lot more ef
 ## Credits
 (If I've forgotten somebody/something, just let me know.)
 - Assets: https://kenney.nl/assets
-- Music: Staying Positive by spinningmerkaba (c) copyright 2019 Licensed under a Creative Commons Attribution Noncommercial  (3.0) license. http://dig.ccmixter.org/files/jlbrock44/59438 Ft: greg_baumont
 - [Modular Game Worlds in Phaser 3 ](https://medium.com/@michaelwesthadley/modular-game-worlds-in-phaser-3-tilemaps-1-958fc7e6bbd6)
 - The amazing coding community! You guys are the best! Code on!

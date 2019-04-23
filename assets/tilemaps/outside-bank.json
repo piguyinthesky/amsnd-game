@@ -68,17 +68,6 @@
                 }, 
                 {
                  "height":16,
-                 "id":28,
-                 "name":"mailbox",
-                 "rotation":0,
-                 "type":"door",
-                 "visible":true,
-                 "width":10,
-                 "x":195,
-                 "y":1488
-                }, 
-                {
-                 "height":16,
                  "id":26,
                  "name":"locked",
                  "rotation":0,
@@ -245,28 +234,6 @@
                  "y":1104
                 }, 
                 {
-                 "height":16,
-                 "id":14,
-                 "name":"bank",
-                 "rotation":0,
-                 "type":"door",
-                 "visible":true,
-                 "width":16,
-                 "x":784,
-                 "y":752
-                }, 
-                {
-                 "height":16,
-                 "id":16,
-                 "name":"bank",
-                 "rotation":0,
-                 "type":"door",
-                 "visible":true,
-                 "width":16,
-                 "x":816,
-                 "y":752
-                }, 
-                {
                  "height":0,
                  "id":32,
                  "name":"npcBlood",
@@ -277,28 +244,6 @@
                  "width":0,
                  "x":535.459305092813,
                  "y":773.441218467396
-                }, 
-                {
-                 "height":48,
-                 "id":34,
-                 "name":"bush1",
-                 "rotation":0,
-                 "type":"door",
-                 "visible":true,
-                 "width":48,
-                 "x":560,
-                 "y":704
-                }, 
-                {
-                 "height":48,
-                 "id":35,
-                 "name":"bush2",
-                 "rotation":0,
-                 "type":"door",
-                 "visible":true,
-                 "width":48,
-                 "x":1008,
-                 "y":704
                 }, 
                 {
                  "height":16,
@@ -382,18 +327,6 @@
                  "width":0,
                  "x":856,
                  "y":775
-                }, 
-                {
-                 "height":0,
-                 "id":303,
-                 "name":"",
-                 "point":true,
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":0,
-                 "x":540,
-                 "y":721
                 }, 
                 {
                  "height":0,

@@ -32,7 +32,7 @@ const textBoxStyle = (width) => ({
 });
 
 /**
-* A scene that handles a lot of the global objects, such as the registry and the music
+* A scene that handles a lot of the global objects, such as the registry
 */
 export default class InfoScene extends Phaser.Scene {
   constructor() {
@@ -68,19 +68,9 @@ export default class InfoScene extends Phaser.Scene {
     this.options = [];
     this.selected = 0;
     this.response = "";
-    this.currLines = [];
-
-    // ==================== MUSIC ====================
-    this.audioImage = this.add.image(width - 5, 5, "musicOn")
-      .setDisplaySize(width / 32, height / 32)
-      .setOrigin(1, 0)
-      .setInteractive({ useHandCursor: true })
-      .on("pointerup", () => this.registry.set("mute", !this.registry.get("mute")));
-    
-    this.music = this.sound.add("music", { loop: true });
-    this.music.play();
-
     this.texts = [];
+    this.images = [];
+    this.lines = [];
     
     this.input.keyboard
       .on("keyup_UP", () => {
@@ -90,6 +80,7 @@ export default class InfoScene extends Phaser.Scene {
         if (this.menu) this.moveSelection(1);
       })
       .on("keyup_ENTER", event => { // This is the only place where the timer will end
+        console.log(this.registry.values);
         if (this.displayText.visible) {
           event.stopPropagation(); // Prevents the event from reaching other scenes
           if (this.timer.getOverallProgress() === 1) { // Current text is finished
@@ -101,11 +92,15 @@ export default class InfoScene extends Phaser.Scene {
           } else if (this.timer.getOverallProgress() > 0) // Player presses enter while text is scrolling
             this.timer.remove(true); // Jump to end of timer
         } else if (this.texts.length > 0) {
-          console.log(this.texts);
-          const result = this.texts.sort((a, b) => a.y - b.y).map(obj => obj.text);
-          this.texts.forEach(obj => obj.destroy());
-          this.images.forEach(img => img.destroy());
-          this.registry.events.emit("talk", (result === this.currLines.lines) ? result : "Hmm, something doesn't look quite right...");
+          const result = this.texts.sort((a, b) => a.y - b.y).map(obj => obj.text).join();
+          
+          if (result === this.speakerInfo.lines.join()) {
+            this.registry.events.emit("talk", "Well done!");
+            this.texts.forEach(obj => obj.destroy());
+            this.images.forEach(img => img.destroy());
+          } else {
+            this.registry.events.emit("talk", "Hmm, something doesn't look quite right...");
+          }
         }
       });
     
@@ -116,10 +111,9 @@ export default class InfoScene extends Phaser.Scene {
     this.textData = this.lines.shift();
     this.text = this.parseLine(this.textData);
 
-    console.log("Text: " + this.text);
     if (!this.text) return this.showText(false);
 
-    if (this.currLines.length > 0) {
+    if (this.speakerInfo.lines) {
       if (this.texts) this.texts.forEach(text => text.destroy());
       if (this.images) this.images.forEach(img => img.destroy());
 
@@ -130,19 +124,19 @@ export default class InfoScene extends Phaser.Scene {
       this.texts = [];
       this.images = [];
 
-      Phaser.Utils.Array.Shuffle(this.currLines);
+      const currLines = Phaser.Utils.Array.Shuffle(this.speakerInfo.lines.slice());
 
-      this.add.text(width / 2, height * 0.5 / this.currLines.length, `Put ${this.textData.speaker}'s lines into order! Press enter when you're finished.`, {
+      this.add.text(width / 2, height * 0.5 / currLines.length, `Put ${this.speakerInfo.speaker}'s lines into order! Press enter when you're finished.`, {
         font: "16px monospace",
         fill: "#000000",
         padding: { x: 20, y: 10 },
         wordWrap: {width, useAdvancedWrap: true},
         backgroundColor: "#ffffff",
         align: "center"
-      });
+      }).setOrigin(0.5);
 
-      for (let i in this.currLines) {
-        const text = this.add.text(width / 2, height * (parseInt(i) + 1.5) / (this.currLines.length + 1), this.currLines[i], textBoxStyle(width / 2)).setOrigin(0.5).setName(i).setDepth(21);
+      for (let i in currLines) {
+        const text = this.add.text(width / 2, height * (parseInt(i) + 1.5) / (currLines.length + 1), currLines[i], textBoxStyle(width / 2)).setOrigin(0.5).setName(i).setDepth(21);
         const {x, y} = text.getTopLeft();
         text.setPosition(x, y).setOrigin(0);
         const image = this.add.image(x - 5, y - 5, "textBox").setDisplaySize(text.displayWidth + 10, text.displayHeight + 10).setOrigin(0).setName(i).setDepth(20).setInteractive({ useHandCursor: true });
@@ -212,14 +206,14 @@ export default class InfoScene extends Phaser.Scene {
       return this.parseLine(this.textData);
     } else if (typeof obj === "object") {
       if (obj.speaker) {
-        this.currLines = obj;
+        const lines = obj.lines.slice();
         let result = [];
-        console.log("Currlines: " + this.currLines)
         while (true) {
-          let temp = obj.lines.splice(0, 5);
+          let temp = lines.splice(0, 5);
           if (temp.length !== 0) result.push(obj.speaker + "\n\n" + temp.join("\n"));
           if (temp.length < 5) break;
         }
+        this.registry.values.speakerIndex++;
         this.registry.events.emit("zoomto", obj.speaker);
         return this.parseLine(result);
       }
@@ -241,11 +235,11 @@ export default class InfoScene extends Phaser.Scene {
       })
       .on("changedata", this.handleData.bind(this))
       .on("setdata", this.handleData.bind(this))
-      .on("talk", lines => {
-        console.log("Lines: " + lines);
+      .on("talk", (lines, override = false) => {
         // If the current text has not yet finished, we ignore other talk events
         if (this.displayText.visible) return;
-        this.lines = Array.isArray(lines) ? lines.slice() : [lines];
+        const incoming = Array.isArray(lines) ? lines.slice() : [lines];
+        this.lines = override ? incoming : this.lines.unshift(incoming);
         this.startText();
       })
       .on("switchscene", (scene1, scene2, data) => {
@@ -258,7 +252,6 @@ export default class InfoScene extends Phaser.Scene {
           scene.scene.start(scene2, data);
           this.cameras.main.resetFX();
           this.registry.set("level", scene2);
-          this.music.play();
         });
       });
 
@@ -270,13 +263,6 @@ export default class InfoScene extends Phaser.Scene {
       hp: 1000,
       inventory: [],
       
-      mute: false,
-      volume: 0.5,
-
-      actData: 0,
-      sceneData: 0,
-      speakerData: 0,
-      
       talkSpeed: 50,
     });
     this.registry.set("actIndex", 0);
@@ -286,20 +272,6 @@ export default class InfoScene extends Phaser.Scene {
 
   handleData(parent, key, data) {
     switch (key) {
-    case "mute":
-      if (data) {
-        this.music.pause();
-        this.audioImage.setTexture("musicOff");
-      } else {
-        this.music.resume();
-        this.audioImage.setTexture("musicOn");
-      }
-      break;
-
-    case "volume":
-      this.music.setVolume(data);
-      break;
-
     case "actIndex":
       this.registry.set("actInfo", this.cache.json.get("fullPlay").acts[this.registry.values.actIndex]);
       break;
@@ -309,6 +281,7 @@ export default class InfoScene extends Phaser.Scene {
       break;
 
     case "speakerIndex":
+      console.log("speaker change")
       this.registry.set("speakerInfo", this.registry.get("sceneInfo").speakers[this.registry.values.speakerIndex]);
       break;
             
@@ -316,5 +289,7 @@ export default class InfoScene extends Phaser.Scene {
       break;
     }
   }
+
+  get speakerInfo() { return this.registry.values.speakerInfo; }
 
 }

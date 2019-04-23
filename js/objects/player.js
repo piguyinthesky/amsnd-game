@@ -1,4 +1,3 @@
-import { Bullet } from "./entity.js";
 import { NPC_DATA } from "../util/npcData.js";
 
 export default class Player {

@@ -3,16 +3,11 @@ import Player from "../objects/player.js";
 
 export default class MainScene extends Phaser.Scene {
   constructor() {
-    super({ key: "MainScene" });
+    super("MainScene");
     
     this.initialized = false;
     this.lastEntityTouched = null;
     this.timesRun = 0;
-  }
-
-  init(data) {
-    this.fromSewer = data.fromSewer;
-    if (data.died) this.registry.set("hp", 1000);
   }
   
   create() {    
@@ -47,7 +42,6 @@ export default class MainScene extends Phaser.Scene {
       collideWorldBounds: true,
       immovable: true
     });
-    this.bullets = this.physics.add.group();
 
     this.map.getObjectLayer("Objects").objects.forEach(obj => {
       if (obj.type === "npc")
@@ -73,11 +67,6 @@ export default class MainScene extends Phaser.Scene {
     this.physics.add.collider([this.player.sprite, this.entities], this.layers.concat(this.hitboxes));
     this.physics.add.collider(this.entities); // They collide with each other
     this.physics.add.collider(this.player.sprite, this.entities, (player, npc) => npc.collide(this.player));
-    this.physics.add.collider(this.bullets, [this.entities, this.layers.concat(this.hitboxes)], (bullet, entity) => {
-      if (entity.hp) entity.hp -= bullet.damage;
-      if (entity.hp <= 0) entity.destroy();
-      bullet.destroy();
-    });
     
     this.cameras.main
       .setZoom(2)
@@ -96,10 +85,10 @@ export default class MainScene extends Phaser.Scene {
     });
     
     if (!this.initialized) {
-      this.scene.launch("InfoScene"); // This will only run the first time
-
       this.cameras.main.setZoom(4).zoomTo(2, 1000, "Linear");
-      this.time.delayedCall(1005, () => this.registry.events.emit("talk", this.registry.values.sceneInfo.speakers))
+      this.time.delayedCall(1005, () => {
+        this.registry.events.emit("talk", this.registry.values.sceneInfo.speakers)
+      })
       this.initialized = true;
     }
   }
