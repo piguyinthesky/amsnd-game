@@ -93,6 +93,11 @@ export const NPC_DATA = {
     frame: 6
   },
 
+  philostrate: {
+    texture: "rpgChars",
+    frame: 325
+  },
+
   // Objects
   car: {
     lines: "It's a locked car."

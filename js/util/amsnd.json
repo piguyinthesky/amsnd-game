@@ -2670,7 +2670,7 @@
               ]
             },
             {
-              "speaker": "HERNIA",
+              "speaker": "HERMIA",
               "lines": [
                 "I understand not what you mean by this."
               ]
@@ -3788,6 +3788,8 @@
         },
         {
           "title": "SCENE II. Athens. QUINCE'S house.",
+          "characters": ["Quince", "Flute", "Snout", "Starveling", "Snug", "Bottom"],
+          "setting": "house",
           "speakers": [
             "Enter QUINCE, FLUTE, SNOUT, and STARVELING",
             {
@@ -3913,6 +3915,9 @@
       "scenes": [
         {
           "title": "SCENE I. Athens. The palace of THESEUS.",
+          "characters": ["Theseus", "Hippolyta", "Lysander", "Philostrate", "Lysander", "Demetrius", "Puck", "Oberon", "Titania", "Bottom", "Snug", "Snout", "Starveling", "Quince", "Flute"],
+          "setting": "palace",
+          "objectLayer": "5.1",
           "speakers": [
             "Enter THESEUS, HIPPOLYTA, PHILOSTRATE, Lords and Attendants",
             {
@@ -4147,9 +4152,12 @@
               "lines": [
                 "Let him approach.",
                 "Flourish of trumpets",
-                
-                "Enter QUINCE for the Prologue",
-                
+                "Enter QUINCE for the Prologue"
+              ]
+            },
+            {
+              "speaker": "QUINCE",
+              "lines": [
                 "Prologue",
                 "If we offend, it is with our good will.",
                 "That you should think, we come not to offend,",
@@ -4189,8 +4197,12 @@
               "lines": [
                 "His speech, was like a tangled chain; nothing",
                 "impaired, but all disordered. Who is next?",
-                "Enter Pyramus and Thisbe, Wall, Moonshine, and Lion",
-                
+                "Enter Pyramus and Thisbe, Wall, Moonshine, and Lion"
+              ]
+            },
+            {
+              "speaker": "QUINCE",
+              "lines": [
                 "Prologue",
                 "Gentles, perchance you wonder at this show;",
                 "But wonder on, till truth make all things plain.",
@@ -4229,8 +4241,12 @@
             {
               "speaker": "DEMETRIUS",
               "lines": [
-                "No wonder, my lord: one lion may, when many asses do.",
-                "Wall",
+                "No wonder, my lord: one lion may, when many asses do."
+              ]
+            },
+            {
+              "speaker": "SNOUT",
+              "lines": [
                 "In this same interlude it doth befall",
                 "That I, one Snout by name, present a wall;",
                 "And such a wall, as I would have you think,",
@@ -4260,8 +4276,12 @@
             {
               "speaker": "THESEUS",
               "lines": [
-                "Pyramus draws near the wall: silence!",
-                "Pyramus",
+                "Pyramus draws near the wall: silence!"
+              ]
+            },
+            {
+              "speaker": "BOTTOM",
+              "lines": [
                 "O grim-look'd night! O night with hue so black!",
                 "O night, which ever art when day is not!",
                 "O night, O night! alack, alack, alack,",
@@ -4287,38 +4307,84 @@
                 "is Thisby's cue: she is to enter now, and I am to",
                 "spy her through the wall. You shall see, it will",
                 "fall pat as I told you. Yonder she comes.",
-                "Enter Thisbe",
-                
-                "Thisbe",
+                "Enter Thisbe"
+              ]
+            },
+            {
+              "speaker": "FLUTE",
+              "lines": [
                 "O wall, full often hast thou heard my moans,",
                 "For parting my fair Pyramus and me!",
                 "My cherry lips have often kiss'd thy stones,",
-                "Thy stones with lime and hair knit up in thee.",
-                "Pyramus",
+                "Thy stones with lime and hair knit up in thee."
+              ]
+            },
+            {
+              "speaker": "BOTTOM",
+              "lines": [
                 "I see a voice: now will I to the chink,",
-                "To spy an I can hear my Thisby's face. Thisby!",
-                "Thisbe",
-                "My love thou art, my love I think.",
-                "Pyramus",
+                "To spy an I can hear my Thisby's face. Thisby!"
+              ]
+            },
+            {
+              "speaker": "FLUTE",
+              "lines": [
+                "My love thou art, my love I think."
+              ]
+            },
+            {
+              "speaker": "BOTTOM",
+              "lines": [
                 "Think what thou wilt, I am thy lover's grace;",
-                "And, like Limander, am I trusty still.",
-                "Thisbe",
-                "And I like Helen, till the Fates me kill.",
-                "Pyramus",
-                "Not Shafalus to Procrus was so true.",
-                "Thisbe",
-                "As Shafalus to Procrus, I to you.",
-                "Pyramus",
-                "O kiss me through the hole of this vile wall!",
-                "Thisbe",
-                "I kiss the wall's hole, not your lips at all.",
-                "Pyramus",
-                "Wilt thou at Ninny's tomb meet me straightway?",
-                "Thisbe",
+                "And, like Limander, am I trusty still."
+              ]
+            },
+            {
+              "speaker": "FLUTE",
+              "lines": [
+                "And I like Helen, till the Fates me kill."
+              ]
+            },
+            {
+              "speaker": "BOTTOM",
+              "lines": [
+                "As Shafalus to Procrus, I to you."
+              ]
+            },
+            {
+              "speaker": "FLUTE",
+              "lines": [
+                "Not Shafalus to Procrus was so true."
+              ]
+            },
+            {
+              "speaker": "BOTTOM",
+              "lines": [
+                "O kiss me through the hole of this vile wall!"
+              ]
+            },
+            {
+              "speaker": "FLUTE",
+              "lines": [
+                "I kiss the wall's hole, not your lips at all."
+              ]
+            },
+            {
+              "speaker": "BOTTOM",
+              "lines": [
+                "Wilt thou at Ninny's tomb meet me straightway?"
+              ]
+            },
+            {
+              "speaker": "FLUTE",
+              "lines": [
                 "'Tide life, 'tide death, I come without delay.",
-                "Exeunt Pyramus and Thisbe",
-                
-                "Wall",
+                "Exeunt Pyramus and Thisbe"
+              ]
+            },
+            {
+              "speaker": "SNOUT",
+              "lines": [
                 "Thus have I, Wall, my part discharged so;",
                 "And, being done, thus Wall away doth go.",
                 "Exit"
@@ -4362,9 +4428,12 @@
                 "If we imagine no worse of them than they of",
                 "themselves, they may pass for excellent men. Here",
                 "come two noble beasts in, a man and a lion.",
-                "Enter Lion and Moonshine",
-                
-                "Lion",
+                "Enter Lion and Moonshine"
+              ]
+            },
+            {
+              "speaker": "SNUG",
+              "lines": [
                 "You, ladies, you, whose gentle hearts do fear",
                 "The smallest monstrous mouse that creeps on floor,",
                 "May now perchance both quake and tremble here,",
@@ -4411,8 +4480,12 @@
               "lines": [
                 "His discretion, I am sure, cannot carry his valour;",
                 "for the goose carries not the fox. It is well:",
-                "leave it to his discretion, and let us listen to the moon.",
-                "Moonshine",
+                "leave it to his discretion, and let us listen to the moon."
+              ]
+            },
+            {
+              "speaker": "STARVELING",
+              "lines": [
                 "This lanthorn doth the horned moon present;--"
               ]
             },
@@ -4426,8 +4499,12 @@
               "speaker": "THESEUS",
               "lines": [
                 "He is no crescent, and his horns are",
-                "invisible within the circumference.",
-                "Moonshine",
+                "invisible within the circumference."
+              ]
+            },
+            {
+              "speaker": "STARVELING",
+              "lines": [
                 "This lanthorn doth the horned moon present;",
                 "Myself the man i' the moon do seem to be."
               ]
@@ -4464,8 +4541,12 @@
             {
               "speaker": "LYSANDER",
               "lines": [
-                "Proceed, Moon.",
-                "Moonshine",
+                "Proceed, Moon."
+              ]
+            },
+            {
+              "speaker": "STARVELING",
+              "lines": [
                 "All that I have to say, is, to tell you that the",
                 "lanthorn is the moon; I, the man in the moon; this",
                 "thorn-bush, my thorn-bush; and this dog, my dog."
@@ -4476,11 +4557,18 @@
               "lines": [
                 "Why, all these should be in the lanthorn; for all",
                 "these are in the moon. But, silence! here comes Thisbe.",
-                "Enter Thisbe",
-                
-                "Thisbe",
-                "This is old Ninny's tomb. Where is my love?",
-                "Lion",
+                "Enter Thisbe"
+              ]
+            },
+            {
+              "speaker": "FLUTE",
+              "lines": [
+                "This is old Ninny's tomb. Where is my love?"
+              ]
+            },
+            {
+              "speaker": "SNUG",
+              "lines": [
                 "[Roaring] Oh--",
                 "Thisbe runs off"
               ]
@@ -4521,9 +4609,12 @@
               "speaker": "DEMETRIUS",
               "lines": [
                 "And then came Pyramus.",
-                "Enter Pyramus",
-                
-                "Pyramus",
+                "Enter Pyramus"
+              ]
+            },
+            {
+              "speaker": "BOTTOM",
+              "lines": [
                 "Sweet Moon, I thank thee for thy sunny beams;",
                 "I thank thee, Moon, for shining now so bright;",
                 "For, by thy gracious, golden, glittering gleams,",
@@ -4552,8 +4643,12 @@
             {
               "speaker": "HIPPOLYTA",
               "lines": [
-                "Beshrew my heart, but I pity the man.",
-                "Pyramus",
+                "Beshrew my heart, but I pity the man."
+              ]
+            },
+            {
+              "speaker": "BOTTOM",
+              "lines": [
                 "O wherefore, Nature, didst thou lions frame?",
                 "Since lion vile hath here deflower'd my dear:",
                 "Which is--no, no--which was the fairest dame",
@@ -4636,8 +4731,12 @@
             {
               "speaker": "DEMETRIUS",
               "lines": [
-                "And thus she means, videlicet:--",
-                "Thisbe",
+                "And thus she means, videlicet:--"
+              ]
+            },
+            {
+              "speaker": "FLUTE",
+              "lines": [
                 "Asleep, my love?",
                 "What, dead, my dove?",
                 "O Pyramus, arise!",

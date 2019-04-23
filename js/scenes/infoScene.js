@@ -128,9 +128,9 @@ export default class InfoScene extends Phaser.Scene {
     console.log("data");
     console.log(data);
 
-    if (data.lines && 4 <= data.lines.length && data.lines.length <= 8 && Math.random() < 0.5) {
+    if (data.lines && 4 <= data.lines.length && data.lines.length <= 8 && Math.random() < 0) {
       this.sortInOrder(data.lines);
-    } else if (Math.random() < 0.5 && data.speaker && data.lines.length > 1) {
+    } else if (Math.random() < 0 && data.speaker && data.lines.length > 1) {
       this.speechBubble(this.parseLine([
         data,
         {
@@ -191,6 +191,10 @@ export default class InfoScene extends Phaser.Scene {
             const temp = new Phaser.GameObjects.Text(this, 0, this.options.length * 20, option, deselected);
             this.options.push(temp);
             this.menu.add(temp);
+            if (temp.getBottomLeft().y + this.menu.y > this.textImg.getBottomLeft().y) {
+              temp.x += (this.textImg.displayWidth / 2);
+              temp.y -= 160
+            }
           }
           this.moveSelection(0);
         }
